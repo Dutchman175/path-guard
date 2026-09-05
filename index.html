@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
+<!-- path-guard-build: 3 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -628,7 +629,7 @@ overscroll-behavior: none;
   }
 
   function getTowerAt(mx, my) {
-    const R = 22;
+    const R = 34;
     for (let i = state.towers.length - 1; i >= 0; i--) {
       const t = state.towers[i];
       if (Math.hypot(mx - t.x, my - t.y) <= R) return t;
@@ -651,19 +652,32 @@ overscroll-behavior: none;
   function tryPlace(mx, my) {
     if (state.gameOver) return;
 
+    // Always prefer selecting an existing tower when tapped (upgrade/sell)
+    const hitTower = getTowerAt(mx, my);
+    if (hitTower) {
+      state.selected = null;
+      selectTower(hitTower);
+      updateHUD();
+      return;
+    }
+
     // Building mode: place on empty pads
     if (state.selected) {
       const idx = getPadAt(mx, my);
       if (idx < 0) {
-        el.hint.textContent = 'Tap a glowing pad to build';
+        // tap empty space cancels build mode so upgrades are easy
+        state.selected = null;
+        clearTowerSelection();
+        el.hint.textContent = 'Build canceled. Tap Archer/Cannon, or tap a tower to upgrade';
+        updateHUD();
         return;
       }
       if (isPadOccupied(idx)) {
         const occ = state.towers.find(t => t.pad === idx);
         if (occ) {
-          // occupied while building — ignore upgrade select; keep build mode
-          el.hint.textContent = 'Pad already occupied';
-          placeFeedback(PADS[idx].x, PADS[idx].y, false);
+          state.selected = null;
+          selectTower(occ);
+          updateHUD();
         }
         return;
       }
@@ -676,7 +690,7 @@ overscroll-behavior: none;
       state.gold -= def.cost;
       flashGold();
       const pad = PADS[idx];
-      state.towers.push({
+      const placed = {
         pad: idx,
         x: pad.x,
         y: pad.y,
@@ -684,20 +698,17 @@ overscroll-behavior: none;
         level: 1,
         cd: 0,
         pulse: 0.4,
-      });
+      };
+      state.towers.push(placed);
       placeFeedback(pad.x, pad.y, true);
-      el.hint.textContent = `${def.name} placed! Tap towers to upgrade.`;
+      state.selected = null; // leave build mode so next tap can upgrade
+      selectTower(placed);
+      el.hint.textContent = `${def.name} placed! Tap Upgrade, or pick Archer/Cannon to build more`;
       updateHUD();
       return;
     }
 
-    // No build type: select tower or deselect
-    const hit = getTowerAt(mx, my);
-    if (hit) {
-      selectTower(hit);
-      updateHUD();
-      return;
-    }
+    // No build type: deselect tower if empty tap
     if (state.selectedTower) {
       clearTowerSelection();
       el.hint.textContent = 'Tap pads to build, tap towers to upgrade';
