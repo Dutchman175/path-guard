@@ -156,6 +156,39 @@ overscroll-behavior: none;
     color: #94a3b8;
     cursor: default;
   }
+  #tower-actions {
+    display: none;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 10px;
+  }
+  #tower-actions.show { display: grid; }
+  .action-btn {
+    appearance: none;
+    border: 2px solid #334155;
+    background: #1e293b;
+    color: #e8eef4;
+    border-radius: 14px;
+    padding: 14px 10px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 56px;
+    transition: transform 0.08s, border-color 0.15s, background 0.15s;
+  }
+  .action-btn:active { transform: scale(0.97); }
+  .action-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  #btn-upgrade {
+    border-color: #a78bfa;
+    background: #3b0764;
+    color: #e9d5ff;
+  }
+  #btn-upgrade .cost { display: block; font-size: 0.75rem; font-weight: 600; color: #fbbf24; margin-top: 4px; }
+  #btn-sell {
+    border-color: #64748b;
+    background: #334155;
+    color: #e2e8f0;
+  }
+  #btn-sell .cost { display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-top: 4px; }
   #hint {
     text-align: center;
     font-size: 0.75rem;
@@ -233,8 +266,18 @@ overscroll-behavior: none;
         <span class="cost">90 gold</span>
       </button>
     </div>
+    <div id="tower-actions">
+      <button type="button" class="action-btn" id="btn-upgrade">
+        ⬆ Upgrade
+        <span class="cost" id="upgrade-cost">—</span>
+      </button>
+      <button type="button" class="action-btn" id="btn-sell">
+        Sell
+        <span class="cost" id="sell-value">—</span>
+      </button>
+    </div>
     <button type="button" id="start-btn">Start Waves</button>
-    <div id="hint">Tap a tower, then tap a pad on the path</div>
+    <div id="hint">Tap pads to build, tap towers to upgrade</div>
   </div>
 </div>
 
@@ -282,12 +325,17 @@ overscroll-behavior: none;
     archer: {
       name: 'Archer', cost: 50, range: 95, fireRate: 0.55, damage: 12,
       color: '#34d399', projectileSpeed: 420, projectileColor: '#a7f3d0',
+      upgradeCosts: [40, 70],
     },
     cannon: {
       name: 'Cannon', cost: 90, range: 80, fireRate: 1.15, damage: 38,
       color: '#fb923c', projectileSpeed: 280, projectileColor: '#fdba74',
+      upgradeCosts: [60, 100],
     },
   };
+
+  const MAX_TOWER_LEVEL = 3;
+  const LEVEL_RING = ['#34d399', '#fbbf24', '#c084fc'];
 
   const state = {
     gold: 50,
@@ -295,6 +343,7 @@ overscroll-behavior: none;
     wave: 0,
     maxWaves: 5,
     selected: null,
+    selectedTower: null,
     towers: [],
     enemies: [],
     projectiles: [],
@@ -321,7 +370,55 @@ overscroll-behavior: none;
     overlayTitle: document.getElementById('overlay-title'),
     overlayMsg: document.getElementById('overlay-msg'),
     goldStat: document.getElementById('gold'),
+    towerActions: document.getElementById('tower-actions'),
+    btnUpgrade: document.getElementById('btn-upgrade'),
+    btnSell: document.getElementById('btn-sell'),
+    upgradeCost: document.getElementById('upgrade-cost'),
+    sellValue: document.getElementById('sell-value'),
   };
+
+  function towerStats(tw) {
+    const def = TOWER_DEFS[tw.type];
+    const lv = tw.level || 1;
+    const dmgMul = 1 + (lv - 1) * 0.4;
+    const rateMul = 1 - (lv - 1) * 0.1;
+    const rangeMul = 1 + (lv - 1) * 0.08;
+    return {
+      name: def.name,
+      damage: Math.round(def.damage * dmgMul),
+      fireRate: def.fireRate * rateMul,
+      range: def.range * rangeMul,
+      projectileSpeed: def.projectileSpeed,
+      projectileColor: def.projectileColor,
+      color: def.color,
+    };
+  }
+
+  function upgradeCostFor(tw) {
+    if (!tw || (tw.level || 1) >= MAX_TOWER_LEVEL) return null;
+    const costs = TOWER_DEFS[tw.type].upgradeCosts;
+    return costs[(tw.level || 1) - 1];
+  }
+
+  function sellValueFor(tw) {
+    if (!tw) return 0;
+    const def = TOWER_DEFS[tw.type];
+    let invested = def.cost;
+    const lv = tw.level || 1;
+    for (let i = 0; i < lv - 1; i++) invested += def.upgradeCosts[i];
+    return Math.floor(invested * 0.5);
+  }
+
+  function clearTowerSelection() {
+    state.selectedTower = null;
+  }
+
+  function selectTower(tw) {
+    state.selected = null;
+    state.selectedTower = tw;
+    const st = towerStats(tw);
+    el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${Math.round(st.range)}`;
+  }
 
   function pathLength() {
     let len = 0;
@@ -352,14 +449,31 @@ overscroll-behavior: none;
     el.gold.textContent = Math.floor(state.gold);
     el.lives.textContent = state.lives;
     el.wave.textContent = `${state.wave}/${state.maxWaves}`;
-    el.sel.textContent = state.selected
-      ? TOWER_DEFS[state.selected].name
-      : '—';
+    if (state.selectedTower) {
+      const tw = state.selectedTower;
+      el.sel.textContent = `${TOWER_DEFS[tw.type].name} L${tw.level}`;
+    } else if (state.selected) {
+      el.sel.textContent = TOWER_DEFS[state.selected].name;
+    } else {
+      el.sel.textContent = '—';
+    }
     document.getElementById('btn-archer').disabled = state.gold < TOWER_DEFS.archer.cost || state.gameOver;
     document.getElementById('btn-cannon').disabled = state.gold < TOWER_DEFS.cannon.cost || state.gameOver;
     document.querySelectorAll('.tower-btn').forEach(b => {
       b.classList.toggle('selected', b.dataset.type === state.selected);
     });
+
+    const showActions = !!state.selectedTower && !state.gameOver;
+    el.towerActions.classList.toggle('show', showActions);
+    if (showActions) {
+      const tw = state.selectedTower;
+      const cost = upgradeCostFor(tw);
+      const maxed = cost == null;
+      el.btnUpgrade.disabled = maxed || state.gold < cost;
+      el.upgradeCost.textContent = maxed ? 'MAX Lv3' : `${cost} gold → Lv${tw.level + 1}`;
+      el.sellValue.textContent = `+${sellValueFor(tw)} gold`;
+      el.btnSell.disabled = false;
+    }
   }
 
   function flashGold() {
@@ -406,6 +520,15 @@ overscroll-behavior: none;
     return state.towers.some(t => t.pad === idx);
   }
 
+  function getTowerAt(mx, my) {
+    const R = 22;
+    for (let i = state.towers.length - 1; i >= 0; i--) {
+      const t = state.towers[i];
+      if (Math.hypot(mx - t.x, my - t.y) <= R) return t;
+    }
+    return null;
+  }
+
   function canvasCoords(e) {
     const rect = canvas.getBoundingClientRect();
     const scaleX = W / rect.width;
@@ -420,42 +543,96 @@ overscroll-behavior: none;
 
   function tryPlace(mx, my) {
     if (state.gameOver) return;
-    const idx = getPadAt(mx, my);
-    if (idx < 0) {
-      if (state.selected) {
+
+    // Building mode: place on empty pads
+    if (state.selected) {
+      const idx = getPadAt(mx, my);
+      if (idx < 0) {
         el.hint.textContent = 'Tap a glowing pad to build';
+        return;
       }
+      if (isPadOccupied(idx)) {
+        const occ = state.towers.find(t => t.pad === idx);
+        if (occ) {
+          // occupied while building — ignore upgrade select; keep build mode
+          el.hint.textContent = 'Pad already occupied';
+          placeFeedback(PADS[idx].x, PADS[idx].y, false);
+        }
+        return;
+      }
+      const def = TOWER_DEFS[state.selected];
+      if (state.gold < def.cost) {
+        el.hint.textContent = 'Not enough gold';
+        placeFeedback(PADS[idx].x, PADS[idx].y, false);
+        return;
+      }
+      state.gold -= def.cost;
+      flashGold();
+      const pad = PADS[idx];
+      state.towers.push({
+        pad: idx,
+        x: pad.x,
+        y: pad.y,
+        type: state.selected,
+        level: 1,
+        cd: 0,
+        pulse: 0.4,
+      });
+      placeFeedback(pad.x, pad.y, true);
+      el.hint.textContent = `${def.name} placed! Tap towers to upgrade.`;
+      updateHUD();
       return;
     }
-    if (!state.selected) {
-      el.hint.textContent = 'Select Archer or Cannon first';
-      placeFeedback(PADS[idx].x, PADS[idx].y, false);
+
+    // No build type: select tower or deselect
+    const hit = getTowerAt(mx, my);
+    if (hit) {
+      selectTower(hit);
+      updateHUD();
       return;
     }
-    if (isPadOccupied(idx)) {
-      el.hint.textContent = 'Pad already occupied';
-      placeFeedback(PADS[idx].x, PADS[idx].y, false);
+    if (state.selectedTower) {
+      clearTowerSelection();
+      el.hint.textContent = 'Tap pads to build, tap towers to upgrade';
+      updateHUD();
+    }
+  }
+
+  function upgradeSelectedTower() {
+    const tw = state.selectedTower;
+    if (!tw || state.gameOver) return;
+    const cost = upgradeCostFor(tw);
+    if (cost == null) {
+      el.hint.textContent = 'Already max level (3)';
       return;
     }
-    const def = TOWER_DEFS[state.selected];
-    if (state.gold < def.cost) {
-      el.hint.textContent = 'Not enough gold';
-      placeFeedback(PADS[idx].x, PADS[idx].y, false);
+    if (state.gold < cost) {
+      el.hint.textContent = 'Not enough gold to upgrade';
+      flashGold();
       return;
     }
-    state.gold -= def.cost;
+    state.gold -= cost;
     flashGold();
-    const pad = PADS[idx];
-    state.towers.push({
-      pad: idx,
-      x: pad.x,
-      y: pad.y,
-      type: state.selected,
-      cd: 0,
-      pulse: 0.4,
-    });
-    placeFeedback(pad.x, pad.y, true);
-    el.hint.textContent = `${def.name} placed! Keep defending.`;
+    tw.level = (tw.level || 1) + 1;
+    tw.pulse = 0.45;
+    burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 16);
+    addFloat(tw.x, tw.y - 20, `Lv${tw.level}!`, LEVEL_RING[tw.level - 1]);
+    selectTower(tw);
+    updateHUD();
+  }
+
+  function sellSelectedTower() {
+    const tw = state.selectedTower;
+    if (!tw || state.gameOver) return;
+    const value = sellValueFor(tw);
+    state.gold += value;
+    flashGold();
+    burst(tw.x, tw.y, '#94a3b8', 12);
+    addFloat(tw.x, tw.y - 18, `+${value}`, '#fde68a');
+    const idx = state.towers.indexOf(tw);
+    if (idx >= 0) state.towers.splice(idx, 1);
+    clearTowerSelection();
+    el.hint.textContent = `Sold for ${value} gold`;
     updateHUD();
   }
 
@@ -499,6 +676,7 @@ overscroll-behavior: none;
     state.gameOver = true;
     state.won = won;
     state.selected = null;
+    state.selectedTower = null;
     el.start.disabled = true;
     el.overlay.classList.add('show');
     if (won) {
@@ -518,6 +696,7 @@ overscroll-behavior: none;
     state.lives = 8;
     state.wave = 0;
     state.selected = null;
+    state.selectedTower = null;
     state.towers = [];
     state.enemies = [];
     state.projectiles = [];
@@ -533,7 +712,7 @@ overscroll-behavior: none;
     el.overlay.classList.remove('show');
     el.start.disabled = false;
     el.start.textContent = 'Start Waves';
-    el.hint.textContent = 'Tap a tower, then tap a pad on the path';
+    el.hint.textContent = 'Tap pads to build, tap towers to upgrade';
     updateHUD();
   }
 
@@ -549,12 +728,23 @@ overscroll-behavior: none;
       e.preventDefault();
       if (btn.disabled || state.gameOver) return;
       const type = btn.dataset.type;
+      clearTowerSelection();
       state.selected = state.selected === type ? null : type;
       el.hint.textContent = state.selected
         ? `Selected ${TOWER_DEFS[type].name} — tap a pad`
-        : 'Tap a tower, then tap a pad on the path';
+        : 'Tap pads to build, tap towers to upgrade';
       updateHUD();
     });
+  });
+
+  el.btnUpgrade.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    upgradeSelectedTower();
+  });
+
+  el.btnSell.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    sellSelectedTower();
   });
 
   el.start.addEventListener('pointerdown', (e) => {
@@ -572,13 +762,13 @@ overscroll-behavior: none;
   });
 
   function findTarget(tower) {
-    const def = TOWER_DEFS[tower.type];
+    const st = towerStats(tower);
     let best = null;
     let bestDist = -1;
     for (const en of state.enemies) {
       const p = posOnPath(en.dist);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
-      if (d <= def.range && en.dist > bestDist) {
+      if (d <= st.range && en.dist > bestDist) {
         bestDist = en.dist;
         best = en;
       }
@@ -630,26 +820,25 @@ overscroll-behavior: none;
 
       // towers fire
       for (const tw of state.towers) {
-        const def = TOWER_DEFS[tw.type];
+        const st = towerStats(tw);
         if (tw.pulse > 0) tw.pulse -= dt;
         tw.cd -= dt;
         if (tw.cd <= 0) {
           const tgt = findTarget(tw);
           if (tgt) {
-            const tp = posOnPath(tgt.dist);
             // lead slightly
             const lead = Math.min(40, tgt.speed * 0.15);
             const aim = posOnPath(Math.min(PATH_LEN, tgt.dist + lead));
             state.projectiles.push({
               x: tw.x, y: tw.y,
               tx: aim.x, ty: aim.y,
-              speed: def.projectileSpeed,
-              damage: def.damage,
-              color: def.projectileColor,
+              speed: st.projectileSpeed,
+              damage: st.damage,
+              color: st.projectileColor,
               target: tgt,
               type: tw.type,
             });
-            tw.cd = def.fireRate;
+            tw.cd = st.fireRate;
             tw.pulse = 0.15;
           }
         }
@@ -803,25 +992,38 @@ overscroll-behavior: none;
   function drawTowers() {
     for (const tw of state.towers) {
       const def = TOWER_DEFS[tw.type];
-      // range ring when selected type matches or always faint
-      if (state.selected === tw.type) {
+      const st = towerStats(tw);
+      const lv = tw.level || 1;
+      const ringColor = LEVEL_RING[Math.min(lv, MAX_TOWER_LEVEL) - 1];
+      const isSel = state.selectedTower === tw;
+      // range ring when this tower is selected, or faint when build-type matches
+      if (isSel || state.selected === tw.type) {
         ctx.beginPath();
-        ctx.arc(tw.x, tw.y, def.range, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
-        ctx.lineWidth = 1;
+        ctx.arc(tw.x, tw.y, st.range, 0, Math.PI * 2);
+        ctx.strokeStyle = isSel ? 'rgba(192, 132, 252, 0.45)' : 'rgba(148, 163, 184, 0.25)';
+        ctx.lineWidth = isSel ? 2 : 1;
         ctx.stroke();
       }
-      const scale = 1 + (tw.pulse > 0 ? tw.pulse * 0.35 : 0);
+      const levelBump = 1 + (lv - 1) * 0.08;
+      const scale = levelBump * (1 + (tw.pulse > 0 ? tw.pulse * 0.35 : 0));
       ctx.save();
       ctx.translate(tw.x, tw.y);
       ctx.scale(scale, scale);
+      // selection halo
+      if (isSel) {
+        ctx.beginPath();
+        ctx.arc(0, 0, 22, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(192, 132, 252, 0.7)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
       // base
       ctx.beginPath();
       ctx.arc(0, 0, 16, 0, Math.PI * 2);
       ctx.fillStyle = '#1e293b';
       ctx.fill();
-      ctx.strokeStyle = def.color;
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = 3 + (lv - 1) * 0.5;
       ctx.stroke();
       // icon body
       if (tw.type === 'archer') {
@@ -841,6 +1043,16 @@ overscroll-behavior: none;
         ctx.fillRect(-3, -10, 6, 8);
       }
       ctx.restore();
+      // level badge
+      ctx.beginPath();
+      ctx.arc(tw.x + 12, tw.y - 12, 8, 0, Math.PI * 2);
+      ctx.fillStyle = ringColor;
+      ctx.fill();
+      ctx.fillStyle = '#0f1419';
+      ctx.font = 'bold 10px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(lv), tw.x + 12, tw.y - 11);
     }
   }
 
