@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 10 -->
+<!-- path-guard-build: 11 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -408,7 +408,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 10</div>
+    <div id="build-ver">build 11</div>
   </div>
 </div>
 
@@ -594,10 +594,11 @@
     },
   };
 
+  // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
-    normal: { name: 'Grunt', r: 12, speedMul: 1, hpMul: 1, rewardMul: 1, color: '#ef4444', stroke: '#7f1d1d' },
-    fast: { name: 'Scout', r: 8, speedMul: 1.75, hpMul: 0.55, rewardMul: 0.85, color: '#fbbf24', stroke: '#92400e' },
-    tank: { name: 'Brute', r: 17, speedMul: 0.52, hpMul: 2.9, rewardMul: 1.6, color: '#a78bfa', stroke: '#4c1d95' },
+    normal: { name: 'Grunt', r: 12, hp: 60, speed: 70, reward: 8, color: '#ef4444', stroke: '#7f1d1d' },
+    fast:   { name: 'Scout', r: 8,  hp: 32, speed: 125, reward: 7, color: '#fbbf24', stroke: '#92400e' },
+    tank:   { name: 'Brute', r: 17, hp: 180, speed: 38, reward: 14, color: '#a78bfa', stroke: '#4c1d95' },
   };
 
   let PATH = MAPS.serpentine.path;
@@ -1054,16 +1055,6 @@
   function waveEnemyCount(w) {
     return 5 + w * 3 + Math.max(0, w - 8) * 2;
   }
-  function waveSpeed(w) {
-    return 52 + w * 10;
-  }
-  function waveHP(w) {
-    return 30 + w * 16 + Math.max(0, w - 8) * 14;
-  }
-  function waveReward(w) {
-    return 7 + w * 2;
-  }
-
   function enemyMixForWave(w) {
     // returns weighted type list for this wave
     if (w <= 2) return ['normal'];
@@ -1117,17 +1108,16 @@
   }
 
   function spawnEnemy(kind) {
-    const w = state.wave;
     const et = ENEMY_TYPES[kind] || ENEMY_TYPES.normal;
-    const hp = Math.round(waveHP(w) * et.hpMul);
+    const hp = et.hp;
     state.enemies.push({
       kind,
       dist: 0,
-      baseSpeed: waveSpeed(w) * et.speedMul * (0.92 + Math.random() * 0.16),
+      baseSpeed: et.speed,
       speed: 0,
       hp,
       maxHp: hp,
-      reward: Math.max(1, Math.round(waveReward(w) * et.rewardMul)),
+      reward: et.reward,
       r: et.r,
       color: et.color,
       stroke: et.stroke,
@@ -1980,7 +1970,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v10';
+  const BOOT = 'pg-boot-v11';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
