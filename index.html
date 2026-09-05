@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 9 -->
+<!-- path-guard-build: 10 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -408,7 +408,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 9</div>
+    <div id="build-ver">build 10</div>
   </div>
 </div>
 
@@ -432,8 +432,8 @@
     serpentine: {
       id: 'serpentine',
       name: 'Serpentine',
-      enemyHpMul: 0.95,
-      enemySpeedMul: 1.0,
+      spawnExtra: 0,
+      hardenChance: 0,
       startGoldBonus: 10,
       // True horizontal S: alternating full-width lanes (distinct from Winding)
       path: [
@@ -470,8 +470,8 @@
     winding: {
       id: 'winding',
       name: 'Winding',
-      enemyHpMul: 1.0,
-      enemySpeedMul: 1.0,
+      spawnExtra: 1,
+      hardenChance: 0.12,
       startGoldBonus: 0,
       path: [
         { x: 40, y: 40 },
@@ -506,8 +506,8 @@
     gauntlet: {
       id: 'gauntlet',
       name: 'Gauntlet',
-      enemyHpMul: 1.12,
-      enemySpeedMul: 1.08,
+      spawnExtra: 3,
+      hardenChance: 0.32,
       startGoldBonus: 0,
       // Short 3-lane corridor — enemies reach the exit faster
       path: [
@@ -534,8 +534,8 @@
     spiral: {
       id: 'spiral',
       name: 'Spiral',
-      enemyHpMul: 1.25,
-      enemySpeedMul: 1.12,
+      spawnExtra: 5,
+      hardenChance: 0.5,
       startGoldBonus: 0,
       // Rectangular coil then center drop — long path, scarce pads
       path: [
@@ -1077,11 +1077,22 @@
     return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
   }
 
+  function hardenKind(kind, chance) {
+    if (chance <= 0 || Math.random() >= chance) return kind;
+    if (kind === 'normal') return 'fast';
+    if (kind === 'fast') return 'tank';
+    return kind;
+  }
+
   function buildSpawnQueue(w) {
-    const n = waveEnemyCount(w);
+    const map = activeMap();
+    const n = waveEnemyCount(w) + (map.spawnExtra || 0);
     const mix = enemyMixForWave(w);
+    const chance = map.hardenChance || 0;
     const q = [];
-    for (let i = 0; i < n; i++) q.push(mix[i % mix.length]);
+    for (let i = 0; i < n; i++) {
+      q.push(hardenKind(mix[i % mix.length], chance));
+    }
     // shuffle lightly
     for (let i = q.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -1108,12 +1119,11 @@
   function spawnEnemy(kind) {
     const w = state.wave;
     const et = ENEMY_TYPES[kind] || ENEMY_TYPES.normal;
-    const map = activeMap();
-    const hp = Math.round(waveHP(w) * et.hpMul * (map.enemyHpMul || 1));
+    const hp = Math.round(waveHP(w) * et.hpMul);
     state.enemies.push({
       kind,
       dist: 0,
-      baseSpeed: waveSpeed(w) * et.speedMul * (map.enemySpeedMul || 1) * (0.92 + Math.random() * 0.16),
+      baseSpeed: waveSpeed(w) * et.speedMul * (0.92 + Math.random() * 0.16),
       speed: 0,
       hp,
       maxHp: hp,
@@ -1970,7 +1980,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v9';
+  const BOOT = 'pg-boot-v10';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
