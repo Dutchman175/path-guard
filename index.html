@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 8 -->
+<!-- path-guard-build: 9 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -274,8 +274,11 @@
     text-align: center;
   }
   #overlay.show, #map-overlay.show { display: flex; }
-  #overlay h2, #map-overlay h2 { font-size: 1.6rem; }
-  #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.9rem; max-width: 280px; }
+  #map-overlay { gap: 8px; padding: 12px 14px; }
+  #map-overlay h2 { font-size: 1.35rem; }
+  #overlay h2 { font-size: 1.6rem; }
+  #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.85rem; max-width: 280px; }
+  #map-overlay p { margin-bottom: 2px; }
   #overlay .win { color: #4ade80; }
   #overlay .lose { color: #f87171; }
   #overlay .rating { color: #fbbf24; font-size: 1.15rem; font-weight: 800; }
@@ -298,10 +301,14 @@
     border: 2px solid #38bdf8;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     align-items: center;
+    padding: 8px 14px;
+    min-height: 40px;
+    font-size: 0.9rem;
+    border-radius: 10px;
   }
-  .map-pick-btn .sub { font-size: 0.72rem; font-weight: 600; color: #94a3b8; }
+  .map-pick-btn .sub { font-size: 0.68rem; font-weight: 600; color: #94a3b8; }
   .map-pick-btn:active { transform: scale(0.97); }
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
@@ -330,13 +337,21 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <p>Pick a path, then build towers and hold the line.</p>
+      <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
+        Map 1: Serpentine — Easy
+        <span class="sub">Wide S-lanes, many pads</span>
+      </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
-        Map 1: Winding
+        Map 2: Winding — Medium
         <span class="sub">Classic switchback path</span>
       </button>
-      <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
-        Map 2: Serpentine
-        <span class="sub">Full-width horizontal S zigzags</span>
+      <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
+        Map 3: Gauntlet — Hard
+        <span class="sub">Short path, awkward pads</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
+        Map 4: Spiral — Brutal
+        <span class="sub">Long coil, scarce pads</span>
       </button>
     </div>
     <div id="overlay">
@@ -393,7 +408,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 8</div>
+    <div id="build-ver">build 9</div>
   </div>
 </div>
 
@@ -414,42 +429,12 @@
   const LS_BEST_WIN = 'pg-best-win'; // lives remaining on best win
 
   const MAPS = {
-    winding: {
-      id: 'winding',
-      name: 'Winding',
-      path: [
-        { x: 40, y: 40 },
-        { x: 200, y: 40 },
-        { x: 360, y: 40 },
-        { x: 360, y: 140 },
-        { x: 200, y: 140 },
-        { x: 80, y: 140 },
-        { x: 80, y: 260 },
-        { x: 200, y: 260 },
-        { x: 320, y: 260 },
-        { x: 320, y: 380 },
-        { x: 180, y: 380 },
-        { x: 60, y: 380 },
-        { x: 60, y: 500 },
-        { x: 200, y: 500 },
-        { x: 360, y: 500 },
-      ],
-      pads: [
-        { x: 140, y: 90 },
-        { x: 280, y: 90 },
-        { x: 280, y: 200 },
-        { x: 140, y: 200 },
-        { x: 140, y: 320 },
-        { x: 260, y: 320 },
-        { x: 120, y: 440 },
-        { x: 280, y: 440 },
-        { x: 200, y: 80 },
-        { x: 200, y: 320 },
-      ],
-    },
     serpentine: {
       id: 'serpentine',
       name: 'Serpentine',
+      enemyHpMul: 0.95,
+      enemySpeedMul: 1.0,
+      startGoldBonus: 10,
       // True horizontal S: alternating full-width lanes (distinct from Winding)
       path: [
         { x: 30, y: 40 },
@@ -480,6 +465,105 @@
         { x: 300, y: 355 },
         { x: 120, y: 445 },
         { x: 280, y: 445 },
+      ],
+    },
+    winding: {
+      id: 'winding',
+      name: 'Winding',
+      enemyHpMul: 1.0,
+      enemySpeedMul: 1.0,
+      startGoldBonus: 0,
+      path: [
+        { x: 40, y: 40 },
+        { x: 200, y: 40 },
+        { x: 360, y: 40 },
+        { x: 360, y: 140 },
+        { x: 200, y: 140 },
+        { x: 80, y: 140 },
+        { x: 80, y: 260 },
+        { x: 200, y: 260 },
+        { x: 320, y: 260 },
+        { x: 320, y: 380 },
+        { x: 180, y: 380 },
+        { x: 60, y: 380 },
+        { x: 60, y: 500 },
+        { x: 200, y: 500 },
+        { x: 360, y: 500 },
+      ],
+      pads: [
+        { x: 140, y: 90 },
+        { x: 280, y: 90 },
+        { x: 280, y: 200 },
+        { x: 140, y: 200 },
+        { x: 140, y: 320 },
+        { x: 260, y: 320 },
+        { x: 120, y: 440 },
+        { x: 280, y: 440 },
+        { x: 200, y: 80 },
+        { x: 200, y: 320 },
+      ],
+    },
+    gauntlet: {
+      id: 'gauntlet',
+      name: 'Gauntlet',
+      enemyHpMul: 1.12,
+      enemySpeedMul: 1.08,
+      startGoldBonus: 0,
+      // Short 3-lane corridor — enemies reach the exit faster
+      path: [
+        { x: 50, y: 40 },
+        { x: 350, y: 40 },
+        { x: 350, y: 200 },
+        { x: 50, y: 200 },
+        { x: 50, y: 380 },
+        { x: 350, y: 380 },
+        { x: 350, y: 530 },
+      ],
+      // 8 pads in awkward bay spots (≥28px off centerline)
+      pads: [
+        { x: 100, y: 120 },
+        { x: 180, y: 120 },
+        { x: 280, y: 120 },
+        { x: 120, y: 290 },
+        { x: 220, y: 290 },
+        { x: 300, y: 290 },
+        { x: 150, y: 455 },
+        { x: 250, y: 455 },
+      ],
+    },
+    spiral: {
+      id: 'spiral',
+      name: 'Spiral',
+      enemyHpMul: 1.25,
+      enemySpeedMul: 1.12,
+      startGoldBonus: 0,
+      // Rectangular coil then center drop — long path, scarce pads
+      path: [
+        { x: 30, y: 30 },
+        { x: 370, y: 30 },
+        { x: 370, y: 530 },
+        { x: 30, y: 530 },
+        { x: 30, y: 90 },
+        { x: 310, y: 90 },
+        { x: 310, y: 470 },
+        { x: 90, y: 470 },
+        { x: 90, y: 150 },
+        { x: 250, y: 150 },
+        { x: 250, y: 410 },
+        { x: 150, y: 410 },
+        { x: 150, y: 250 },
+        { x: 200, y: 250 },
+        { x: 200, y: 545 },
+      ],
+      // 7 sparse ring-pocket pads (≥28px off centerline)
+      pads: [
+        { x: 200, y: 60 },
+        { x: 60, y: 300 },
+        { x: 340, y: 280 },
+        { x: 100, y: 500 },
+        { x: 300, y: 500 },
+        { x: 120, y: 300 },
+        { x: 200, y: 120 },
       ],
     },
   };
@@ -516,12 +600,12 @@
     tank: { name: 'Brute', r: 17, speedMul: 0.52, hpMul: 2.9, rewardMul: 1.6, color: '#a78bfa', stroke: '#4c1d95' },
   };
 
-  let PATH = MAPS.winding.path;
-  let PADS = MAPS.winding.pads;
+  let PATH = MAPS.serpentine.path;
+  let PADS = MAPS.serpentine.pads;
   let PATH_LEN = 0;
 
   const state = {
-    mapId: 'winding',
+    mapId: 'serpentine',
     mapPicked: false,
     gold: START_GOLD,
     lives: START_LIVES,
@@ -593,12 +677,21 @@
   }
 
   function applyMap(mapId) {
-    const map = MAPS[mapId] || MAPS.winding;
+    const map = MAPS[mapId] || MAPS.serpentine;
     state.mapId = map.id;
     PATH = map.path;
     PADS = map.pads;
     PATH_LEN = pathLength(PATH);
     try { localStorage.setItem(LS_MAP, map.id); } catch (_) {}
+  }
+
+  function activeMap() {
+    return MAPS[state.mapId] || MAPS.serpentine;
+  }
+
+  function startGoldForMap(mapId) {
+    const map = MAPS[mapId] || MAPS.serpentine;
+    return START_GOLD + (map.startGoldBonus || 0);
   }
 
   function loadBest() {
@@ -1015,11 +1108,12 @@
   function spawnEnemy(kind) {
     const w = state.wave;
     const et = ENEMY_TYPES[kind] || ENEMY_TYPES.normal;
-    const hp = Math.round(waveHP(w) * et.hpMul);
+    const map = activeMap();
+    const hp = Math.round(waveHP(w) * et.hpMul * (map.enemyHpMul || 1));
     state.enemies.push({
       kind,
       dist: 0,
-      baseSpeed: waveSpeed(w) * et.speedMul * (0.92 + Math.random() * 0.16),
+      baseSpeed: waveSpeed(w) * et.speedMul * (map.enemySpeedMul || 1) * (0.92 + Math.random() * 0.16),
       speed: 0,
       hp,
       maxHp: hp,
@@ -1069,8 +1163,9 @@
     state.mapPicked = false;
     el.mapOverlay.classList.add('show');
     el.overlay.classList.remove('show');
-    let last = 'winding';
-    try { last = localStorage.getItem(LS_MAP) || 'winding'; } catch (_) {}
+    let last = 'serpentine';
+    try { last = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
+    if (!MAPS[last]) last = 'serpentine';
     document.querySelectorAll('.map-pick-btn').forEach(b => {
       b.classList.toggle('last', b.dataset.map === last);
     });
@@ -1082,7 +1177,7 @@
     const wasChange = state.changingMap;
     state.changingMap = false;
     // Clear board + reset start economy whenever a map is (re)picked
-    state.gold = START_GOLD;
+    state.gold = startGoldForMap(mapId);
     state.lives = START_LIVES;
     state.wave = 0;
     state.selected = null;
@@ -1863,9 +1958,9 @@
   }
 
   // Init map from last selection for preview path under overlay
-  let initialMap = 'winding';
-  try { initialMap = localStorage.getItem(LS_MAP) || 'winding'; } catch (_) {}
-  applyMap(MAPS[initialMap] ? initialMap : 'winding');
+  let initialMap = 'serpentine';
+  try { initialMap = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
+  applyMap(MAPS[initialMap] ? initialMap : 'serpentine');
   showMapSelect();
   updateWaveButtons();
   updateHUD();
@@ -1875,7 +1970,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v8';
+  const BOOT = 'pg-boot-v9';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
