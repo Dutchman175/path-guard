@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 5 -->
+<!-- path-guard-build: 6 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -177,12 +177,30 @@ overscroll-behavior: none;
     background: linear-gradient(180deg, #22c55e, #16a34a);
     color: #052e16;
   }
+  #tower-btns.hidden { display: none; }
   #tower-actions {
     display: none;
     grid-template-columns: 1.4fr 1fr;
     gap: 8px;
   }
   #tower-actions.show { display: grid; }
+  #sell-confirm {
+    display: none;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 8px;
+  }
+  #sell-confirm.show { display: grid; }
+  #btn-sell-yes {
+    border-color: #f87171;
+    background: #7f1d1d;
+    color: #fecaca;
+  }
+  #btn-sell-yes .cost { display: block; font-size: 0.7rem; font-weight: 600; color: #fde68a; margin-top: 2px; }
+  #btn-sell-no {
+    border-color: #64748b;
+    background: #334155;
+    color: #e2e8f0;
+  }
   .action-btn {
     appearance: none;
     border: 2px solid #334155;
@@ -298,12 +316,19 @@ overscroll-behavior: none;
         <span class="cost" id="sell-value">—</span>
       </button>
     </div>
+    <div id="sell-confirm">
+      <button type="button" class="action-btn" id="btn-sell-yes">
+        Confirm Sell
+        <span class="cost" id="sell-confirm-value">—</span>
+      </button>
+      <button type="button" class="action-btn" id="btn-sell-no">Cancel</button>
+    </div>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Tap pads to build, then press Next Wave or Continuous Waves</div>
-    <div id="build-ver">build 5</div>
+    <div id="build-ver">build 6</div>
   </div>
 </div>
 
@@ -385,6 +410,7 @@ overscroll-behavior: none;
     nextWaveIn: 0,
     waveMode: 'next', // 'next' | 'continuous'
     awaitingNextWave: false,
+    sellConfirming: false,
   };
 
   const el = {
@@ -399,11 +425,16 @@ overscroll-behavior: none;
     overlayTitle: document.getElementById('overlay-title'),
     overlayMsg: document.getElementById('overlay-msg'),
     goldStat: document.getElementById('gold'),
+    towerBtns: document.getElementById('tower-btns'),
     towerActions: document.getElementById('tower-actions'),
+    sellConfirm: document.getElementById('sell-confirm'),
     btnUpgrade: document.getElementById('btn-upgrade'),
     btnSell: document.getElementById('btn-sell'),
+    btnSellYes: document.getElementById('btn-sell-yes'),
+    btnSellNo: document.getElementById('btn-sell-no'),
     upgradeCost: document.getElementById('upgrade-cost'),
     sellValue: document.getElementById('sell-value'),
+    sellConfirmValue: document.getElementById('sell-confirm-value'),
   };
 
   function towerStats(tw) {
@@ -440,11 +471,13 @@ overscroll-behavior: none;
 
   function clearTowerSelection() {
     state.selectedTower = null;
+    state.sellConfirming = false;
   }
 
   function selectTower(tw) {
     state.selected = null;
     state.selectedTower = tw;
+    state.sellConfirming = false;
     const st = towerStats(tw);
     el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${Math.round(st.range)}`;
   }
@@ -493,15 +526,20 @@ overscroll-behavior: none;
     });
 
     const showActions = !!state.selectedTower && !state.gameOver;
-    el.towerActions.classList.toggle('show', showActions);
+    const showConfirm = showActions && state.sellConfirming;
+    el.towerBtns.classList.toggle('hidden', showActions);
+    el.towerActions.classList.toggle('show', showActions && !showConfirm);
+    el.sellConfirm.classList.toggle('show', showConfirm);
     if (showActions) {
       const tw = state.selectedTower;
       const cost = upgradeCostFor(tw);
       const maxed = cost == null;
+      const value = sellValueFor(tw);
       el.btnUpgrade.disabled = maxed || state.gold < cost;
       el.upgradeCost.textContent = maxed ? 'MAX Lv3' : `${cost} gold → Lv${tw.level + 1}`;
-      el.sellValue.textContent = `+${sellValueFor(tw)} gold`;
+      el.sellValue.textContent = `+${value} gold`;
       el.btnSell.disabled = false;
+      el.sellConfirmValue.textContent = `+${value} gold`;
     }
   }
 
@@ -705,7 +743,8 @@ overscroll-behavior: none;
 
   function sellSelectedTower() {
     const tw = state.selectedTower;
-    if (!tw || state.gameOver) return;
+    if (!tw || state.gameOver || !state.sellConfirming) return;
+    state.sellConfirming = false;
     const value = sellValueFor(tw);
     state.gold += value;
     flashGold();
@@ -797,6 +836,7 @@ overscroll-behavior: none;
     state.betweenWaves = false;
     state.nextWaveIn = 0;
     state.awaitingNextWave = false;
+    state.sellConfirming = false;
     // keep waveMode preference across restarts
     hideNextWaveUI();
     el.overlay.classList.remove('show');
@@ -833,7 +873,25 @@ overscroll-behavior: none;
 
   el.btnSell.addEventListener('pointerdown', (e) => {
     e.preventDefault();
+    if (!state.selectedTower || state.gameOver) return;
+    state.sellConfirming = true;
+    el.hint.textContent = 'Confirm sell? This cannot be undone.';
+    updateHUD();
+  });
+
+  el.btnSellYes.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
     sellSelectedTower();
+  });
+
+  el.btnSellNo.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    state.sellConfirming = false;
+    if (state.selectedTower) {
+      const st = towerStats(state.selectedTower);
+      el.hint.textContent = `${st.name} Lv${state.selectedTower.level} — dmg ${st.damage}, range ${Math.round(st.range)}`;
+    }
+    updateHUD();
   });
 
   function pressWaveButton(mode) {
@@ -1237,7 +1295,7 @@ overscroll-behavior: none;
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v5';
+  const BOOT = 'pg-boot-v6';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
