@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 3 -->
+<!-- path-guard-build: 4 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -330,6 +330,7 @@ overscroll-behavior: none;
     <button type="button" id="start-btn">Start Waves</button>
     <button type="button" id="next-wave-btn">Next Wave</button>
     <div id="hint">Tap pads to build, tap towers to upgrade</div>
+    <div id="build-ver" style="text-align:center;font-size:11px;opacity:.55;margin-top:4px;">build 4</div>
   </div>
 </div>
 
@@ -1278,7 +1279,23 @@ overscroll-behavior: none;
 
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+  const BOOT = 'pg-boot-v4';
+  (async () => {
+    try {
+      if (!sessionStorage.getItem(BOOT)) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.unregister()));
+        if (window.caches) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+        sessionStorage.setItem(BOOT, '1');
+        location.reload();
+        return;
+      }
+    } catch (_) {}
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  })();
 }
 function goFullscreen() {
   const el = document.documentElement;
