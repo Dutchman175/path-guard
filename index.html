@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 11 -->
+<!-- path-guard-build: 12 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -326,7 +326,7 @@
     <div id="hud">
       <div class="stat" id="gold"><div class="label">Gold</div><div class="val">70</div></div>
       <div class="stat" id="lives"><div class="label">Lives</div><div class="val">8</div></div>
-      <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/10</div></div>
+      <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/20</div></div>
       <div class="stat" id="sel"><div class="label">Selected</div><div class="val">—</div></div>
     </div>
     <div id="best-line"></div>
@@ -408,7 +408,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 11</div>
+    <div id="build-ver">build 12</div>
   </div>
 </div>
 
@@ -421,7 +421,7 @@
 
   const START_GOLD = 70;
   const START_LIVES = 8;
-  const MAX_WAVES = 10;
+  const MAX_WAVES = 20;
   const MAX_TOWER_LEVEL = 5;
   const LEVEL_RING = ['#34d399', '#fbbf24', '#c084fc', '#f472b6', '#38bdf8'];
   const LS_MAP = 'pg-last-map';
@@ -1053,10 +1053,11 @@
   }
 
   function waveEnemyCount(w) {
-    return 5 + w * 3 + Math.max(0, w - 8) * 2;
+    // Gentle climb to 20 waves (HP/speed stay fixed per enemy type)
+    return 5 + w * 2 + Math.max(0, w - 10);
   }
   function enemyMixForWave(w) {
-    // returns weighted type list for this wave
+    // Same HP/speed always; later waves just skew toward Scouts/Brutes
     if (w <= 2) return ['normal'];
     if (w === 3) return ['normal', 'normal', 'fast'];
     if (w === 4) return ['normal', 'fast', 'normal', 'tank'];
@@ -1065,7 +1066,12 @@
     if (w === 7) return ['fast', 'tank', 'normal', 'tank', 'fast'];
     if (w === 8) return ['fast', 'tank', 'tank', 'fast', 'normal'];
     if (w === 9) return ['tank', 'fast', 'tank', 'fast', 'tank'];
-    return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
+    if (w === 10) return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
+    if (w <= 12) return ['tank', 'fast', 'tank', 'fast', 'tank', 'normal'];
+    if (w <= 14) return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
+    if (w <= 16) return ['tank', 'tank', 'fast', 'tank', 'fast', 'tank'];
+    if (w <= 18) return ['tank', 'tank', 'fast', 'tank', 'tank', 'fast'];
+    return ['tank', 'tank', 'tank', 'fast', 'tank', 'fast'];
   }
 
   function hardenKind(kind, chance) {
@@ -1970,7 +1976,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v11';
+  const BOOT = 'pg-boot-v12';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
