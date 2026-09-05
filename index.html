@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 7 -->
+<!-- path-guard-build: 8 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -149,7 +149,7 @@
 
   #util-btns {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 6px;
   }
   .util-btn {
@@ -319,7 +319,7 @@
     <div id="hud">
       <div class="stat" id="gold"><div class="label">Gold</div><div class="val">70</div></div>
       <div class="stat" id="lives"><div class="label">Lives</div><div class="val">8</div></div>
-      <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/8</div></div>
+      <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/10</div></div>
       <div class="stat" id="sel"><div class="label">Selected</div><div class="val">—</div></div>
     </div>
     <div id="best-line"></div>
@@ -336,7 +336,7 @@
       </button>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         Map 2: Serpentine
-        <span class="sub">Long S-curve with side pads</span>
+        <span class="sub">Full-width horizontal S zigzags</span>
       </button>
     </div>
     <div id="overlay">
@@ -386,13 +386,14 @@
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
+      <button type="button" class="util-btn" id="btn-change-map" disabled>Change Map</button>
     </div>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 7</div>
+    <div id="build-ver">build 8</div>
   </div>
 </div>
 
@@ -405,7 +406,7 @@
 
   const START_GOLD = 70;
   const START_LIVES = 8;
-  const MAX_WAVES = 8;
+  const MAX_WAVES = 10;
   const MAX_TOWER_LEVEL = 5;
   const LEVEL_RING = ['#34d399', '#fbbf24', '#c084fc', '#f472b6', '#38bdf8'];
   const LS_MAP = 'pg-last-map';
@@ -449,30 +450,36 @@
     serpentine: {
       id: 'serpentine',
       name: 'Serpentine',
+      // True horizontal S: alternating full-width lanes (distinct from Winding)
       path: [
-        { x: 40, y: 60 },
-        { x: 360, y: 60 },
-        { x: 360, y: 160 },
-        { x: 80, y: 160 },
-        { x: 80, y: 270 },
-        { x: 340, y: 270 },
-        { x: 340, y: 380 },
-        { x: 60, y: 380 },
-        { x: 60, y: 490 },
-        { x: 200, y: 490 },
-        { x: 360, y: 490 },
+        { x: 30, y: 40 },
+        { x: 370, y: 40 },
+        { x: 370, y: 130 },
+        { x: 30, y: 130 },
+        { x: 30, y: 220 },
+        { x: 370, y: 220 },
+        { x: 370, y: 310 },
+        { x: 30, y: 310 },
+        { x: 30, y: 400 },
+        { x: 370, y: 400 },
+        { x: 370, y: 490 },
+        { x: 30, y: 490 },
+        { x: 30, y: 540 },
       ],
+      // Pads sit in bay centers between horizontals (≥28px from centerline)
       pads: [
-        { x: 200, y: 110 },
-        { x: 280, y: 110 },
-        { x: 200, y: 210 },
-        { x: 140, y: 210 },
-        { x: 200, y: 320 },
-        { x: 260, y: 320 },
-        { x: 140, y: 430 },
-        { x: 220, y: 430 },
-        { x: 300, y: 430 },
-        { x: 120, y: 110 },
+        { x: 120, y: 85 },
+        { x: 280, y: 85 },
+        { x: 100, y: 175 },
+        { x: 200, y: 175 },
+        { x: 300, y: 175 },
+        { x: 120, y: 265 },
+        { x: 280, y: 265 },
+        { x: 100, y: 355 },
+        { x: 200, y: 355 },
+        { x: 300, y: 355 },
+        { x: 120, y: 445 },
+        { x: 280, y: 445 },
       ],
     },
   };
@@ -487,6 +494,7 @@
       name: 'Cannon', cost: 90, range: 80, fireRate: 1.1, damage: 40,
       color: '#fb923c', projectileSpeed: 280, projectileColor: '#fdba74',
       upgradeCosts: [60, 100, 150, 210],
+      splashRadius: 42, splashMul: 0.5,
     },
     frost: {
       name: 'Frost', cost: 75, range: 100, fireRate: 0.85, damage: 8,
@@ -498,7 +506,7 @@
       name: 'Zap', cost: 110, range: 105, fireRate: 0.95, damage: 20,
       color: '#c084fc', projectileSpeed: 560, projectileColor: '#e9d5ff',
       upgradeCosts: [70, 115, 170, 240],
-      chain: 3, chainRange: 75, chainFalloff: 0.65,
+      multi: 3, multiFalloff: 0.7,
     },
   };
 
@@ -527,6 +535,8 @@
     particles: [],
     floatingTexts: [],
     bolts: [],
+    rings: [],
+    changingMap: false,
     started: false,
     gameOver: false,
     won: false,
@@ -554,6 +564,7 @@
     btnContinuous: document.getElementById('btn-continuous'),
     btnSpeed: document.getElementById('btn-speed'),
     btnPause: document.getElementById('btn-pause'),
+    btnChangeMap: document.getElementById('btn-change-map'),
     overlay: document.getElementById('overlay'),
     mapOverlay: document.getElementById('map-overlay'),
     overlayTitle: document.getElementById('overlay-title'),
@@ -641,9 +652,10 @@
       color: def.color,
       slowMul: def.slowMul,
       slowDur: def.slowDur ? def.slowDur + (lv - 1) * 0.2 : 0,
-      chain: def.chain ? def.chain + Math.floor((lv - 1) / 2) : 0,
-      chainRange: def.chainRange ? def.chainRange + (lv - 1) * 6 : 0,
-      chainFalloff: def.chainFalloff || 0.65,
+      multi: def.multi ? Math.min(5, def.multi + Math.floor((lv - 1) / 2)) : 0,
+      multiFalloff: def.multiFalloff || 0.7,
+      splashRadius: def.splashRadius ? def.splashRadius + (lv - 1) * 3.25 : 0,
+      splashMul: def.splashMul != null ? Math.min(0.6, def.splashMul + (lv - 1) * 0.0375) : 0,
     };
   }
 
@@ -731,6 +743,9 @@
     el.btnSpeed.classList.toggle('active', state.gameSpeed > 1);
     el.btnPause.textContent = state.paused ? 'Resume' : 'Pause';
     el.btnPause.classList.toggle('active', state.paused);
+    if (el.btnChangeMap) {
+      el.btnChangeMap.disabled = !(state.mapPicked && !state.started && !state.gameOver);
+    }
     refreshBestLine();
   }
 
@@ -944,13 +959,13 @@
   }
 
   function waveEnemyCount(w) {
-    return 5 + w * 3;
+    return 5 + w * 3 + Math.max(0, w - 8) * 2;
   }
   function waveSpeed(w) {
     return 52 + w * 10;
   }
   function waveHP(w) {
-    return 30 + w * 16;
+    return 30 + w * 16 + Math.max(0, w - 8) * 14;
   }
   function waveReward(w) {
     return 7 + w * 2;
@@ -964,7 +979,9 @@
     if (w === 5) return ['normal', 'fast', 'fast', 'tank'];
     if (w === 6) return ['fast', 'normal', 'tank', 'fast'];
     if (w === 7) return ['fast', 'tank', 'normal', 'tank', 'fast'];
-    return ['fast', 'tank', 'tank', 'fast', 'normal'];
+    if (w === 8) return ['fast', 'tank', 'tank', 'fast', 'normal'];
+    if (w === 9) return ['tank', 'fast', 'tank', 'fast', 'tank'];
+    return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
   }
 
   function buildSpawnQueue(w) {
@@ -1062,10 +1079,38 @@
   }
 
   function pickMap(mapId) {
+    const wasChange = state.changingMap;
+    state.changingMap = false;
+    // Clear board + reset start economy whenever a map is (re)picked
+    state.gold = START_GOLD;
+    state.lives = START_LIVES;
+    state.wave = 0;
+    state.selected = null;
+    state.selectedTower = null;
+    state.towers = [];
+    state.enemies = [];
+    state.projectiles = [];
+    state.particles = [];
+    state.floatingTexts = [];
+    state.bolts = [];
+    state.rings = [];
+    state.started = false;
+    state.gameOver = false;
+    state.won = false;
+    state.spawnLeft = 0;
+    state.spawnQueue = [];
+    state.spawnCD = 0;
+    state.betweenWaves = false;
+    state.nextWaveIn = 0;
+    state.awaitingNextWave = false;
+    state.sellConfirming = false;
     applyMap(mapId);
     state.mapPicked = true;
     el.mapOverlay.classList.remove('show');
-    el.hint.textContent = `${MAPS[mapId].name} ready — build on pads, then Next Wave`;
+    el.overlay.classList.remove('show');
+    el.hint.textContent = wasChange
+      ? 'Map changed — build, then Next Wave'
+      : `${MAPS[mapId].name} ready — build on pads, then Next Wave`;
     updateWaveButtons();
     updateHUD();
   }
@@ -1082,6 +1127,8 @@
     state.particles = [];
     state.floatingTexts = [];
     state.bolts = [];
+    state.rings = [];
+    state.changingMap = false;
     state.started = false;
     state.gameOver = false;
     state.won = false;
@@ -1165,6 +1212,16 @@
     updateHUD();
   });
 
+  el.btnChangeMap.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    if (!(state.mapPicked && !state.started && !state.gameOver)) return;
+    state.changingMap = true;
+    state.selected = null;
+    clearTowerSelection();
+    showMapSelect();
+    el.hint.textContent = 'Pick a map (same or new)';
+  });
+
   function pressWaveButton(mode) {
     if (state.gameOver || !state.mapPicked) return;
     if (state.paused) {
@@ -1246,31 +1303,56 @@
     en.slowTimer = Math.max(en.slowTimer || 0, dur);
   }
 
-  function chainLightning(originEn, damage, chainCount, chainRange, falloff, color) {
-    const hit = new Set([originEn]);
-    let current = originEn;
-    let dmg = damage;
-    for (let c = 0; c < chainCount; c++) {
-      const cp = posOnPath(current.dist);
-      let next = null;
-      let nextD = Infinity;
-      for (const en of state.enemies) {
-        if (hit.has(en)) continue;
-        const p = posOnPath(en.dist);
-        const d = Math.hypot(p.x - cp.x, p.y - cp.y);
-        if (d <= chainRange && d < nextD) {
-          nextD = d;
-          next = en;
-        }
+  function findTargetsInRange(tower, maxN) {
+    const st = towerStats(tower);
+    const list = [];
+    for (const en of state.enemies) {
+      const p = posOnPath(en.dist);
+      const d = Math.hypot(p.x - tower.x, p.y - tower.y);
+      if (d <= st.range) list.push({ en, progress: en.dist });
+    }
+    list.sort((a, b) => b.progress - a.progress);
+    return list.slice(0, maxN).map((x) => x.en);
+  }
+
+  function fireZap(tw, st) {
+    const targets = findTargetsInRange(tw, st.multi || 3);
+    if (!targets.length) return false;
+    for (let i = 0; i < targets.length; i++) {
+      const en = targets[i];
+      if (!state.enemies.includes(en)) continue;
+      const p = posOnPath(en.dist);
+      const hitDmg = i === 0
+        ? st.damage
+        : Math.max(1, Math.round(st.damage * Math.pow(st.multiFalloff || 0.7, i)));
+      state.bolts.push({
+        x1: tw.x, y1: tw.y, x2: p.x, y2: p.y,
+        life: 0.22, color: st.projectileColor,
+      });
+      applyDamage(en, hitDmg, st.projectileColor);
+    }
+    burst(tw.x, tw.y, st.projectileColor, 8);
+    return true;
+  }
+
+  function applyCannonSplash(impactX, impactY, primary, damage, splashRadius, splashMul, color) {
+    state.rings.push({
+      x: impactX, y: impactY,
+      r: 10, maxR: splashRadius,
+      life: 0.32, maxLife: 0.32,
+      color,
+    });
+    burst(impactX, impactY, color, 18);
+    const secondary = Math.max(1, Math.round(damage * splashMul));
+    // snapshot because applyDamage may splice
+    const others = state.enemies.slice();
+    for (const en of others) {
+      if (en === primary) continue;
+      if (!state.enemies.includes(en)) continue;
+      const p = posOnPath(en.dist);
+      if (Math.hypot(p.x - impactX, p.y - impactY) <= splashRadius) {
+        applyDamage(en, secondary, color);
       }
-      if (!next) break;
-      const np = posOnPath(next.dist);
-      state.bolts.push({ x1: cp.x, y1: cp.y, x2: np.x, y2: np.y, life: 0.18, color });
-      dmg = Math.max(1, Math.round(dmg * falloff));
-      applyDamage(next, dmg, color);
-      hit.add(next);
-      current = next;
-      if (!state.enemies.includes(current)) break;
     }
   }
 
@@ -1326,26 +1408,32 @@
         if (tw.pulse > 0) tw.pulse -= dt;
         tw.cd -= dt;
         if (tw.cd <= 0) {
-          const tgt = findTarget(tw);
-          if (tgt) {
-            const lead = Math.min(40, tgt.baseSpeed * 0.15);
-            const aim = posOnPath(Math.min(PATH_LEN, tgt.dist + lead));
-            state.projectiles.push({
-              x: tw.x, y: tw.y,
-              tx: aim.x, ty: aim.y,
-              speed: st.projectileSpeed,
-              damage: st.damage,
-              color: st.projectileColor,
-              target: tgt,
-              type: tw.type,
-              slowMul: st.slowMul,
-              slowDur: st.slowDur,
-              chain: st.chain,
-              chainRange: st.chainRange,
-              chainFalloff: st.chainFalloff,
-            });
-            tw.cd = st.fireRate;
-            tw.pulse = 0.15;
+          if (tw.type === 'zap') {
+            if (fireZap(tw, st)) {
+              tw.cd = st.fireRate;
+              tw.pulse = 0.15;
+            }
+          } else {
+            const tgt = findTarget(tw);
+            if (tgt) {
+              const lead = Math.min(40, tgt.baseSpeed * 0.15);
+              const aim = posOnPath(Math.min(PATH_LEN, tgt.dist + lead));
+              state.projectiles.push({
+                x: tw.x, y: tw.y,
+                tx: aim.x, ty: aim.y,
+                speed: st.projectileSpeed,
+                damage: st.damage,
+                color: st.projectileColor,
+                target: tgt,
+                type: tw.type,
+                slowMul: st.slowMul,
+                slowDur: st.slowDur,
+                splashRadius: st.splashRadius,
+                splashMul: st.splashMul,
+              });
+              tw.cd = st.fireRate;
+              tw.pulse = 0.15;
+            }
           }
         }
       }
@@ -1364,18 +1452,26 @@
           const en = pr.target;
           if (en && state.enemies.includes(en)) {
             const p = posOnPath(en.dist);
-            if (pr.type === 'zap') {
-              state.bolts.push({ x1: pr.x, y1: pr.y, x2: p.x, y2: p.y, life: 0.16, color: pr.color });
-            }
             const killed = applyDamage(en, pr.damage, pr.color);
             if (pr.type === 'frost' && pr.slowMul && !killed) {
               applySlow(en, pr.slowMul, pr.slowDur || 1.4);
               burst(p.x, p.y, '#a5f3fc', 10);
             }
-            if (pr.type === 'zap' && pr.chain > 0) {
-              chainLightning(en, pr.damage, pr.chain, pr.chainRange, pr.chainFalloff, pr.color);
+            if (pr.type === 'cannon') {
+              applyCannonSplash(
+                p.x, p.y, en, pr.damage,
+                pr.splashRadius || 45,
+                pr.splashMul || 0.5,
+                pr.color
+              );
             }
-            if (pr.type === 'cannon') burst(p.x, p.y, pr.color, 16);
+          } else if (pr.type === 'cannon') {
+            applyCannonSplash(
+              pr.x, pr.y, null, pr.damage,
+              pr.splashRadius || 45,
+              pr.splashMul || 0.5,
+              pr.color
+            );
           } else {
             burst(pr.x, pr.y, pr.color, 4);
           }
@@ -1390,6 +1486,13 @@
     for (let i = state.bolts.length - 1; i >= 0; i--) {
       state.bolts[i].life -= dt;
       if (state.bolts[i].life <= 0) state.bolts.splice(i, 1);
+    }
+    for (let i = state.rings.length - 1; i >= 0; i--) {
+      const ring = state.rings[i];
+      ring.life -= dt;
+      const t = 1 - Math.max(0, ring.life) / ring.maxLife;
+      ring.r = ring.maxR * (0.25 + 0.75 * t);
+      if (ring.life <= 0) state.rings.splice(i, 1);
     }
     for (let i = state.particles.length - 1; i >= 0; i--) {
       const p = state.particles[i];
@@ -1562,16 +1665,40 @@
         ctx.fillStyle = '#1e293b';
         ctx.fillRect(-3, -10, 6, 8);
       } else if (tw.type === 'frost') {
-        ctx.fillStyle = def.color;
-        ctx.beginPath();
+        // Clear 6-arm snowflake (not a triangle like Archer)
+        ctx.strokeStyle = '#e0f2fe';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         for (let i = 0; i < 6; i++) {
           const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
-          const r = i % 2 === 0 ? 10 : 5;
-          const x = Math.cos(a) * r, y = Math.sin(a) * r;
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          const cos = Math.cos(a), sin = Math.sin(a);
+          const px = -sin, py = cos;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(cos * 10, sin * 10);
+          ctx.stroke();
+          // mid barbs
+          const mx = cos * 5.5, my = sin * 5.5;
+          ctx.beginPath();
+          ctx.moveTo(mx + px * 3.5, my + py * 3.5);
+          ctx.lineTo(mx, my);
+          ctx.lineTo(mx - px * 3.5, my - py * 3.5);
+          ctx.stroke();
+          // outer cross-ticks
+          const ox = cos * 8.2, oy = sin * 8.2;
+          ctx.beginPath();
+          ctx.moveTo(ox + px * 2.4, oy + py * 2.4);
+          ctx.lineTo(ox - px * 2.4, oy - py * 2.4);
+          ctx.stroke();
         }
-        ctx.closePath();
+        ctx.fillStyle = '#67e8f9';
+        ctx.beginPath();
+        ctx.arc(0, 0, 2.3, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = '#a5f3fc';
+        ctx.lineWidth = 1;
+        ctx.stroke();
       } else if (tw.type === 'zap') {
         ctx.fillStyle = def.color;
         ctx.beginPath();
@@ -1644,18 +1771,39 @@
 
   function drawBolts() {
     for (const b of state.bolts) {
-      ctx.globalAlpha = Math.max(0, b.life / 0.18);
+      ctx.globalAlpha = Math.max(0, b.life / 0.22);
       ctx.strokeStyle = b.color;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.8;
       ctx.shadowColor = b.color;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 12;
       ctx.beginPath();
       ctx.moveTo(b.x1, b.y1);
-      // jagged
-      const mx = (b.x1 + b.x2) / 2 + (Math.random() - 0.5) * 12;
-      const my = (b.y1 + b.y2) / 2 + (Math.random() - 0.5) * 12;
+      // jagged lightning
+      const mx = (b.x1 + b.x2) / 2 + (Math.random() - 0.5) * 14;
+      const my = (b.y1 + b.y2) / 2 + (Math.random() - 0.5) * 14;
       ctx.lineTo(mx, my);
       ctx.lineTo(b.x2, b.y2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function drawRings() {
+    for (const ring of state.rings) {
+      const a = Math.max(0, ring.life / ring.maxLife);
+      ctx.globalAlpha = a * 0.85;
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
+      ctx.strokeStyle = ring.color;
+      ctx.lineWidth = 3;
+      ctx.shadowColor = ring.color;
+      ctx.shadowBlur = 14;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.r * 0.55, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.shadowBlur = 0;
       ctx.globalAlpha = 1;
@@ -1699,6 +1847,7 @@
     drawEnemies();
     drawProjectiles();
     drawBolts();
+    drawRings();
     drawParticles();
     drawPausedBanner();
   }
@@ -1726,7 +1875,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v7';
+  const BOOT = 'pg-boot-v8';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
