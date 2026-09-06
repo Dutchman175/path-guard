@@ -1,5 +1,15 @@
-const CACHE = 'path-guard-v14';
-const ASSETS = ['./manifest.webmanifest', './icon.svg'];
+const CACHE = 'path-guard-v15';
+const ASSETS = [
+  './manifest.webmanifest',
+  './icon.svg',
+  './sprites/archer.png',
+  './sprites/cannon.png',
+  './sprites/frost.png',
+  './sprites/zap.png',
+  './sprites/grunt.png',
+  './sprites/scout.png',
+  './sprites/brute.png',
+];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
