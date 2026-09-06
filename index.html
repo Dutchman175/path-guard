@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 28 -->
+<!-- path-guard-build: 29 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -325,7 +325,7 @@
   #overlay .win { color: #4ade80; }
   #overlay .lose { color: #f87171; }
   #overlay .rating { color: #fbbf24; font-size: 1.15rem; font-weight: 800; }
-  #restart-btn, .map-pick-btn {
+  #restart-btn, #replay-btn, .map-pick-btn {
     appearance: none;
     border: none;
     background: #38bdf8;
@@ -336,6 +336,20 @@
     padding: 12px 28px;
     min-height: 48px;
     cursor: pointer;
+  }
+  #replay-btn {
+    background: linear-gradient(180deg, #34d399, #059669);
+    color: #052e16;
+    width: min(280px, 90%);
+  }
+  #restart-btn.secondary-overlay {
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 2px solid #38bdf8;
+    width: min(280px, 90%);
+    font-size: 0.92rem;
+    min-height: 44px;
+    padding: 10px 20px;
   }
   .map-pick-btn {
     width: min(280px, 90%);
@@ -397,7 +411,7 @@
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 1: Spiral — Easy
-        <span class="sub">Longest path · more shoot time · +20 start gold</span>
+        <span class="sub">Longest path · more shoot time · +30 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         Map 2: Serpentine — Medium
@@ -413,7 +427,7 @@
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
         Map 5: Gauntlet — Brutal
-        <span class="sub">Shortest path · least shoot time · elite mix</span>
+        <span class="sub">Short path · elite mix · +10 start gold (Hard still brutal)</span>
       </button>
     </div>
     <div id="challenge-banner"><span id="challenge-title">CHALLENGE WAVE</span><span class="sub" id="challenge-sub"></span></div>
@@ -421,7 +435,8 @@
       <h2 id="overlay-title"></h2>
       <p id="overlay-rating" class="rating"></p>
       <p id="overlay-msg"></p>
-      <button type="button" id="restart-btn">Play Again</button>
+      <button type="button" id="replay-btn">Replay Map</button>
+      <button type="button" id="restart-btn" class="secondary-overlay">Change Map</button>
     </div>
   </div>
 
@@ -477,7 +492,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 28</div>
+    <div id="build-ver">build 29</div>
   </div>
 </div>
 
@@ -496,6 +511,8 @@
   const LS_MAP = 'pg-last-map';
   const LS_BEST_WAVE = 'pg-best-wave';
   const LS_BEST_WIN = 'pg-best-win'; // lives remaining on best win
+  const LS_TARGET = 'pg-target-mode';
+  const LS_HARD = 'pg-hard-mode';
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -563,9 +580,9 @@
     gauntlet: {
       id: 'gauntlet',
       name: 'Gauntlet',
-      spawnExtra: 4,
-      hardenChance: 0.42,
-      startGoldBonus: 0,
+      spawnExtra: 3,
+      hardenChance: 0.34,
+      startGoldBonus: 10,
       // Hard: a bit longer than the old 3-lane — five passes, simple jogs
       path: [
         tc(1, 0), tc(8, 0),
@@ -582,7 +599,7 @@
       name: 'Spiral',
       spawnExtra: 0,
       hardenChance: 0,
-      startGoldBonus: 20,
+      startGoldBonus: 30,
       // Brutal: rectangular grid coil (2-tile ring gaps) inward to center
       path: [
         tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
@@ -655,7 +672,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=28`;
+    img.src = `./sprites/${name}.png?v=29`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -794,6 +811,31 @@
       const cur = parseInt(localStorage.getItem(LS_BEST_WIN) || '0', 10) || 0;
       if (livesLeft > cur) localStorage.setItem(LS_BEST_WIN, String(livesLeft));
     } catch (_) {}
+  }
+
+  function loadPersistedPrefs() {
+    try {
+      const tm = localStorage.getItem(LS_TARGET);
+      if (tm && ['first','strongest','closest'].includes(tm)) state.targetMode = tm;
+    } catch (_) {}
+    try {
+      const hm = localStorage.getItem(LS_HARD);
+      if (hm === '1' || hm === 'true') {
+        state.hardMode = true;
+        if (el.hardMode) el.hardMode.checked = true;
+      } else if (hm === '0' || hm === 'false') {
+        state.hardMode = false;
+        if (el.hardMode) el.hardMode.checked = false;
+      }
+    } catch (_) {}
+  }
+
+  function saveTargetMode() {
+    try { localStorage.setItem(LS_TARGET, state.targetMode || 'first'); } catch (_) {}
+  }
+
+  function saveHardMode(on) {
+    try { localStorage.setItem(LS_HARD, on ? '1' : '0'); } catch (_) {}
   }
 
   function refreshBestLine() {
@@ -1094,6 +1136,7 @@
   function cycleTargetMode() {
     const i = TARGET_MODES.indexOf(state.targetMode);
     state.targetMode = TARGET_MODES[(i < 0 ? 0 : i + 1) % TARGET_MODES.length];
+    saveTargetMode();
     if (el.btnTarget) el.btnTarget.textContent = `Target: ${targetModeLabel(state.targetMode)}`;
     el.hint.textContent = `Towers prioritize: ${targetModeLabel(state.targetMode)}`;
     updateHUD();
@@ -1361,7 +1404,10 @@
       17: 16, 18: 18, 19: 20,
       20: 24,             // Finale elite
     };
-    return table[w] || (10 + w);
+    let n = table[w] || (10 + w);
+    // Spiral early: one fewer grunt on waves 1–4
+    if (state.mapId === 'spiral' && w <= 4) n = Math.max(2, n - 1);
+    return n;
   }
 
   function enemyMixForWave(w) {
@@ -1440,9 +1486,12 @@
   function buildSpawnQueue(w) {
     const map = activeMap();
     const hard = !!state.hardMode;
-    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + (hard ? 2 : 0);
+    // Hard Mode: +2 spawns (+1 on Spiral so early stays forgiving). Gauntlet stays tough via mix.
+    const hardExtra = hard ? (map.id === 'spiral' ? 1 : 2) : 0;
+    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra;
     const mix = enemyMixForWave(w);
-    const chance = (map.hardenChance || 0) + (hard ? 0.15 : 0);
+    const hardChance = hard ? (map.id === 'spiral' ? 0.06 : 0.12) : 0;
+    const chance = (map.hardenChance || 0) + hardChance;
     const q = [];
     for (let i = 0; i < n; i++) {
       q.push(hardenKind(mix[i % mix.length], chance, w));
@@ -1570,8 +1619,10 @@
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Frost + Zap on bends!`;
+      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Frost + Sniper on bends!`;
     }
+    const rb = document.getElementById('replay-btn');
+    if (rb) rb.textContent = won ? 'Replay Map' : 'Retry Map';
     updateHUD();
   }
 
@@ -1585,6 +1636,12 @@
     document.querySelectorAll('.map-pick-btn').forEach(b => {
       b.classList.toggle('last', b.dataset.map === last);
     });
+    try {
+      const hm = localStorage.getItem(LS_HARD);
+      const on = hm === '1' || hm === 'true' || state.hardMode;
+      if (el.hardMode) el.hardMode.checked = !!on;
+      state.hardMode = !!on;
+    } catch (_) {}
     updateWaveButtons();
     updateHUD();
   }
@@ -1593,6 +1650,7 @@
     const wasChange = state.changingMap;
     state.changingMap = false;
     state.hardMode = !!(el.hardMode && el.hardMode.checked);
+    saveHardMode(state.hardMode);
     // Clear board + reset start economy whenever a map is (re)picked
     state.gold = startGoldForMap(mapId);
     state.lives = START_LIVES;
@@ -1662,6 +1720,14 @@
     el.hint.textContent = 'Pick a map to begin';
     updateWaveButtons();
     updateHUD();
+  }
+
+  function replayMap() {
+    const mapId = state.mapId || 'spiral';
+    // Keep hard mode + targeting; skip map picker
+    el.overlay.classList.remove('show');
+    pickMap(mapId);
+    el.hint.textContent = `Replay ${MAPS[mapId].name}${state.hardMode ? ' · HARD' : ''} — build, then Next Wave`;
   }
 
   // Input
@@ -1837,8 +1903,21 @@
 
   document.getElementById('restart-btn').addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    resetGame();
+    resetGame(); // Change Map
   });
+  const replayBtn = document.getElementById('replay-btn');
+  if (replayBtn) {
+    replayBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      replayMap();
+    });
+  }
+  if (el.hardMode) {
+    el.hardMode.addEventListener('change', () => {
+      saveHardMode(!!el.hardMode.checked);
+      state.hardMode = !!el.hardMode.checked;
+    });
+  }
 
   document.querySelectorAll('.map-pick-btn').forEach(btn => {
     btn.addEventListener('pointerdown', (e) => {
@@ -2765,6 +2844,8 @@
   let initialMap = 'spiral';
   try { initialMap = localStorage.getItem(LS_MAP) || 'spiral'; } catch (_) {}
   applyMap(MAPS[initialMap] ? initialMap : 'spiral');
+  // TARGET_MODES is declared later in file order — load prefs after constants exist
+  loadPersistedPrefs();
   showMapSelect();
   updateWaveButtons();
   updateHUD();
@@ -2774,7 +2855,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v28';
+  const BOOT = 'pg-boot-v29';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
