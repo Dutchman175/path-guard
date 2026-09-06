@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 35 -->
+<!-- path-guard-build: 39 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -340,20 +340,22 @@
     pointer-events: auto;
   }
   #map-overlay {
-    gap: 6px;
-    padding: 10px 12px 14px;
+    gap: 8px;
+    padding: 10px 12px 16px;
     justify-content: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
-  #map-overlay h2 { font-size: 1.35rem; }
+  #map-overlay h2 { font-size: 1.25rem; flex-shrink: 0; margin: 2px 0 0; }
   #overlay h2 { font-size: 1.6rem; }
-  #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.85rem; max-width: 280px; }
-  #map-overlay p { margin-bottom: 2px; }
+  #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.85rem; max-width: 300px; }
+  #map-overlay p { margin-bottom: 2px; flex-shrink: 0; }
+  #map-overlay .map-tip { max-width: 300px; margin: 0 0 4px; flex-shrink: 0; }
+  #map-overlay .hard-mode-row { flex-shrink: 0; margin-bottom: 6px; }
   #overlay .win { color: #4ade80; }
   #overlay .lose { color: #f87171; }
-  #overlay .rating { color: #fbbf24; font-size: 1.15rem; font-weight: 800; }
+  #overlay .rating { color: #fde68a; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em; }
   #overlay-achievements {
     color: #a5f3fc; font-size: 0.78rem; font-weight: 700;
     max-width: 300px; line-height: 1.45; min-height: 1.2em;
@@ -391,22 +393,69 @@
     padding: 10px 20px;
   }
   .map-pick-btn {
-    width: min(280px, 90%);
+    width: min(300px, 94%);
     background: #1e293b;
     color: #e8eef4;
     border: 2px solid #38bdf8;
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    align-items: center;
-    padding: 8px 14px;
-    min-height: 40px;
-    font-size: 0.9rem;
-    border-radius: 10px;
+    gap: 3px;
+    align-items: stretch;
+    justify-content: center;
+    padding: 11px 14px 12px;
+    min-height: 64px;
+    height: auto;
+    flex-shrink: 0;
+    font-size: 0.92rem;
+    line-height: 1.25;
+    border-radius: 12px;
+    white-space: normal;
+    text-align: center;
   }
-  .map-pick-btn .sub { font-size: 0.68rem; font-weight: 600; color: #94a3b8; }
-  .map-pick-btn .stars { color: #fbbf24; font-size: 0.78rem; letter-spacing: 0.02em; margin-left: 4px; }
-  .map-pick-btn .map-stats { display: block; font-size: 0.62rem; font-weight: 600; color: #67e8f9; margin-top: 1px; }
+  .map-pick-btn .map-title {
+    display: block;
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+  .map-pick-btn .diff {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    padding: 1px 7px;
+    border-radius: 999px;
+    margin-left: 4px;
+    vertical-align: middle;
+    color: #0f172a;
+    background: #94a3b8;
+  }
+  .map-pick-btn .diff.easy { background: #86efac; }
+  .map-pick-btn .diff.medium { background: #fde68a; }
+  .map-pick-btn .diff.medhard { background: #fdba74; }
+  .map-pick-btn .diff.hard { background: #fca5a5; }
+  .map-pick-btn .diff.brutal { background: #f87171; color: #450a0a; }
+  .map-pick-btn .sub {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #94a3b8;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+  .map-pick-btn .map-stats {
+    display: block;
+    font-size: 0.64rem;
+    font-weight: 600;
+    color: #67e8f9;
+    margin-top: 1px;
+    line-height: 1.3;
+    white-space: normal;
+  }
   .map-pick-btn:active { transform: scale(0.97); }
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
@@ -451,27 +500,27 @@
       <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel <b>Shells</b> shrug damage · Wave 20 <b>Titan</b> boss · Skitters resist splash.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
-        Map 1: Spiral — Easy <span class="stars">★☆☆☆☆</span>
+        <span class="map-title">Map 1: Spiral <span class="diff easy">Easy</span></span>
         <span class="sub">Longest path · more shoot time · +35 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
-        Map 2: Serpentine — Medium <span class="stars">★★☆☆☆</span>
+        <span class="map-title">Map 2: Serpentine <span class="diff medium">Medium</span></span>
         <span class="sub">Open S-corridors · light pressure · +5 gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
-        Map 3: Crosscut — Medium-Hard <span class="stars">★★★☆☆</span>
+        <span class="map-title">Map 3: Crosscut <span class="diff medhard">Medium-Hard</span></span>
         <span class="sub">Bold midfield crossbar · pocket build lanes</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
-        Map 4: Ridge — Medium-Hard <span class="stars">★★★☆☆</span>
+        <span class="map-title">Map 4: Ridge <span class="diff medhard">Medium-Hard</span></span>
         <span class="sub">Plateau jogs · open flanks · tighter than Crosscut · +10g</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
-        Map 5: Winding — Hard <span class="stars">★★★★☆</span>
+        <span class="map-title">Map 5: Winding <span class="diff hard">Hard</span></span>
         <span class="sub">Tight switchbacks · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
-        Map 6: Gauntlet — Brutal <span class="stars">★★★★★</span>
+        <span class="map-title">Map 6: Gauntlet <span class="diff brutal">Brutal</span></span>
         <span class="sub">Short path · elite mix · +10 start gold (Hard still brutal)</span>
       </button>
     </div>
@@ -547,7 +596,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 38</div>
+    <div id="build-ver">build 39</div>
   </div>
 </div>
 
@@ -764,7 +813,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=38`;
+    img.src = `./sprites/${name}.png?v=39`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1013,7 +1062,7 @@
     }
     if (unlocked) {
       saveAchievements(ach);
-      addFloat(W / 2, H * 0.18, `★ ${unlocked}`, '#fde68a', 2.4);
+      addFloat(W / 2, H * 0.18, unlocked, '#fde68a', 2.4);
     }
     return unlocked;
   }
@@ -1024,7 +1073,7 @@
     const mapNames = Object.keys(MAPS).filter((id) => ach.maps[id]).map((id) => MAPS[id].name);
     const lines = [];
     if (newly && newly.length) {
-      lines.push(`<span class="new">★ New: ${newly.join(' · ')}</span>`);
+      lines.push(`<span class="new">New: ${newly.join(' · ')}</span>`);
     }
     // Always show full checklist on win AND lose overlays
     const mapBit = mapNames.length
@@ -1062,14 +1111,14 @@
       }
       const cleared = !!(ach.maps && ach.maps[id]);
       if (!st || !(st.wins > 0)) {
-        line.textContent = cleared ? '★ Cleared' : 'No wins yet';
+        line.textContent = cleared ? 'Cleared' : 'No wins yet';
         return;
       }
       const tm = formatBestTime(st.bestMs);
-      const star = cleared ? '★ ' : '';
+      const clearedBit = cleared ? 'Cleared · ' : '';
       line.textContent = tm
-        ? `${star}${st.wins} win${st.wins > 1 ? 's' : ''} · best ${tm}`
-        : `${star}${st.wins} win${st.wins > 1 ? 's' : ''}`;
+        ? `${clearedBit}${st.wins} win${st.wins > 1 ? 's' : ''} · best ${tm}`
+        : `${clearedBit}${st.wins} win${st.wins > 1 ? 's' : ''}`;
     });
   }
 
@@ -1518,7 +1567,7 @@
   function titanDeathFanfare(x, y) {
     // Floats always (readable even with FX muted); particles/rings respect mute
     addFloat(x, y - 40, 'TITAN DOWN!', '#fecaca', 2.8);
-    addFloat(x, y - 62, '★ BOSS FELLED', '#fde68a', 2.4);
+    addFloat(x, y - 62, 'BOSS FELLED', '#fde68a', 2.4);
     shakeScreen();
     if (state.juice === false) return;
     burst(x, y, '#fecaca', 40, { lifeMul: 1.7, speedMin: 70, speedMax: 220, upBias: 100, gravity: 160, rMin: 2, rMax: 5 });
@@ -1995,9 +2044,9 @@
   }
 
   function victoryRating(livesLeft) {
-    if (livesLeft >= START_LIVES) return { stars: '★★★', label: 'Perfect' };
-    if (livesLeft >= 4) return { stars: '★★☆', label: 'Good' };
-    return { stars: '★☆☆', label: 'Close' };
+    if (livesLeft >= START_LIVES) return { label: 'Perfect Clear' };
+    if (livesLeft >= 4) return { label: 'Good Clear' };
+    return { label: 'Close Call' };
   }
 
   function endGame(won) {
@@ -2029,7 +2078,7 @@
       const bestT = formatBestTime(loadMapStats()[state.mapId]?.bestMs);
       el.overlayTitle.className = 'win';
       el.overlayTitle.textContent = 'Victory!';
-      el.overlayRating.textContent = `${rating.stars}  ${rating.label}`;
+      el.overlayRating.textContent = rating.label;
       const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (best ${bestT})` : ''}.` : '';
       const hardBit = state.hardMode ? ' HARD' : '';
       el.overlayMsg.textContent = `Held ${MAPS[state.mapId].name}${hardBit} through ${state.maxWaves} waves with ${state.lives} lives left. Gold: ${Math.floor(state.gold)}.${timeBit}`;
