@@ -6,7 +6,7 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 
 **Towers:** Archer (multi-shot at high level), Cannon (heavy splash), Frost (+aura chill), Zap (multi), **Sniper** (map-wide), **Beacon** (cheap slow aura).
 
-**Maps (★ easy → ★★★★★ brutal):** Spiral → Serpentine → Crosscut → **Ridge** → Winding → Gauntlet. Hard Mode optional. Per-map wins & best times in localStorage.
+**Maps (★ easy → ★★★★★ brutal):** Spiral → Serpentine → Crosscut → **Ridge** (plateau jogs) → Winding → Gauntlet. Hard Mode optional. Per-map wins & best times in localStorage.
 
 Challenge waves at 5 / 10 / 15 / 20. Between waves: gold **interest**. Sell confirms. Mute FX anytime.
 

@@ -460,7 +460,7 @@
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
         Map 4: Ridge — Medium-Hard <span class="stars">★★★☆☆</span>
-        <span class="sub">High plateau jog · open flanks · +8 gold</span>
+        <span class="sub">Plateau jogs · open flanks · tighter than Crosscut · +10g</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         Map 5: Winding — Hard <span class="stars">★★★★☆</span>
@@ -539,7 +539,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 35</div>
+    <div id="build-ver">build 36</div>
   </div>
 </div>
 
@@ -616,19 +616,14 @@
       name: 'Ridge',
       difficulty: 3,
       spawnExtra: 2,
-      hardenChance: 0.2,
-      startGoldBonus: 8,
-      // Medium-Hard: climb a plateau, jog the ridge, drop south — open flanks
+      hardenChance: 0.22,
+      startGoldBonus: 10,
+      // Medium-Hard+: longer plateau jogs (was too short vs Gauntlet) — open flanks
       path: [
-        tc(0, 1), tc(3, 1),
-        tc(3, 1), tc(3, 4),
-        tc(3, 4), tc(8, 4),
-        tc(8, 4), tc(8, 7),
-        tc(8, 7), tc(2, 7),
-        tc(2, 7), tc(2, 10),
-        tc(2, 10), tc(7, 10),
-        tc(7, 10), tc(7, 13),
-        tc(7, 13), tc(1, 13),
+        tc(0, 0), tc(5, 0), tc(5, 2), tc(1, 2),
+        tc(1, 4), tc(8, 4), tc(8, 6), tc(3, 6),
+        tc(3, 8), tc(9, 8), tc(9, 10), tc(2, 10),
+        tc(2, 12), tc(7, 12), tc(7, 13), tc(4, 13),
       ],
     },
     winding: {
@@ -675,7 +670,7 @@
       spawnExtra: 0,
       hardenChance: 0,
       startGoldBonus: 35,
-      // Brutal: rectangular grid coil (2-tile ring gaps) inward to center
+      // Easy: rectangular grid coil (2-tile ring gaps) inward to center
       path: [
         tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
         tc(0, 2), tc(7, 2), tc(7, 11), tc(2, 11),
@@ -755,7 +750,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=35`;
+    img.src = `./sprites/${name}.png?v=36`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3418,7 +3413,12 @@
   function frame(now) {
     const raw = Math.min(0.05, (now - last) / 1000);
     last = now;
-    const dt = state.paused ? 0 : raw * state.gameSpeed;
+    // Cap sim step so 3x never teleports projectiles/enemies past hits
+    let dt = 0;
+    if (!state.paused) {
+      const spd = state.gameOver ? 1 : (state.gameSpeed || 1);
+      dt = Math.min(0.05 * Math.max(1, spd), raw * spd);
+    }
     update(dt);
     draw();
     requestAnimationFrame(frame);
@@ -3439,7 +3439,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v35';
+  const BOOT = 'pg-boot-v36';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
