@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 23 -->
+<!-- path-guard-build: 24 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -149,7 +149,7 @@
 
   #util-btns {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
   }
   .util-btn {
@@ -340,6 +340,19 @@
     0% { background: #854d0e; }
     100% { background: #1e293b; }
   }
+  .flash-lives { animation: flashLives 0.4s ease; }
+  @keyframes flashLives {
+    0% { background: #7f1d1d; }
+    100% { background: #1e293b; }
+  }
+  #canvas-wrap.shake { animation: canvasShake 0.35s ease; }
+  @keyframes canvasShake {
+    0%,100% { transform: translate(0,0); }
+    20% { transform: translate(-4px, 2px); }
+    40% { transform: translate(4px, -2px); }
+    60% { transform: translate(-3px, -1px); }
+    80% { transform: translate(3px, 1px); }
+  }
 </style>
 </head>
 <body>
@@ -347,7 +360,7 @@
   <header>
     <h1>PATH GUARD</h1>
     <div id="hud">
-      <div class="stat" id="gold"><div class="label">Gold</div><div class="val">70</div></div>
+      <div class="stat" id="gold"><div class="label">Gold</div><div class="val">—</div></div>
       <div class="stat" id="lives"><div class="label">Lives</div><div class="val">8</div></div>
       <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/20</div></div>
       <div class="stat" id="sel"><div class="label">Selected</div><div class="val">—</div></div>
@@ -408,11 +421,11 @@
     </div>
     <div id="tower-actions">
       <button type="button" class="action-btn" id="btn-upgrade">
-        ⬆ Upgrade
+        ⬆ Upgrade tower
         <span class="cost" id="upgrade-cost">—</span>
       </button>
       <button type="button" class="action-btn" id="btn-sell">
-        Sell
+        Sell for gold
         <span class="cost" id="sell-value">—</span>
       </button>
     </div>
@@ -426,6 +439,7 @@
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
+      <button type="button" class="util-btn" id="btn-target">Target: First</button>
       <button type="button" class="util-btn" id="btn-change-map" disabled>Change Map</button>
     </div>
     <div id="wave-btns">
@@ -433,7 +447,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 23</div>
+    <div id="build-ver">build 24</div>
   </div>
 </div>
 
@@ -581,7 +595,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=23`;
+    img.src = `./sprites/${name}.png?v=24`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -601,6 +615,7 @@
   const state = {
     mapId: 'spiral',
     mapPicked: false,
+    targetMode: 'first', // first | strongest | closest
     gold: START_GOLD,
     lives: START_LIVES,
     wave: 0,
@@ -643,6 +658,9 @@
     btnSpeed: document.getElementById('btn-speed'),
     btnPause: document.getElementById('btn-pause'),
     btnChangeMap: document.getElementById('btn-change-map'),
+    btnTarget: document.getElementById('btn-target'),
+    livesStat: document.getElementById('lives'),
+    canvasWrap: document.getElementById('canvas-wrap'),
     overlay: document.getElementById('overlay'),
     mapOverlay: document.getElementById('map-overlay'),
     overlayTitle: document.getElementById('overlay-title'),
@@ -813,8 +831,10 @@
 
   function updateHUD() {
     if (!Number.isFinite(state.gold)) state.gold = 0;
+    if (!Number.isFinite(state.gold)) state.gold = 0;
     el.gold.textContent = Math.floor(state.gold);
     el.lives.textContent = state.lives;
+    if (el.btnTarget) el.btnTarget.textContent = `Target: ${targetModeLabel(state.targetMode || 'first')}`;
     el.wave.textContent = `${state.wave}/${state.maxWaves}`;
     if (state.selectedTower) {
       const tw = state.selectedTower;
@@ -900,7 +920,8 @@
     const cleared = state.wave;
     const ch = CHALLENGE_WAVES[cleared];
     if (ch && ch.bonus) {
-      state.gold += ch.bonus;
+      state.gold += Number(ch.bonus) || 0;
+      if (!Number.isFinite(state.gold)) state.gold = 0;
       flashGold();
       addFloat(W / 2, H * 0.28, `+${ch.bonus} challenge bonus`, '#fde68a');
     }
@@ -934,6 +955,43 @@
     el.goldStat.classList.remove('flash-gold');
     void el.goldStat.offsetWidth;
     el.goldStat.classList.add('flash-gold');
+  }
+
+  function flashLives() {
+    if (!el.livesStat) return;
+    el.livesStat.classList.remove('flash-lives');
+    void el.livesStat.offsetWidth;
+    el.livesStat.classList.add('flash-lives');
+  }
+
+  function shakeScreen() {
+    if (!el.canvasWrap) return;
+    el.canvasWrap.classList.remove('shake');
+    void el.canvasWrap.offsetWidth;
+    el.canvasWrap.classList.add('shake');
+  }
+
+  const TARGET_MODES = ['first', 'strongest', 'closest'];
+  const TARGET_LABELS = { first: 'First', strongest: 'Strong', closest: 'Close' };
+
+  function targetModeLabel(mode) {
+    return TARGET_LABELS[mode] || 'First';
+  }
+
+  function cycleTargetMode() {
+    const i = TARGET_MODES.indexOf(state.targetMode);
+    state.targetMode = TARGET_MODES[(i < 0 ? 0 : i + 1) % TARGET_MODES.length];
+    if (el.btnTarget) el.btnTarget.textContent = `Target: ${targetModeLabel(state.targetMode)}`;
+    el.hint.textContent = `Towers prioritize: ${targetModeLabel(state.targetMode)}`;
+    updateHUD();
+  }
+
+  function scoreEnemyForTarget(tower, en, mode) {
+    const p = posOnPath(en.dist);
+    const d = Math.hypot(p.x - tower.x, p.y - tower.y);
+    if (mode === 'closest') return { score: -d, d };
+    if (mode === 'strongest') return { score: en.hp + en.maxHp * 0.001, d };
+    return { score: en.dist, d };
   }
 
   function addFloat(x, y, text, color) {
@@ -1062,6 +1120,8 @@
 
   function tryPlace(mx, my) {
     if (state.gameOver || !state.mapPicked) return;
+    if (el.mapOverlay && el.mapOverlay.classList.contains('show')) return;
+    if (el.overlay && el.overlay.classList.contains('show')) return;
 
     const hitTower = getTowerAt(mx, my);
     if (hitTower) {
@@ -1491,6 +1551,14 @@
     updateHUD();
   });
 
+  if (el.btnTarget) {
+    el.btnTarget.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      if (!state.mapPicked || state.gameOver) return;
+      cycleTargetMode();
+    });
+  }
+
   el.btnChangeMap.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     // Allow anytime except on the map-select overlay itself
@@ -1603,13 +1671,16 @@
 
   function findTarget(tower) {
     const st = towerStats(tower);
+    const mode = state.targetMode || 'first';
     let best = null;
-    let bestDist = -1;
+    let bestScore = -Infinity;
     for (const en of state.enemies) {
       const p = posOnPath(en.dist);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
-      if (d <= st.range && en.dist > bestDist) {
-        bestDist = en.dist;
+      if (d > st.range) continue;
+      const scored = scoreEnemyForTarget(tower, en, mode);
+      if (scored.score > bestScore) {
+        bestScore = scored.score;
         best = en;
       }
     }
@@ -1644,13 +1715,16 @@
 
   function findTargetsInRange(tower, maxN) {
     const st = towerStats(tower);
+    const mode = state.targetMode || 'first';
     const list = [];
     for (const en of state.enemies) {
       const p = posOnPath(en.dist);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
-      if (d <= st.range) list.push({ en, progress: en.dist });
+      if (d > st.range) continue;
+      const scored = scoreEnemyForTarget(tower, en, mode);
+      list.push({ en, score: scored.score });
     }
-    list.sort((a, b) => b.progress - a.progress);
+    list.sort((a, b) => b.score - a.score);
     return list.slice(0, maxN).map((x) => x.en);
   }
 
@@ -1735,7 +1809,9 @@
         if (en.dist >= PATH_LEN) {
           state.enemies.splice(i, 1);
           state.lives--;
-          burst(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y, '#f87171', 12);
+          flashLives();
+          shakeScreen();
+          burst(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y, '#f87171', 16);
           addFloat(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y - 20, '-1 life', '#fca5a5');
           updateHUD();
           if (state.lives <= 0) endGame(false);
@@ -2396,7 +2472,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v23';
+  const BOOT = 'pg-boot-v24';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
