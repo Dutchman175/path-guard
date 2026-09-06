@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 34 -->
+<!-- path-guard-build: 35 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -354,6 +354,12 @@
   #overlay .win { color: #4ade80; }
   #overlay .lose { color: #f87171; }
   #overlay .rating { color: #fbbf24; font-size: 1.15rem; font-weight: 800; }
+  #overlay-achievements {
+    color: #a5f3fc; font-size: 0.78rem; font-weight: 700;
+    max-width: 300px; line-height: 1.45; min-height: 1.2em;
+  }
+  #overlay-achievements .new { color: #fde68a; }
+  #overlay-achievements .muted { color: #64748b; font-weight: 600; }
   #restart-btn, #replay-btn, .map-pick-btn {
     appearance: none;
     border: none;
@@ -470,6 +476,7 @@
       <h2 id="overlay-title"></h2>
       <p id="overlay-rating" class="rating"></p>
       <p id="overlay-msg"></p>
+      <p id="overlay-achievements"></p>
       <button type="button" id="replay-btn">Replay Map</button>
       <button type="button" id="restart-btn" class="secondary-overlay">Change Map</button>
     </div>
@@ -491,11 +498,11 @@
       </button>
       <button type="button" class="tower-btn" id="btn-zap" data-type="zap">
         ⚡ Zap
-        <span class="cost">145g</span>
+        <span class="cost">135g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper">
         🎯 Snip
-        <span class="cost">125g</span>
+        <span class="cost">120g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon">
         🔦 Beac
@@ -532,7 +539,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 34</div>
+    <div id="build-ver">build 35</div>
   </div>
 </div>
 
@@ -555,6 +562,7 @@
   const LS_HARD = 'pg-hard-mode';
   const LS_JUICE = 'pg-juice';
   const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs } }
+  const LS_ACH = 'pg-achievements'; // { maps:{}, hardWin, titanKill }
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -646,9 +654,9 @@
       id: 'gauntlet',
       name: 'Gauntlet',
       difficulty: 5,
-      spawnExtra: 3,
-      hardenChance: 0.34,
-      startGoldBonus: 10,
+      spawnExtra: 2,
+      hardenChance: 0.3,
+      startGoldBonus: 12,
       // Hard: a bit longer than the old 3-lane — five passes, simple jogs
       path: [
         tc(1, 0), tc(8, 0),
@@ -679,7 +687,7 @@
 
   const TOWER_DEFS = {
     archer: {
-      name: 'Archer', cost: 50, range: 95, fireRate: 0.52, damage: 12,
+      name: 'Archer', cost: 50, range: 98, fireRate: 0.5, damage: 13,
       color: '#34d399', projectileSpeed: 420, projectileColor: '#a7f3d0',
       upgradeCosts: [40, 70, 110, 160],
     },
@@ -697,13 +705,13 @@
       auraRadius: 56, auraSlow: 0.78, // passive chill — always-drawn ring
     },
     zap: {
-      name: 'Zap', cost: 145, range: 100, fireRate: 1.05, damage: 14,
+      name: 'Zap', cost: 135, range: 105, fireRate: 1.0, damage: 15,
       color: '#c084fc', projectileSpeed: 560, projectileColor: '#e9d5ff',
       upgradeCosts: [90, 140, 200, 280],
       multi: 2, multiFalloff: 0.55,
     },
     sniper: {
-      name: 'Sniper', cost: 125, range: 720, fireRate: 2.05, damage: 42,
+      name: 'Sniper', cost: 120, range: 720, fireRate: 1.95, damage: 44,
       color: '#2dd4bf', projectileSpeed: 820, projectileColor: '#99f6e4',
       upgradeCosts: [80, 125, 180, 250],
     },
@@ -724,9 +732,9 @@
     fast:    { name: 'Scout',   r: 12, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
     skitter: { name: 'Skitter', r: 11, hp: 55,  speed: 100, reward: 12, color: '#4ade80', stroke: '#14532d', splashResist: 0.5 },
     shell:   { name: 'Shell',   r: 15, hp: 210, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.22 },
-    tank:    { name: 'Brute',   r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
+    tank:    { name: 'Brute',   r: 16, hp: 170, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
     raider:  { name: 'Raider',  r: 19, hp: 190, speed: 120, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
-    titan:   { name: 'Titan',   r: 28, hp: 560, speed: 24,  reward: 50, color: '#450a0a', stroke: '#fecaca', armor: 0.1 },
+    titan:   { name: 'Titan',   r: 28, hp: 520, speed: 24,  reward: 55, color: '#450a0a', stroke: '#fecaca', armor: 0.1 },
   };
 
   const CHALLENGE_WAVES = {
@@ -747,7 +755,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=34`;
+    img.src = `./sprites/${name}.png?v=35`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -840,6 +848,7 @@
     sellConfirmValue: document.getElementById('sell-confirm-value'),
     wavePreview: document.getElementById('wave-preview'),
     hardMode: document.getElementById('hard-mode'),
+    overlayAch: document.getElementById('overlay-achievements'),
   };
 
   function pathLength(path) {
@@ -954,6 +963,68 @@
     } catch (_) {}
   }
 
+  function loadAchievements() {
+    try {
+      const raw = localStorage.getItem(LS_ACH);
+      if (!raw) return { maps: {}, hardWin: false, titanKill: false };
+      const o = JSON.parse(raw);
+      if (!o || typeof o !== 'object') return { maps: {}, hardWin: false, titanKill: false };
+      return {
+        maps: (o.maps && typeof o.maps === 'object') ? o.maps : {},
+        hardWin: !!o.hardWin,
+        titanKill: !!o.titanKill,
+      };
+    } catch (_) {
+      return { maps: {}, hardWin: false, titanKill: false };
+    }
+  }
+
+  function saveAchievements(ach) {
+    try { localStorage.setItem(LS_ACH, JSON.stringify(ach)); } catch (_) {}
+  }
+
+  function unlockAchievement(kind, mapId) {
+    const ach = loadAchievements();
+    let unlocked = null;
+    if (kind === 'map' && mapId) {
+      if (!ach.maps[mapId]) {
+        ach.maps[mapId] = true;
+        unlocked = `First clear: ${MAPS[mapId] ? MAPS[mapId].name : mapId}`;
+      }
+    } else if (kind === 'hard') {
+      if (!ach.hardWin) {
+        ach.hardWin = true;
+        unlocked = 'Hard Mode victor';
+      }
+    } else if (kind === 'titan') {
+      if (!ach.titanKill) {
+        ach.titanKill = true;
+        unlocked = 'Titan Slayer';
+      }
+    }
+    if (unlocked) {
+      saveAchievements(ach);
+      addFloat(W / 2, H * 0.18, `★ ${unlocked}`, '#fde68a', 2.4);
+    }
+    return unlocked;
+  }
+
+  function achievementSummary(newly) {
+    const ach = loadAchievements();
+    const mapNames = Object.keys(MAPS).filter((id) => ach.maps[id]).map((id) => MAPS[id].name);
+    const lines = [];
+    if (newly && newly.length) {
+      lines.push(`<span class="new">New: ${newly.join(' · ')}</span>`);
+    }
+    const owned = [];
+    if (mapNames.length) owned.push(`Maps ${mapNames.length}/${Object.keys(MAPS).length}`);
+    if (ach.hardWin) owned.push('Hard Mode');
+    if (ach.titanKill) owned.push('Titan Slayer');
+    if (owned.length) lines.push(owned.join(' · '));
+    else if (!lines.length) lines.push('<span class="muted">No achievements yet</span>');
+    return lines.join('<br>');
+  }
+
   function formatBestTime(ms) {
     if (!ms || ms <= 0) return '';
     const s = Math.floor(ms / 1000);
@@ -964,6 +1035,7 @@
 
   function refreshMapPickStats() {
     const all = loadMapStats();
+    const ach = loadAchievements();
     document.querySelectorAll('.map-pick-btn').forEach((btn) => {
       const id = btn.dataset.map;
       const st = all[id];
@@ -973,12 +1045,16 @@
         line.className = 'map-stats';
         btn.appendChild(line);
       }
+      const cleared = !!(ach.maps && ach.maps[id]);
       if (!st || !(st.wins > 0)) {
-        line.textContent = 'No wins yet';
+        line.textContent = cleared ? '★ Cleared' : 'No wins yet';
         return;
       }
-      const t = formatBestTime(st.bestMs);
-      line.textContent = t ? `${st.wins} win${st.wins > 1 ? 's' : ''} · best ${t}` : `${st.wins} win${st.wins > 1 ? 's' : ''}`;
+      const tm = formatBestTime(st.bestMs);
+      const star = cleared ? '★ ' : '';
+      line.textContent = tm
+        ? `${star}${st.wins} win${st.wins > 1 ? 's' : ''} · best ${tm}`
+        : `${star}${st.wins} win${st.wins > 1 ? 's' : ''}`;
     });
   }
 
@@ -1890,17 +1966,38 @@
       saveBestWin(state.lives);
       const elapsed = state.runStartedAt ? (performance.now() - state.runStartedAt) : 0;
       saveMapWin(state.mapId, elapsed);
+      const newly = [];
+      const m = unlockAchievement('map', state.mapId);
+      if (m) newly.push(m);
+      if (state.hardMode) {
+        const h = unlockAchievement('hard');
+        if (h) newly.push(h);
+      }
+      // Titan may already unlock mid-wave; refresh summary either way
       const bestT = formatBestTime(loadMapStats()[state.mapId]?.bestMs);
       el.overlayTitle.className = 'win';
       el.overlayTitle.textContent = 'Victory!';
       el.overlayRating.textContent = `${rating.stars}  ${rating.label}`;
       const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (best ${bestT})` : ''}.` : '';
-      el.overlayMsg.textContent = `Held ${MAPS[state.mapId].name} through ${state.maxWaves} waves with ${state.lives} lives left. Gold: ${Math.floor(state.gold)}.${timeBit}`;
+      const hardBit = state.hardMode ? ' HARD' : '';
+      el.overlayMsg.textContent = `Held ${MAPS[state.mapId].name}${hardBit} through ${state.maxWaves} waves with ${state.lives} lives left. Gold: ${Math.floor(state.gold)}.${timeBit}`;
+      if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(newly);
     } else {
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Frost + Sniper on bends!`;
+      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Frost + Beacon on bends!`;
+      if (el.overlayAch) {
+        const ach = loadAchievements();
+        const bits = [];
+        if (ach.titanKill) bits.push('Titan Slayer');
+        if (ach.hardWin) bits.push('Hard Mode');
+        const maps = Object.keys(ach.maps || {}).length;
+        if (maps) bits.push(`${maps} map clear${maps > 1 ? 's' : ''}`);
+        el.overlayAch.innerHTML = bits.length
+          ? `<span class="muted">Progress: ${bits.join(' · ')}</span>`
+          : '<span class="muted">Clear a map to unlock achievements</span>';
+      }
     }
     const rb = document.getElementById('replay-btn');
     if (rb) rb.textContent = won ? 'Replay Map' : 'Retry Map';
@@ -2263,6 +2360,10 @@
       state.killStreakTimer = 1.35;
       if (state.killStreak >= 3) {
         addFloat(p.x, p.y - 30, `x${state.killStreak} streak!`, '#fdba74');
+      }
+      if (en.kind === 'titan') {
+        unlockAchievement('titan');
+        addFloat(p.x, p.y - 44, 'TITAN DOWN!', '#fecaca', 2);
       }
       const idx = state.enemies.indexOf(en);
       if (idx >= 0) state.enemies.splice(idx, 1);
@@ -2670,12 +2771,17 @@
         ctx.fillStyle = 'rgba(52, 211, 153, 0.03)';
         ctx.fillRect(0, 0, W, H);
         if (state.selected === 'frost' && def.auraRadius) {
-          // Hint that Frost brings a chill aura (drawn at map center as legend)
           ctx.fillStyle = 'rgba(165, 243, 252, 0.85)';
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillText('Frost: shots slow · aura chills nearby', W / 2, 10);
+        } else if (state.selected === 'beacon' && def.auraRadius) {
+          ctx.fillStyle = 'rgba(253, 224, 71, 0.9)';
+          ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Beacon: cheap slow aura — no shots', W / 2, 10);
         }
       }
     }
@@ -3333,7 +3439,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v34';
+  const BOOT = 'pg-boot-v35';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {

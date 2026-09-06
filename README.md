@@ -9,3 +9,5 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 **Maps (★ easy → ★★★★★ brutal):** Spiral → Serpentine → Crosscut → **Ridge** → Winding → Gauntlet. Hard Mode optional. Per-map wins & best times in localStorage.
 
 Challenge waves at 5 / 10 / 15 / 20. Between waves: gold **interest**. Sell confirms. Mute FX anytime.
+
+**Achievements:** first clear each map, Hard Mode win, Titan kill — shown on the win overlay.
