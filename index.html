@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 27 -->
+<!-- path-guard-build: 28 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -127,8 +127,8 @@
   }
   #tower-btns {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
   }
   .tower-btn {
     appearance: none;
@@ -136,11 +136,12 @@
     background: #1e293b;
     color: #e8eef4;
     border-radius: 10px;
-    padding: 6px 4px;
-    font-size: 0.78rem;
+    padding: 5px 2px;
+    font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 40px;
+    min-height: 38px;
+    grid-column: span 2;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
   }
   .tower-btn:active { transform: scale(0.97); }
@@ -149,10 +150,13 @@
     background: #0c4a6e;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
   }
-  .tower-btn .cost { display: block; font-size: 0.62rem; font-weight: 600; color: #fbbf24; margin-top: 1px; }
+  .tower-btn .cost { display: block; font-size: 0.58rem; font-weight: 600; color: #fbbf24; margin-top: 1px; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
+  #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
+  #btn-zap { grid-column: 2 / span 2; }
+  #btn-sniper { grid-column: 4 / span 2; }
 
   #util-btns {
     display: grid;
@@ -389,7 +393,7 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <p>Pick a path, then build towers and hold the line.</p>
-      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel <b>Shells</b> (shield) shrug ~28% damage.</p>
+      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel <b>Shells</b> shrug damage · Wave 20 <b>Titan</b> boss · Skitters resist splash.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 1: Spiral — Easy
@@ -401,7 +405,7 @@
       </button>
       <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
         Map 3: Crosscut — Medium-Hard
-        <span class="sub">Midfield cross · fewer open lanes</span>
+        <span class="sub">Bold midfield crossbar · pocket build lanes</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         Map 4: Winding — Hard
@@ -439,6 +443,10 @@
         ⚡ Zap
         <span class="cost">145g</span>
       </button>
+      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper">
+        🎯 Sniper
+        <span class="cost">125g</span>
+      </button>
     </div>
     <div id="tower-actions">
       <button type="button" class="action-btn" id="btn-upgrade">
@@ -469,7 +477,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 27</div>
+    <div id="build-ver">build 28</div>
   </div>
 </div>
 
@@ -519,14 +527,19 @@
       spawnExtra: 2,
       hardenChance: 0.18,
       startGoldBonus: 0,
-      // Medium-Hard: plunge to mid, cross, then south — fewer open lanes
+      // Medium-Hard: clear midfield crossbar + north/south arms (distinct lanes)
       path: [
-        tc(0, 0), tc(5, 0),
-        tc(5, 5), tc(9, 5),
-        tc(9, 2), tc(2, 2),
-        tc(2, 8), tc(8, 8),
-        tc(8, 11), tc(1, 11),
-        tc(1, 13), tc(7, 13),
+        tc(1, 0), tc(1, 5),
+        tc(1, 5), tc(8, 5),
+        tc(8, 5), tc(8, 1),
+        tc(8, 1), tc(4, 1),
+        tc(4, 1), tc(4, 9),
+        tc(4, 9), tc(9, 9),
+        tc(9, 9), tc(9, 12),
+        tc(9, 12), tc(2, 12),
+        tc(2, 12), tc(2, 7),
+        tc(2, 7), tc(6, 7),
+        tc(6, 7), tc(6, 13),
       ],
     },
     winding: {
@@ -587,10 +600,10 @@
       upgradeCosts: [40, 70, 110, 160],
     },
     cannon: {
-      name: 'Cannon', cost: 90, range: 80, fireRate: 1.1, damage: 40,
-      color: '#fb923c', projectileSpeed: 280, projectileColor: '#fdba74',
+      name: 'Cannon', cost: 90, range: 80, fireRate: 1.65, damage: 62,
+      color: '#fb923c', projectileSpeed: 240, projectileColor: '#fdba74',
       upgradeCosts: [60, 100, 150, 210],
-      splashRadius: 42, splashMul: 0.5,
+      splashRadius: 48, splashMul: 0.55,
     },
     frost: {
       name: 'Frost', cost: 75, range: 100, fireRate: 0.85, damage: 8,
@@ -604,38 +617,45 @@
       upgradeCosts: [90, 140, 200, 280],
       multi: 2, multiFalloff: 0.55,
     },
+    sniper: {
+      name: 'Sniper', cost: 125, range: 720, fireRate: 2.25, damage: 32,
+      color: '#2dd4bf', projectileSpeed: 780, projectileColor: '#99f6e4',
+      upgradeCosts: [80, 125, 180, 250],
+    },
   };
 
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
     // Color = threat (green easy → dark red hardest). Shell = steel armor (dmg resist).
-    // Size: Scout < Grunt < Shell < Brute < Raider.
-    normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
-    fast:   { name: 'Scout',  r: 10, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
-    shell:  { name: 'Shell',  r: 15, hp: 220, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.28 },
-    tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
-    raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
+    // Size: Scout ≈ Grunt < Skitter < Shell < Brute < Raider < Titan.
+    normal:  { name: 'Grunt',   r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
+    fast:    { name: 'Scout',   r: 12, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
+    skitter: { name: 'Skitter', r: 11, hp: 55,  speed: 100, reward: 12, color: '#4ade80', stroke: '#14532d', splashResist: 0.5 },
+    shell:   { name: 'Shell',   r: 15, hp: 220, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.28 },
+    tank:    { name: 'Brute',   r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
+    raider:  { name: 'Raider',  r: 19, hp: 200, speed: 125, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
+    titan:   { name: 'Titan',   r: 28, hp: 500, speed: 26,  reward: 50, color: '#450a0a', stroke: '#fecaca', armor: 0.12 },
   };
 
   const CHALLENGE_WAVES = {
     5:  { title: 'CHALLENGE WAVE', sub: 'Scout Swarm', bonus: 25 },
     10: { title: 'CHALLENGE WAVE', sub: 'Brute Push', bonus: 40 },
     15: { title: 'CHALLENGE WAVE', sub: 'Raider Pack', bonus: 60 },
-    20: { title: 'BOSS RUSH', sub: 'Finale Elite', bonus: 100 },
+    20: { title: 'BOSS', sub: 'Titan Finale', bonus: 100 },
   };
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'grunt', 'scout', 'brute', 'raider', 'shell'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
-  const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider' };
+  const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
   for (const name of SPRITE_NAMES) {
     const img = new Image();
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=27`;
+    img.src = `./sprites/${name}.png?v=28`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -826,7 +846,10 @@
     const dmgGain = next.damage - cur.damage;
     if (dmgGain > 0) parts.push(`+${dmgGain} dmg`);
     if (next.fireRate < cur.fireRate - 0.001) parts.push('faster shots');
-    if (next.range > cur.range + 0.5) parts.push('more range');
+    if (next.range > cur.range + 0.5 && cur.range < 500) parts.push('more range');
+    if (tw.type === 'sniper' && (tw.level || 1) < MAX_TOWER_LEVEL) {
+      /* still map-wide; emphasize punch */
+    }
     if ((next.multi || 0) > (cur.multi || 0)) parts.push(`${next.multi} targets`);
     if ((next.splashRadius || 0) > (cur.splashRadius || 0) + 0.5) parts.push('bigger splash');
     if ((next.slowDur || 0) > (cur.slowDur || 0) + 0.05) parts.push('longer slow');
@@ -849,17 +872,31 @@
     state.sellConfirming = false;
   }
 
+  function towerStatLine(tw) {
+    const st = towerStats(tw);
+    const rangeLabel = st.range >= 500 ? 'Range ∞' : `Range ${Math.round(st.range)}`;
+    const parts = [
+      `Dmg ${st.damage}`,
+      `Rate ${st.fireRate.toFixed(2)}s`,
+      rangeLabel,
+    ];
+    if (st.splashRadius) parts.push(`Splash ${Math.round(st.splashRadius)}`);
+    if (st.multi) parts.push(`Targets ${st.multi}`);
+    if (st.slowMul) parts.push('Slow');
+    return parts.join(' · ');
+  }
+
   function selectTower(tw) {
     state.selected = null;
     state.selectedTower = tw;
     state.sellConfirming = false;
     const st = towerStats(tw);
-    const rng = Math.round(st.range);
+    const stats = towerStatLine(tw);
     const up = upgradeCostFor(tw);
     if (up == null) {
-      el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${rng} (MAX)`;
+      el.hint.textContent = `${st.name} Lv${tw.level} — ${stats} (MAX)`;
     } else {
-      el.hint.textContent = `${st.name} Lv${tw.level} — range ${rng} · next: ${upgradeBlurb(tw)} (${up}g)`;
+      el.hint.textContent = `${st.name} Lv${tw.level} — ${stats} | next: ${upgradeBlurb(tw)} (${up}g)`;
     }
   }
 
@@ -918,10 +955,15 @@
       const maxed = cost == null;
       const value = sellValueFor(tw);
       el.btnUpgrade.disabled = maxed || state.gold < cost;
+      const curStats = towerStatLine(tw);
       el.upgradeCost.textContent = maxed
-        ? `MAX Lv${MAX_TOWER_LEVEL}`
+        ? `MAX · ${curStats}`
         : `${cost}g · ${upgradeBlurb(tw)}`;
+      // Keep current combat stats visible on the sell line subtitle when confirming is off
       el.sellValue.textContent = `+${value}g`;
+      el.btnUpgrade.title = curStats;
+      el.hint.dataset.towerStats = curStats;
+
       el.btnSell.disabled = false;
       el.sellConfirmValue.textContent = `+${value}g`;
     }
@@ -974,10 +1016,12 @@
     const cleared = state.wave;
     const ch = CHALLENGE_WAVES[cleared];
     if (ch && ch.bonus) {
-      state.gold += Number(ch.bonus) || 0;
+      const bg = Number(ch.bonus) || 0;
+      state.gold += bg;
       if (!Number.isFinite(state.gold)) state.gold = 0;
       flashGold();
-      addFloat(W / 2, H * 0.28, `+${ch.bonus} challenge bonus`, '#fde68a');
+      addFloat(W / 2, H * 0.26, `+${bg}g CHALLENGE CLEAR`, '#fde68a', 2.2);
+      addFloat(W / 2, H * 0.31, ch.title === 'BOSS' ? 'BOSS DEFEATED!' : 'Challenge cleared!', '#fecaca', 1.8);
     }
     // Perfect clear: no lives lost during this wave
     let perfectBit = '';
@@ -993,7 +1037,7 @@
     }
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
-    const bonusBit = (ch ? ` (+${ch.bonus}g)` : '') + perfectBit;
+    const bonusBit = (ch ? ` · +${ch.bonus}g CHALLENGE CLEAR` : '') + perfectBit;
     state.killStreak = 0;
     state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
@@ -1063,8 +1107,9 @@
     return { score: en.dist, d };
   }
 
-  function addFloat(x, y, text, color) {
-    state.floatingTexts.push({ x, y, text, color, life: 0.9, vy: -40 });
+  function addFloat(x, y, text, color, life = 0.9) {
+    const L = Math.max(0.4, life);
+    state.floatingTexts.push({ x, y, text, color, life: L, maxLife: L, vy: -36 });
   }
 
   function burst(x, y, color, n = 10) {
@@ -1320,7 +1365,7 @@
   }
 
   function enemyMixForWave(w) {
-    // Scripted mixes; Raiders never before 12 (hardenKind also gates)
+    // Scripted mixes; Raiders never before 12 (hardenKind also gates). Titan only via wave-20 inject.
     if (w <= 2) return ['normal'];
     if (w === 3) return ['normal', 'normal', 'normal', 'fast'];
     if (w === 4) return ['normal', 'normal', 'fast', 'normal'];
@@ -1328,18 +1373,19 @@
     if (w === 6) return ['normal', 'normal', 'fast', 'normal']; // breather
     if (w === 7) return ['normal', 'fast', 'normal', 'fast', 'normal'];
     if (w === 8) return ['fast', 'normal', 'shell', 'fast', 'normal']; // Shell intro
-    if (w === 9) return ['fast', 'tank', 'shell', 'fast', 'tank'];
+    if (w === 9) return ['fast', 'skitter', 'shell', 'fast', 'tank']; // Skitter intro (splash resist)
     if (w === 10) return ['tank', 'tank', 'tank', 'shell', 'tank', 'fast', 'tank']; // brute push
-    if (w === 11) return ['normal', 'fast', 'shell', 'fast']; // breather
-    if (w === 12) return ['fast', 'tank', 'shell', 'fast', 'raider', 'tank'];
-    if (w === 13) return ['fast', 'shell', 'raider', 'tank', 'shell', 'fast'];
-    if (w === 14) return ['tank', 'shell', 'tank', 'raider', 'fast', 'tank'];
+    if (w === 11) return ['normal', 'skitter', 'shell', 'fast']; // breather
+    if (w === 12) return ['fast', 'tank', 'shell', 'skitter', 'raider', 'tank'];
+    if (w === 13) return ['fast', 'shell', 'raider', 'tank', 'skitter', 'fast'];
+    if (w === 14) return ['tank', 'shell', 'tank', 'raider', 'skitter', 'tank'];
     if (w === 15) return ['raider', 'tank', 'raider', 'shell', 'raider', 'fast', 'tank']; // raider pack
-    if (w === 16) return ['fast', 'normal', 'shell', 'fast', 'normal']; // breather
-    if (w === 17) return ['tank', 'raider', 'shell', 'tank', 'raider'];
-    if (w === 18) return ['tank', 'raider', 'shell', 'raider', 'tank', 'raider'];
-    if (w === 19) return ['raider', 'shell', 'fast', 'raider', 'tank', 'raider'];
-    return ['raider', 'tank', 'raider', 'shell', 'raider', 'fast', 'raider', 'tank']; // finale
+    if (w === 16) return ['fast', 'skitter', 'shell', 'fast', 'normal']; // breather
+    if (w === 17) return ['tank', 'raider', 'shell', 'tank', 'skitter'];
+    if (w === 18) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider'];
+    if (w === 19) return ['raider', 'shell', 'skitter', 'raider', 'tank', 'raider'];
+    // Finale fodder — Titans injected separately (1–2)
+    return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank'];
   }
 
   function wavePreviewLabel(w) {
@@ -1351,7 +1397,7 @@
       const k = mix[i % mix.length];
       counts[k] = (counts[k] || 0) + 1;
     }
-    const order = ['normal', 'fast', 'shell', 'tank', 'raider'];
+    const order = ['normal', 'fast', 'skitter', 'shell', 'tank', 'raider', 'titan'];
     const parts = [];
     for (const k of order) {
       if (!counts[k]) continue;
@@ -1380,9 +1426,11 @@
   }
 
   function hardenKind(kind, chance, w) {
+    if (kind === 'titan') return kind; // never harden bosses
     if (chance <= 0 || Math.random() >= chance) return kind;
     if (kind === 'normal') return 'fast';
-    if (kind === 'fast') return w >= 8 ? 'shell' : 'tank';
+    if (kind === 'fast') return w >= 9 ? 'skitter' : (w >= 8 ? 'shell' : 'tank');
+    if (kind === 'skitter') return w >= 8 ? 'shell' : 'fast';
     if (kind === 'shell') return 'tank';
     // Raiders only from wave 12+ (even via map hardenChance)
     if (kind === 'tank' && w >= 12) return 'raider';
@@ -1399,12 +1447,42 @@
     for (let i = 0; i < n; i++) {
       q.push(hardenKind(mix[i % mix.length], chance, w));
     }
-    // shuffle lightly
-    for (let i = q.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = q[i]; q[i] = q[j]; q[j] = tmp;
+    // Wave 20 only: 1–2 Titans (boss). Hard Mode always gets 2.
+    if (w === 20) {
+      const titans = 2; // always 2 bosses on finale for clarity
+      for (let i = 0; i < titans; i++) {
+        // Replace late fodder slots so boss arrives mid/late pack
+        const slot = Math.min(q.length - 1, Math.floor(q.length * (0.55 + i * 0.2)));
+        q[slot] = 'titan';
+      }
+      // Ensure unique titan count (no accidental extras from mix)
+      let seen = 0;
+      for (let i = 0; i < q.length; i++) {
+        if (q[i] === 'titan') {
+          seen++;
+          if (seen > titans) q[i] = 'raider';
+        }
+      }
+    } else {
+      // Never allow titan off wave 20
+      for (let i = 0; i < q.length; i++) if (q[i] === 'titan') q[i] = 'raider';
     }
-    return q;
+    // shuffle lightly (keep titans roughly late by re-placing after shuffle)
+    const titanCount = q.filter((k) => k === 'titan').length;
+    const fodder = q.filter((k) => k !== 'titan');
+    for (let i = fodder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = fodder[i]; fodder[i] = fodder[j]; fodder[j] = tmp;
+    }
+    if (titanCount > 0) {
+      const out = fodder.slice();
+      for (let i = 0; i < titanCount; i++) {
+        const slot = Math.min(out.length, Math.floor(out.length * (0.5 + i * 0.25)));
+        out.splice(slot, 0, 'titan');
+      }
+      return out;
+    }
+    return fodder;
   }
 
   function startNextWave() {
@@ -1422,10 +1500,19 @@
     const ch = CHALLENGE_WAVES[state.wave];
     if (ch) {
       showChallengeBanner(state.wave);
-      el.hint.textContent = `${ch.title} — ${ch.sub}!`;
-      setWavePreview(ch.sub, true);
+      const bossBit = ch.title === 'BOSS' ? ' ☠ BOSS INCOMING' : '';
+      el.hint.textContent = `${ch.title} — ${ch.sub}! Clear for +${ch.bonus}g bonus.${bossBit}`;
+      setWavePreview(`${ch.sub} · +${ch.bonus}g clear bonus`, true);
+      if (ch.title === 'BOSS') {
+        addFloat(W / 2, H * 0.22, 'BOSS — TITAN', '#fecaca', 2.4);
+      } else {
+        addFloat(W / 2, H * 0.22, `CHALLENGE · +${ch.bonus}g`, '#fde68a', 1.8);
+      }
     } else if (state.wave === 8) {
       el.hint.textContent = 'Wave 8 — Shells incoming! Steel armor shrugs ~28% damage.';
+      setWavePreview(wavePreviewLabel(state.wave), false);
+    } else if (state.wave === 9) {
+      el.hint.textContent = 'Wave 9 — Skitters! They take 50% less splash (Cannon AoE).';
       setWavePreview(wavePreviewLabel(state.wave), false);
     } else {
       el.hint.textContent = `Wave ${state.wave} incoming — ${wavePreviewLabel(state.wave)}`;
@@ -1449,6 +1536,7 @@
       color: et.color,
       stroke: et.stroke,
       armor: et.armor || 0,
+      splashResist: et.splashResist || 0,
       hitFlash: 0,
       slowTimer: 0,
       slowMul: 1,
@@ -1621,7 +1709,7 @@
     state.sellConfirming = false;
     if (state.selectedTower) {
       const st = towerStats(state.selectedTower);
-      el.hint.textContent = `${st.name} Lv${state.selectedTower.level} — dmg ${st.damage}, range ${Math.round(st.range)}`;
+      el.hint.textContent = `${st.name} Lv${state.selectedTower.level} — ${towerStatLine(state.selectedTower)}`;
     }
     updateHUD();
   });
@@ -1861,7 +1949,9 @@
       if (!state.enemies.includes(en)) continue;
       const p = posOnPath(en.dist);
       if (Math.hypot(p.x - impactX, p.y - impactY) <= splashRadius) {
-        applyDamage(en, secondary, color);
+        const resist = Math.max(0, Math.min(0.9, en.splashResist || 0));
+        const dealt = Math.max(1, Math.round(secondary * (1 - resist)));
+        applyDamage(en, dealt, color);
       }
     }
   }
@@ -2324,6 +2414,30 @@
           ctx.lineTo(-0.5, -7.5);
           ctx.closePath();
           ctx.fill();
+        } else if (tw.type === 'sniper') {
+          ctx.fillStyle = def.color;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(-3.5, -14, 7, 20, 2) : ctx.rect(-3.5, -14, 7, 20);
+          ctx.fill();
+          ctx.fillStyle = '#99f6e4';
+          ctx.beginPath();
+          ctx.arc(6, -6, 4.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#134e4a';
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.arc(6, -6, 1.6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#5eead4';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(-6, 8);
+          ctx.lineTo(-11, 14);
+          ctx.moveTo(6, 8);
+          ctx.lineTo(11, 14);
+          ctx.stroke();
         }
       }
       ctx.restore();
@@ -2349,7 +2463,7 @@
       const sprName = ENEMY_SPRITE[en.kind] || 'grunt';
       ctx.save();
       if (spriteReady(sprName)) {
-        const sz = Math.max(22, en.r * 2.7);
+        const sz = Math.max(22, en.r * (en.kind === 'titan' ? 2.35 : 2.7));
         if (en.hitFlash > 0) ctx.globalAlpha = 0.85;
         else if (slowed) ctx.globalAlpha = 0.92;
         ctx.drawImage(SPRITES[sprName], p.x - sz / 2, p.y - sz / 2, sz, sz);
@@ -2407,6 +2521,13 @@
               if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             }
             ctx.closePath();
+          } else if (en.kind === 'titan') {
+            const s = en.r * 0.95;
+            if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s * 0.85, s * 2, s * 1.75, s * 0.28);
+            else ctx.rect(p.x - s, p.y - s * 0.85, s * 2, s * 1.75);
+          } else if (en.kind === 'skitter') {
+            const rx = en.r * 1.15, ry = en.r * 0.7;
+            ctx.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI * 2);
           } else {
             ctx.arc(p.x, p.y, en.r + 1.5, 0, Math.PI * 2);
           }
@@ -2419,8 +2540,8 @@
         makePath();
         ctx.fillStyle = fill;
         ctx.fill();
-        ctx.strokeStyle = en.kind === 'raider' ? '#fecaca' : en.stroke;
-        ctx.lineWidth = en.kind === 'raider' ? 2.8 : (en.kind === 'tank' ? 2.4 : 2);
+        ctx.strokeStyle = (en.kind === 'raider' || en.kind === 'titan') ? '#fecaca' : en.stroke;
+        ctx.lineWidth = en.kind === 'titan' ? 3.2 : (en.kind === 'raider' ? 2.8 : (en.kind === 'tank' ? 2.4 : 2));
         ctx.stroke();
 
         if (en.kind === 'tank') {
@@ -2481,6 +2602,40 @@
             ctx.fillStyle = '#fecaca';
             ctx.fill();
           }
+        } else if (en.kind === 'titan') {
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(p.x - en.r * 0.28, p.y - en.r * 0.15, en.r * 0.22, 0, Math.PI * 2);
+          ctx.arc(p.x + en.r * 0.28, p.y - en.r * 0.15, en.r * 0.22, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = en.hitFlash > 0 ? '#fecaca' : '#f87171';
+          ctx.beginPath();
+          ctx.arc(p.x - en.r * 0.28, p.y - en.r * 0.15, en.r * 0.1, 0, Math.PI * 2);
+          ctx.arc(p.x + en.r * 0.28, p.y - en.r * 0.15, en.r * 0.1, 0, Math.PI * 2);
+          ctx.fill();
+          // horns
+          ctx.strokeStyle = '#fecaca';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(p.x - en.r * 0.55, p.y - en.r * 0.55);
+          ctx.lineTo(p.x - en.r * 0.85, p.y - en.r * 1.05);
+          ctx.moveTo(p.x + en.r * 0.55, p.y - en.r * 0.55);
+          ctx.lineTo(p.x + en.r * 0.85, p.y - en.r * 1.05);
+          ctx.stroke();
+        } else if (en.kind === 'skitter') {
+          ctx.strokeStyle = '#86efac';
+          ctx.lineWidth = 2;
+          for (const ang of [-0.9, -0.4, 0.4, 0.9]) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x + Math.cos(ang) * en.r * 1.5, p.y + Math.sin(ang) * en.r * 1.1);
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(p.x - en.r * 0.25, p.y - en.r * 0.15, en.r * 0.18, 0, Math.PI * 2);
+          ctx.arc(p.x + en.r * 0.25, p.y - en.r * 0.15, en.r * 0.18, 0, Math.PI * 2);
+          ctx.fill();
         } else {
           ctx.beginPath();
           ctx.arc(p.x - en.r * 0.28, p.y - en.r * 0.28, en.r * 0.28, 0, Math.PI * 2);
@@ -2501,7 +2656,7 @@
   function drawProjectiles() {
     for (const pr of state.projectiles) {
       ctx.beginPath();
-      const r = pr.type === 'cannon' ? 6 : pr.type === 'zap' ? 3 : pr.type === 'frost' ? 4.5 : 3.5;
+      const r = pr.type === 'cannon' ? 6 : pr.type === 'sniper' ? 4 : pr.type === 'zap' ? 3 : pr.type === 'frost' ? 4.5 : 3.5;
       ctx.arc(pr.x, pr.y, r, 0, Math.PI * 2);
       ctx.fillStyle = pr.color;
       ctx.shadowColor = pr.color;
@@ -2562,9 +2717,11 @@
       ctx.globalAlpha = 1;
     }
     for (const f of state.floatingTexts) {
-      ctx.globalAlpha = Math.max(0, f.life / 0.9);
+      const maxL = f.maxLife || 0.9;
+      ctx.globalAlpha = Math.max(0, f.life / maxL);
       ctx.fillStyle = f.color;
-      ctx.font = 'bold 13px system-ui';
+      const big = maxL >= 1.6;
+      ctx.font = big ? 'bold 16px system-ui' : 'bold 13px system-ui';
       ctx.textAlign = 'center';
       ctx.fillText(f.text, f.x, f.y);
       ctx.globalAlpha = 1;
@@ -2617,7 +2774,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v27';
+  const BOOT = 'pg-boot-v28';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
