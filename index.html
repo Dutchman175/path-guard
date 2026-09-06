@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 32 -->
+<!-- path-guard-build: 33 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -128,21 +128,26 @@
   #tower-btns {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 4px;
+    gap: 3px;
   }
   .tower-btn {
     appearance: none;
     border: 2px solid #334155;
     background: #1e293b;
     color: #e8eef4;
-    border-radius: 10px;
-    padding: 5px 2px;
-    font-size: 0.68rem;
+    border-radius: 9px;
+    padding: 4px 1px 3px;
+    font-size: 0.62rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 36px;
+    min-height: 34px;
+    min-width: 0;
     grid-column: span 2;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
+    overflow: hidden;
+    line-height: 1.15;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .tower-btn:active { transform: scale(0.97); }
   .tower-btn.selected {
@@ -150,23 +155,24 @@
     background: #0c4a6e;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
   }
-  .tower-btn .cost { display: block; font-size: 0.55rem; font-weight: 600; color: #fbbf24; margin-top: 1px; }
+  .tower-btn .cost { display: block; font-size: 0.5rem; font-weight: 600; color: #fbbf24; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
-  /* Row1: Archer/Cannon/Frost (2+2+2). Row2: Zap+Sniper centered (3+3). */
+  /* Row1: Archer/Cannon/Frost. Row2: Zap+Sniper centered. */
   #btn-zap { grid-column: span 3; }
   #btn-sniper { grid-column: span 3; }
   @media (max-width: 380px) {
-    .tower-btn { font-size: 0.6rem; padding: 4px 1px; min-height: 34px; }
-    .tower-btn .cost { font-size: 0.5rem; }
+    #tower-btns { gap: 2px; }
+    .tower-btn { font-size: 0.55rem; padding: 3px 0; min-height: 32px; border-radius: 8px; }
+    .tower-btn .cost { font-size: 0.46rem; }
   }
 
   #util-btns {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
+    gap: 4px;
   }
   #btn-change-map { grid-column: span 2; }
   .util-btn {
@@ -175,11 +181,18 @@
     background: #1e293b;
     color: #cbd5e1;
     border-radius: 8px;
-    padding: 5px 6px;
-    font-size: 0.72rem;
+    padding: 5px 4px;
+    font-size: 0.68rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 32px;
+    min-height: 30px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  @media (max-width: 380px) {
+    .util-btn { font-size: 0.6rem; padding: 4px 2px; min-height: 28px; }
   }
   .util-btn:active { transform: scale(0.97); }
   .util-btn.active {
@@ -462,11 +475,11 @@
   <div id="controls">
     <div id="tower-btns">
       <button type="button" class="tower-btn" id="btn-archer" data-type="archer">
-        🏹 Archer
+        🏹 Arch
         <span class="cost">50g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon">
-        💣 Cannon
+        💣 Cann
         <span class="cost">90g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-frost" data-type="frost">
@@ -478,7 +491,7 @@
         <span class="cost">145g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper">
-        🎯 Sniper
+        🎯 Snip
         <span class="cost">125g</span>
       </button>
     </div>
@@ -504,7 +517,7 @@
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
       <button type="button" class="util-btn" id="btn-target">Target: First</button>
       <button type="button" class="util-btn" id="btn-juice">FX On</button>
-      <button type="button" class="util-btn" id="btn-change-map" disabled>Change Map</button>
+      <button type="button" class="util-btn" id="btn-change-map" disabled>Map</button>
     </div>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
@@ -512,7 +525,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 32</div>
+    <div id="build-ver">build 33</div>
   </div>
 </div>
 
@@ -654,7 +667,7 @@
       color: '#67e8f9', projectileSpeed: 360, projectileColor: '#a5f3fc',
       upgradeCosts: [50, 85, 130, 180],
       slowMul: 0.5, slowDur: 1.6,
-      auraRadius: 52, auraSlow: 0.82, // mild passive chill in radius
+      auraRadius: 56, auraSlow: 0.78, // passive chill — always-drawn ring
     },
     zap: {
       name: 'Zap', cost: 145, range: 100, fireRate: 1.05, damage: 14,
@@ -700,7 +713,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=32`;
+    img.src = `./sprites/${name}.png?v=33`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -864,6 +877,14 @@
       const j = localStorage.getItem(LS_JUICE);
       if (j === '0' || j === 'false') state.juice = false;
       else if (j === '1' || j === 'true') state.juice = true;
+      // leave default true if unset
+    } catch (_) {}
+    // Reflect FX button immediately (HUD may run before listeners)
+    try {
+      if (el.btnJuice) {
+        el.btnJuice.textContent = state.juice === false ? 'FX Off' : 'FX On';
+        el.btnJuice.classList.toggle('active', state.juice !== false);
+      }
     } catch (_) {}
   }
 
@@ -1165,6 +1186,16 @@
     state.betweenWaves = true;
     const cleared = state.wave;
     const ch = CHALLENGE_WAVES[cleared];
+    // Interest first: banked gold only (before clear bonuses) — +1% cap 20g
+    let interestBit = '';
+    if (Number.isFinite(state.gold) && state.gold >= 100) {
+      const interest = Math.min(20, Math.floor(state.gold * 0.01));
+      if (interest > 0) {
+        addGold(interest);
+        addFloat(W / 2, H * 0.42, `+${interest}g interest`, '#fde68a', 1.15);
+        interestBit = ` · +${interest}g interest`;
+      }
+    }
     const awarded = awardChallengeBonus(cleared);
     // Perfect clear: no lives lost during this wave
     let perfectBit = '';
@@ -1176,19 +1207,9 @@
       addFloat(W / 2, H * 0.34, `+${perfectGold} perfect clear`, '#86efac');
       perfectBit = ` · +${perfectGold}g perfect`;
     }
-    // Interest: unused gold earns +1% between waves (cap 20g)
-    let interestBit = '';
-    if (Number.isFinite(state.gold) && state.gold > 0) {
-      const interest = Math.min(20, Math.floor(state.gold * 0.01));
-      if (interest > 0) {
-        addGold(interest);
-        addFloat(W / 2, H * 0.38, `+${interest}g interest`, '#fde68a', 1.2);
-        interestBit = ` · +${interest}g interest`;
-      }
-    }
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
-    const bonusBit = (awarded > 0 ? ` · +${awarded}g CHALLENGE CLEAR` : (ch ? ` · challenge cleared` : '')) + perfectBit + interestBit;
+    const bonusBit = interestBit + (awarded > 0 ? ` · +${awarded}g CHALLENGE CLEAR` : '') + perfectBit;
     state.killStreak = 0;
     state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
@@ -1234,14 +1255,46 @@
   function awardChallengeBonus(wave) {
     const ch = CHALLENGE_WAVES[wave];
     if (!ch || !ch.bonus) return 0;
-    if (state.challengeAwarded[wave]) return 0;
-    state.challengeAwarded[wave] = true;
+    const key = String(wave);
+    if (state.challengeAwarded[key] || state.challengeAwarded[wave]) return 0;
     const bg = Number(ch.bonus) || 0;
     if (bg <= 0) return 0;
+    // Mark before addGold so a re-entrant endGame cannot double-pay
+    state.challengeAwarded[key] = true;
+    state.challengeAwarded[wave] = true;
     addGold(bg);
     addFloat(W / 2, H * 0.26, `+${bg}g CHALLENGE CLEAR`, '#fde68a', 2.2);
     addFloat(W / 2, H * 0.31, ch.title === 'BOSS' ? 'BOSS DEFEATED!' : 'Challenge cleared!', '#fecaca', 1.8);
     return bg;
+  }
+
+  function grantWaveClearExtras(wave, opts) {
+    // Shared by enterWavePause + final-wave win (interest already handled by caller if needed)
+    const o = opts || {};
+    let bits = '';
+    if (o.interest) {
+      if (Number.isFinite(state.gold) && state.gold >= 100) {
+        const interest = Math.min(20, Math.floor(state.gold * 0.01));
+        if (interest > 0) {
+          addGold(interest);
+          addFloat(W / 2, H * 0.42, `+${interest}g interest`, '#fde68a', 1.15);
+          bits += ` · +${interest}g interest`;
+        }
+      }
+    }
+    const awarded = awardChallengeBonus(wave);
+    if (awarded > 0) bits += ` · +${awarded}g CHALLENGE CLEAR`;
+    if (o.perfect) {
+      const livesStart = state.waveLivesStart != null ? state.waveLivesStart : state.lives;
+      if (state.lives >= livesStart && state.lives > 0) {
+        const perfectGold = 6 + Math.floor(wave * 0.75);
+        addGold(perfectGold);
+        state.wavePerfectClears = (state.wavePerfectClears || 0) + 1;
+        addFloat(W / 2, H * 0.34, `+${perfectGold} perfect clear`, '#86efac');
+        bits += ` · +${perfectGold}g perfect`;
+      }
+    }
+    return { awarded, bits };
   }
 
   function flashLives() {
@@ -1770,6 +1823,7 @@
   }
 
   function endGame(won) {
+    if (state.gameOver) return; // edge: life-leak + last kill same frame
     state.gameOver = true;
     state.won = won;
     state.selected = null;
@@ -1780,8 +1834,8 @@
     hideNextWaveUI();
     el.overlay.classList.add('show');
     if (won) {
-      // Wave 20 skips enterWavePause — still grant challenge/boss clear once
-      awardChallengeBonus(state.wave);
+      // Wave 20 skips enterWavePause — interest + boss clear + perfect once
+      grantWaveClearExtras(state.wave, { interest: true, perfect: true });
       const rating = victoryRating(state.lives);
       saveBestWin(state.lives);
       const elapsed = state.runStartedAt ? (performance.now() - state.runStartedAt) : 0;
@@ -1962,7 +2016,11 @@
 
   el.btnSpeed.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    state.gameSpeed = state.gameSpeed === 1 ? 2 : 1;
+    // Fun: cycle 1x → 2x → 3x → 1x
+    state.gameSpeed = state.gameSpeed >= 3 ? 1 : (state.gameSpeed >= 2 ? 3 : 2);
+    el.hint.textContent = state.gameSpeed === 1
+      ? 'Speed 1x'
+      : (state.gameSpeed === 2 ? 'Speed 2x' : 'Turbo 3x — hold the line!');
     updateHUD();
   });
 
@@ -1977,11 +2035,11 @@
   if (el.btnJuice) {
     el.btnJuice.addEventListener('pointerdown', (e) => {
       e.preventDefault();
-      state.juice = state.juice === false;
-      saveJuice(state.juice !== false);
-      el.hint.textContent = state.juice === false
-        ? 'FX muted — particles & screen shake off'
-        : 'FX on — juice restored';
+      state.juice = !(state.juice !== false);
+      saveJuice(!!state.juice);
+      el.hint.textContent = state.juice
+        ? 'FX on — juice restored'
+        : 'FX muted — particles & screen shake off';
       updateHUD();
     });
   }
@@ -2204,12 +2262,14 @@
   }
 
   function applyCannonSplash(impactX, impactY, primary, damage, splashRadius, splashMul, color) {
-    state.rings.push({
-      x: impactX, y: impactY,
-      r: 10, maxR: splashRadius,
-      life: 0.32, maxLife: 0.32,
-      color,
-    });
+    if (state.juice !== false) {
+      state.rings.push({
+        x: impactX, y: impactY,
+        r: 10, maxR: splashRadius,
+        life: 0.32, maxLife: 0.32,
+        color,
+      });
+    }
     burst(impactX, impactY, color, 18);
     const secondary = Math.max(1, Math.round(damage * splashMul));
     // snapshot because applyDamage may splice
@@ -2515,6 +2575,15 @@
         ctx.strokeStyle = 'rgba(192, 132, 252, 0.5)';
         ctx.lineWidth = 2;
         ctx.stroke();
+        if (tw.type === 'frost' && st.auraRadius > 0) {
+          ctx.beginPath();
+          ctx.arc(tw.x, tw.y, st.auraRadius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(103, 232, 249, 0.12)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(165, 243, 252, 0.7)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
       }
     }
     // Build-type selected: soft range ring at pointer is skipped; tile ghosts cover legality
@@ -2531,6 +2600,14 @@
       } else {
         ctx.fillStyle = 'rgba(52, 211, 153, 0.03)';
         ctx.fillRect(0, 0, W, H);
+        if (state.selected === 'frost' && def.auraRadius) {
+          // Hint that Frost brings a chill aura (drawn at map center as legend)
+          ctx.fillStyle = 'rgba(165, 243, 252, 0.85)';
+          ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Frost: shots slow · aura chills nearby', W / 2, 10);
+        }
       }
     }
   }
@@ -2607,15 +2684,6 @@
         ctx.arc(0, 0, 24, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(192, 132, 252, 0.75)';
         ctx.lineWidth = 2.5;
-        ctx.stroke();
-      }
-      if (tw.type === 'frost' && st.auraRadius > 0 && (isSel || (tw.pulse || 0) > 0)) {
-        ctx.beginPath();
-        ctx.arc(0, 0, st.auraRadius / scale, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(103, 232, 249, 0.06)';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(103, 232, 249, 0.28)';
-        ctx.lineWidth = 1.2;
         ctx.stroke();
       }
 
@@ -2783,6 +2851,31 @@
         }
       }
       ctx.restore();
+
+      // Frost aura in world space — always visible, clearer when selected
+      if (tw.type === 'frost' && st.auraRadius > 0) {
+        const tSec = performance.now() / 1000;
+        const pulse = 0.55 + Math.sin(tSec * 2.6 + (tw.x + tw.y) * 0.01) * 0.2;
+        const alpha = isSel ? 0.16 : 0.08;
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, st.auraRadius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(103, 232, 249, ${alpha * pulse})`;
+        ctx.fill();
+        ctx.strokeStyle = isSel
+          ? `rgba(165, 243, 252, ${0.55 + pulse * 0.25})`
+          : `rgba(103, 232, 249, ${0.28 + pulse * 0.15})`;
+        ctx.lineWidth = isSel ? 2 : 1.35;
+        ctx.setLineDash(isSel ? [] : [5, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        if (isSel) {
+          ctx.fillStyle = 'rgba(165, 243, 252, 0.9)';
+          ctx.font = 'bold 10px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('CHILL AURA', tw.x, tw.y - st.auraRadius - 4);
+        }
+      }
 
       ctx.beginPath();
       ctx.arc(tw.x + 12, tw.y - 12, 8, 0, Math.PI * 2);
@@ -3151,7 +3244,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v32';
+  const BOOT = 'pg-boot-v33';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
