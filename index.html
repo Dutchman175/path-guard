@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 25 -->
+<!-- path-guard-build: 26 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -445,10 +445,10 @@
     </div>
     <div id="sell-confirm">
       <button type="button" class="action-btn" id="btn-sell-yes">
-        Confirm Sell
+        Confirm refund
         <span class="cost" id="sell-confirm-value">—</span>
       </button>
-      <button type="button" class="action-btn" id="btn-sell-no">Cancel</button>
+      <button type="button" class="action-btn" id="btn-sell-no">Keep tower</button>
     </div>
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
@@ -462,7 +462,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 25</div>
+    <div id="build-ver">build 26</div>
   </div>
 </div>
 
@@ -543,8 +543,8 @@
     gauntlet: {
       id: 'gauntlet',
       name: 'Gauntlet',
-      spawnExtra: 5,
-      hardenChance: 0.45,
+      spawnExtra: 4,
+      hardenChance: 0.42,
       startGoldBonus: 0,
       // Hard: a bit longer than the old 3-lane — five passes, simple jogs
       path: [
@@ -605,7 +605,7 @@
     // Size: Scout < Grunt < Shell < Brute < Raider.
     normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
     fast:   { name: 'Scout',  r: 10, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
-    shell:  { name: 'Shell',  r: 15, hp: 240, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.32 },
+    shell:  { name: 'Shell',  r: 15, hp: 220, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.28 },
     tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
     raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
   };
@@ -628,7 +628,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=25`;
+    img.src = `./sprites/${name}.png?v=26`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1031,7 +1031,7 @@
     const p = posOnPath(en.dist);
     const d = Math.hypot(p.x - tower.x, p.y - tower.y);
     if (mode === 'closest') return { score: -d, d };
-    if (mode === 'strongest') return { score: en.hp + en.maxHp * 0.001, d };
+    if (mode === 'strongest') return { score: en.maxHp * 10 + en.hp, d };
     return { score: en.dist, d };
   }
 
@@ -1286,7 +1286,7 @@
       15: 18,             // Raider pack
       16: 10,             // breather
       17: 16, 18: 18, 19: 20,
-      20: 26,             // Finale elite
+      20: 24,             // Finale elite
     };
     return table[w] || (10 + w);
   }
@@ -1348,7 +1348,7 @@
     sub.textContent = info.sub;
     banner.classList.add('show');
     clearTimeout(showChallengeBanner._t);
-    showChallengeBanner._t = setTimeout(() => banner.classList.remove('show'), 2800);
+    showChallengeBanner._t = setTimeout(() => banner.classList.remove('show'), 3600);
   }
 
   function hardenKind(kind, chance, w) {
@@ -1364,7 +1364,7 @@
   function buildSpawnQueue(w) {
     const map = activeMap();
     const hard = !!state.hardMode;
-    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + (hard ? 3 : 0);
+    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + (hard ? 2 : 0);
     const mix = enemyMixForWave(w);
     const chance = (map.hardenChance || 0) + (hard ? 0.15 : 0);
     const q = [];
@@ -1395,6 +1395,9 @@
       showChallengeBanner(state.wave);
       el.hint.textContent = `${ch.title} — ${ch.sub}!`;
       setWavePreview(ch.sub, true);
+    } else if (state.wave === 8) {
+      el.hint.textContent = 'Wave 8 — Shells incoming! Steel armor shrugs ~28% damage.';
+      setWavePreview(wavePreviewLabel(state.wave), false);
     } else {
       el.hint.textContent = `Wave ${state.wave} incoming — ${wavePreviewLabel(state.wave)}`;
       setWavePreview(wavePreviewLabel(state.wave), false);
@@ -1573,7 +1576,7 @@
     e.preventDefault();
     if (!state.selectedTower || state.gameOver) return;
     state.sellConfirming = true;
-    el.hint.textContent = 'Confirm sell? This cannot be undone.';
+    el.hint.textContent = 'Refund ~half the spend? Tap Confirm refund, or Keep tower.';
     updateHUD();
   });
 
@@ -1875,7 +1878,7 @@
         if (en.hitFlash > 0) en.hitFlash -= dt;
         if (en.dist >= PATH_LEN) {
           state.enemies.splice(i, 1);
-          state.lives--;
+          state.lives = Math.max(0, state.lives - 1);
           flashLives();
           shakeScreen();
           burst(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y, '#f87171', 16);
@@ -2546,7 +2549,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v25';
+  const BOOT = 'pg-boot-v26';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
