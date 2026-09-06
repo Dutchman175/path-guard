@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 42 -->
+<!-- path-guard-build: 45 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -166,7 +166,6 @@
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
   #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
-  #btn-barrage.selected { border-color: #fb7185; background: #881337; }
   #btn-bank.selected { border-color: #f59e0b; background: #78350f; }
   /* 8 towers: 4 + 4 — keep tap targets roomy on narrow phones */
   @media (max-width: 380px) {
@@ -721,10 +720,6 @@
 
   <div id="controls">
     <div id="tower-btns">
-      <button type="button" class="tower-btn" id="btn-barrage" data-type="barrage" title="Barrage — fast swarm shredder">
-        🔫 Barrage
-        <span class="cost">42g</span>
-      </button>
       <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon" title="Beacon — slow aura">
         🔦 Beacon
         <span class="cost">45g</span>
@@ -795,7 +790,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 44</div>
+    <div id="build-ver">build 45</div>
   </div>
 </div>
 
@@ -975,13 +970,6 @@
       auraRadius: 64, auraSlow: 0.62, // deeper chill, tighter radius — placement matters
       supportOnly: true,
     },
-    barrage: {
-      name: 'Barrage', cost: 42, range: 90, fireRate: 0.3, damage: 6,
-      color: '#fb7185', projectileSpeed: 500, projectileColor: '#fda4af',
-      upgradeCosts: [28, 48, 75, 110],
-      // Fast swarm shredder; soft vs armor (extra resist in applyDamage)
-      softVsArmor: 0.55,
-    },
     barrier: {
       name: 'Barrier', cost: 65, range: 0, fireRate: 99, damage: 0,
       color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fde68a',
@@ -1026,7 +1014,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'barrage', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -1035,7 +1023,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=44`;
+    img.src = `./sprites/${name}.png?v=45`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1396,8 +1384,7 @@
     return {
       name: def.name,
       damage: Math.round(def.damage * dmgMul),
-      // Barrage stays below the shared rate floor so upgrades keep the volley humming
-      fireRate: Math.max(tw.type === 'barrage' ? 0.14 : 0.22, def.fireRate * rateMul),
+      fireRate: Math.max(0.22, def.fireRate * rateMul),
       range: def.range * rangeMul,
       projectileSpeed: def.projectileSpeed,
       projectileColor: def.projectileColor,
@@ -1426,7 +1413,6 @@
       incomePerWave: def.incomePerWave
         ? def.incomePerWave + (lv - 1) // L1:10 … L5:14
         : 0,
-      softVsArmor: def.softVsArmor != null ? def.softVsArmor : 1,
     };
   }
 
@@ -1474,13 +1460,6 @@
       const gain = (next.incomePerWave || 0) - (cur.incomePerWave || 0);
       if (gain > 0) parts.push(`+${gain}g/wave`);
       if (!parts.length) parts.push('more income');
-    }
-    if (tw.type === 'barrage') {
-      parts.length = 0;
-      if (dmgGain > 0) parts.push(`+${dmgGain} dmg`);
-      if (next.fireRate < cur.fireRate - 0.001) parts.push('faster volley');
-      if (next.range > cur.range + 0.5) parts.push('more range');
-      if (!parts.length) parts.push('heavier barrage');
     }
     if (!parts.length) parts.push('stronger');
     return parts.join(', ');
@@ -2467,7 +2446,7 @@
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Barrage for swarms · Beacon on bends · double-tap to upgrade.`;
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Beacon on bends · Archer for cheap DPS · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -2617,13 +2596,11 @@
       el.hint.textContent = state.selected
         ? (type === 'beacon'
           ? 'Selected Beacon — deep slow aura, no shots. Place on bends.'
-          : (type === 'barrage'
-            ? 'Selected Barrage — fast swarm shredder (soft vs armor).'
-            : (type === 'bank'
-              ? 'Selected Bank — +gold each wave clear, no shots.'
-              : (type === 'barrier'
-                ? 'Selected Barrier — place ON the path. Full stop 3s, then cooldown.'
-                : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`))))
+          : (type === 'bank'
+            ? 'Selected Bank — +gold each wave clear, no shots.'
+            : (type === 'barrier'
+              ? 'Selected Barrier — place ON the path. Full stop 3s, then cooldown.'
+              : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`)))
         : 'Tap tiles to build · double-tap a tower to upgrade';
       updateHUD();
     });
@@ -2680,9 +2657,7 @@
     if (def.multi) bits.push(`multi ×${def.multi}`);
     if (def.slowMul) bits.push('slow shots');
     if (def.auraRadius) bits.push('chill aura');
-    if (def.softVsArmor != null && def.softVsArmor < 1) bits.push('soft vs armor');
-    const role = type === 'barrage' ? 'Swarm shredder'
-      : type === 'cannon' ? 'AoE punch'
+    const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'zap' ? 'Chain targets'
       : type === 'frost' ? 'Slow + chill'
@@ -2938,13 +2913,8 @@
   function applyDamage(en, amount, color, opts) {
     if (!en || !state.enemies.includes(en)) return false;
     const o = opts || {};
-    let mul = 1;
-    // Barrage (and similar) soft vs armored Shells / Titans
-    if ((en.armor || 0) > 0 && o.softVsArmor != null && o.softVsArmor < 1) {
-      mul *= o.softVsArmor;
-    }
     const resist = Math.max(0, Math.min(0.75, en.armor || 0));
-    const dealt = Math.max(1, Math.round(amount * mul * (1 - resist)));
+    const dealt = Math.max(1, Math.round(amount * (1 - resist)));
     en.hp -= dealt;
     en.hitFlash = 0.12;
     const p = posOnPath(en.dist);
@@ -3201,15 +3171,9 @@
                 slowDur: st.slowDur,
                 splashRadius: st.splashRadius,
                 splashMul: st.splashMul,
-                softVsArmor: st.softVsArmor,
               });
               tw.cd = st.fireRate;
               tw.pulse = 0.15;
-              if (tw.type === 'barrage') {
-                burst(tw.x, tw.y - 8, st.projectileColor, 6, {
-                  lifeMul: 0.6, speedMin: 35, speedMax: 110, upBias: 50, gravity: 70, rMin: 1, rMax: 2.6,
-                });
-              }
             }
           }
         }
@@ -3230,8 +3194,7 @@
           if (en && state.enemies.includes(en)) {
             const p = posOnPath(en.dist);
             const killed = applyDamage(en, pr.damage, pr.color, {
-              softVsArmor: pr.softVsArmor,
-              burstN: pr.type === 'barrage' ? 4 : 6,
+              burstN: 6,
             });
             if (pr.type === 'frost' && pr.slowMul && !killed) {
               applySlow(en, pr.slowMul, pr.slowDur || 1.4);
@@ -3752,24 +3715,6 @@
           ctx.beginPath();
           ctx.arc(0, -6, 3.2, 0, Math.PI * 2);
           ctx.fill();
-        } else if (tw.type === 'barrage') {
-          ctx.fillStyle = 'rgba(251, 113, 133, 0.35)';
-          ctx.beginPath();
-          ctx.arc(0, 0, 12, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#fda4af';
-          ctx.fillRect(-7, -11, 4, 14);
-          ctx.fillRect(3, -11, 4, 14);
-          ctx.fillStyle = '#fb7185';
-          ctx.beginPath();
-          ctx.roundRect ? ctx.roundRect(-9, -2, 18, 12, 3) : ctx.rect(-9, -2, 18, 12);
-          ctx.fill();
-          ctx.fillStyle = '#fde68a';
-          ctx.beginPath();
-          ctx.arc(-5, 12, 2, 0, Math.PI * 2);
-          ctx.arc(0, 12, 2, 0, Math.PI * 2);
-          ctx.arc(5, 12, 2, 0, Math.PI * 2);
-          ctx.fill();
         } else if (tw.type === 'bank') {
           ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
           ctx.beginPath();
@@ -4255,7 +4200,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v44';
+  const BOOT = 'pg-boot-v45';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
