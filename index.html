@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 24 -->
+<!-- path-guard-build: 25 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -267,13 +267,22 @@
   }
   #build-ver { text-align: center; font-size: 10px; opacity: 0.45; }
   .map-tip { font-size: 12px; opacity: 0.85; margin: 0 0 10px; line-height: 1.35; }
+  .hard-mode-row {
+    width: min(280px, 90%); margin: 0 0 10px; display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: #fde68a; font-weight: 700; justify-content: center;
+  }
+  .hard-mode-row input { width: 16px; height: 16px; accent-color: #ea580c; }
+  #wave-preview {
+    text-align: center; font-size: 11px; color: #94a3b8; min-height: 14px; margin-top: 2px;
+  }
+  #wave-preview.hot { color: #fecaca; font-weight: 700; }
   #challenge-banner {
     position: absolute; left: 50%; top: 18%; transform: translate(-50%, -50%);
     pointer-events: none; z-index: 6; text-align: center;
     font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
     color: #fecaca; text-shadow: 0 0 18px rgba(239,68,68,0.85), 0 2px 0 #450a0a;
     opacity: 0; transition: opacity 0.25s ease;
-    font-size: 18px; white-space: nowrap;
+    font-size: 22px; white-space: nowrap;
   }
   #challenge-banner.show { opacity: 1; animation: challengePulse 1.2s ease-in-out 2; }
   #challenge-banner .sub { display: block; font-size: 12px; letter-spacing: 0.04em;
@@ -373,7 +382,8 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <p>Pick a path, then build towers and hold the line.</p>
-      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#7f1d1d">dark red elite</span></p>
+      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel Shells shrug damage.</p>
+      <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 1: Spiral — Easy
         <span class="sub">Longest path · more shoot time · +20 start gold</span>
@@ -382,12 +392,16 @@
         Map 2: Serpentine — Medium
         <span class="sub">Open S-corridors · light pressure · +5 gold</span>
       </button>
+      <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
+        Map 3: Crosscut — Medium-Hard
+        <span class="sub">Midfield cross · fewer open lanes</span>
+      </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
-        Map 3: Winding — Hard
+        Map 4: Winding — Hard
         <span class="sub">Tight switchbacks · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
-        Map 4: Gauntlet — Brutal
+        Map 5: Gauntlet — Brutal
         <span class="sub">Shortest path · least shoot time · elite mix</span>
       </button>
     </div>
@@ -447,7 +461,8 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 24</div>
+    <div id="wave-preview"></div>
+    <div id="build-ver">build 25</div>
   </div>
 </div>
 
@@ -480,7 +495,7 @@
       spawnExtra: 1,
       hardenChance: 0.1,
       startGoldBonus: 5,
-      // Easy: full-width S on every other row — open build lanes between
+      // Medium: full-width S on every other row — open build lanes between
       path: [
         tc(0, 0), tc(9, 0),
         tc(9, 2), tc(0, 2),
@@ -489,6 +504,22 @@
         tc(0, 8), tc(9, 8),
         tc(9, 10), tc(0, 10),
         tc(0, 12), tc(9, 12),
+      ],
+    },
+    crosscut: {
+      id: 'crosscut',
+      name: 'Crosscut',
+      spawnExtra: 2,
+      hardenChance: 0.18,
+      startGoldBonus: 0,
+      // Medium-Hard: plunge to mid, cross, then south — fewer open lanes
+      path: [
+        tc(0, 0), tc(5, 0),
+        tc(5, 5), tc(9, 5),
+        tc(9, 2), tc(2, 2),
+        tc(2, 8), tc(8, 8),
+        tc(8, 11), tc(1, 11),
+        tc(1, 13), tc(7, 13),
       ],
     },
     winding: {
@@ -570,9 +601,11 @@
 
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
-    // Color = threat (green easy → dark red hardest). Size: Scout < Grunt < Brute < Raider.
+    // Color = threat (green easy → dark red hardest). Shell = steel armor (dmg resist).
+    // Size: Scout < Grunt < Shell < Brute < Raider.
     normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
     fast:   { name: 'Scout',  r: 10, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
+    shell:  { name: 'Shell',  r: 15, hp: 240, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.32 },
     tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
     raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
   };
@@ -586,16 +619,16 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'grunt', 'scout', 'brute', 'raider'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'grunt', 'scout', 'brute', 'raider', 'shell'];
   const SPRITES = {};
   const SPRITE_OK = {};
-  const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', tank: 'brute', raider: 'raider' };
+  const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider' };
   for (const name of SPRITE_NAMES) {
     const img = new Image();
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=24`;
+    img.src = `./sprites/${name}.png?v=25`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -616,6 +649,9 @@
     mapId: 'spiral',
     mapPicked: false,
     targetMode: 'first', // first | strongest | closest
+    hardMode: false,
+    killStreak: 0,
+    killStreakTimer: 0,
     gold: START_GOLD,
     lives: START_LIVES,
     wave: 0,
@@ -677,6 +713,8 @@
     upgradeCost: document.getElementById('upgrade-cost'),
     sellValue: document.getElementById('sell-value'),
     sellConfirmValue: document.getElementById('sell-confirm-value'),
+    wavePreview: document.getElementById('wave-preview'),
+    hardMode: document.getElementById('hard-mode'),
   };
 
   function pathLength(path) {
@@ -928,6 +966,8 @@
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
     const bonusBit = ch ? ` (+${ch.bonus}g)` : '';
+    state.killStreak = 0;
+    state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
       state.awaitingNextWave = false;
       // Longer breath after challenge waves
@@ -942,6 +982,7 @@
         ? `Wave ${cleared} cleared${bonusBit}! Next: ${preview}. Build, then Next Wave.`
         : `Wave ${cleared} cleared${bonusBit}! Build up, then press Next Wave.`;
     }
+    setWavePreview(preview ? `Incoming: ${preview}` : '', !!(preview && isChallengeWave(next)));
     updateWaveButtons();
     updateHUD();
   }
@@ -1258,19 +1299,19 @@
     if (w === 5) return ['fast', 'fast', 'fast', 'fast', 'fast', 'normal', 'fast', 'fast']; // scout swarm
     if (w === 6) return ['normal', 'normal', 'fast', 'normal']; // breather
     if (w === 7) return ['normal', 'fast', 'normal', 'fast', 'normal'];
-    if (w === 8) return ['fast', 'normal', 'tank', 'fast', 'normal'];
-    if (w === 9) return ['fast', 'tank', 'normal', 'fast', 'tank'];
-    if (w === 10) return ['tank', 'tank', 'tank', 'normal', 'tank', 'fast', 'tank']; // brute push
-    if (w === 11) return ['normal', 'fast', 'normal', 'fast']; // breather
-    if (w === 12) return ['fast', 'tank', 'normal', 'fast', 'raider', 'tank'];
-    if (w === 13) return ['fast', 'tank', 'raider', 'normal', 'tank', 'fast'];
-    if (w === 14) return ['tank', 'fast', 'tank', 'raider', 'fast', 'tank'];
-    if (w === 15) return ['raider', 'tank', 'raider', 'tank', 'raider', 'fast', 'tank']; // raider pack
-    if (w === 16) return ['fast', 'normal', 'tank', 'fast', 'normal']; // breather
-    if (w === 17) return ['tank', 'raider', 'fast', 'tank', 'raider'];
-    if (w === 18) return ['tank', 'raider', 'raider', 'fast', 'tank', 'raider'];
-    if (w === 19) return ['raider', 'tank', 'fast', 'raider', 'tank', 'raider'];
-    return ['raider', 'tank', 'raider', 'tank', 'raider', 'fast', 'raider', 'tank']; // finale
+    if (w === 8) return ['fast', 'normal', 'shell', 'fast', 'normal']; // Shell intro
+    if (w === 9) return ['fast', 'tank', 'shell', 'fast', 'tank'];
+    if (w === 10) return ['tank', 'tank', 'tank', 'shell', 'tank', 'fast', 'tank']; // brute push
+    if (w === 11) return ['normal', 'fast', 'shell', 'fast']; // breather
+    if (w === 12) return ['fast', 'tank', 'shell', 'fast', 'raider', 'tank'];
+    if (w === 13) return ['fast', 'shell', 'raider', 'tank', 'shell', 'fast'];
+    if (w === 14) return ['tank', 'shell', 'tank', 'raider', 'fast', 'tank'];
+    if (w === 15) return ['raider', 'tank', 'raider', 'shell', 'raider', 'fast', 'tank']; // raider pack
+    if (w === 16) return ['fast', 'normal', 'shell', 'fast', 'normal']; // breather
+    if (w === 17) return ['tank', 'raider', 'shell', 'tank', 'raider'];
+    if (w === 18) return ['tank', 'raider', 'shell', 'raider', 'tank', 'raider'];
+    if (w === 19) return ['raider', 'shell', 'fast', 'raider', 'tank', 'raider'];
+    return ['raider', 'tank', 'raider', 'shell', 'raider', 'fast', 'raider', 'tank']; // finale
   }
 
   function wavePreviewLabel(w) {
@@ -1282,13 +1323,19 @@
       const k = mix[i % mix.length];
       counts[k] = (counts[k] || 0) + 1;
     }
-    const order = ['normal', 'fast', 'tank', 'raider'];
+    const order = ['normal', 'fast', 'shell', 'tank', 'raider'];
     const parts = [];
     for (const k of order) {
       if (!counts[k]) continue;
       parts.push(`${counts[k]} ${ENEMY_TYPES[k].name}${counts[k] > 1 ? 's' : ''}`);
     }
     return parts.join(', ') || 'enemies';
+  }
+
+  function setWavePreview(text, hot) {
+    if (!el.wavePreview) return;
+    el.wavePreview.textContent = text || '';
+    el.wavePreview.classList.toggle('hot', !!hot);
   }
 
   function showChallengeBanner(w) {
@@ -1307,7 +1354,8 @@
   function hardenKind(kind, chance, w) {
     if (chance <= 0 || Math.random() >= chance) return kind;
     if (kind === 'normal') return 'fast';
-    if (kind === 'fast') return 'tank';
+    if (kind === 'fast') return w >= 8 ? 'shell' : 'tank';
+    if (kind === 'shell') return 'tank';
     // Raiders only from wave 12+ (even via map hardenChance)
     if (kind === 'tank' && w >= 12) return 'raider';
     return kind;
@@ -1315,9 +1363,10 @@
 
   function buildSpawnQueue(w) {
     const map = activeMap();
-    const n = waveEnemyCount(w) + (map.spawnExtra || 0);
+    const hard = !!state.hardMode;
+    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + (hard ? 3 : 0);
     const mix = enemyMixForWave(w);
-    const chance = map.hardenChance || 0;
+    const chance = (map.hardenChance || 0) + (hard ? 0.15 : 0);
     const q = [];
     for (let i = 0; i < n; i++) {
       q.push(hardenKind(mix[i % mix.length], chance, w));
@@ -1345,8 +1394,10 @@
     if (ch) {
       showChallengeBanner(state.wave);
       el.hint.textContent = `${ch.title} — ${ch.sub}!`;
+      setWavePreview(ch.sub, true);
     } else {
-      el.hint.textContent = `Wave ${state.wave} incoming!`;
+      el.hint.textContent = `Wave ${state.wave} incoming — ${wavePreviewLabel(state.wave)}`;
+      setWavePreview(wavePreviewLabel(state.wave), false);
     }
     updateHUD();
   }
@@ -1365,6 +1416,7 @@
       r: et.r,
       color: et.color,
       stroke: et.stroke,
+      armor: et.armor || 0,
       hitFlash: 0,
       slowTimer: 0,
       slowMul: 1,
@@ -1420,6 +1472,7 @@
   function pickMap(mapId) {
     const wasChange = state.changingMap;
     state.changingMap = false;
+    state.hardMode = !!(el.hardMode && el.hardMode.checked);
     // Clear board + reset start economy whenever a map is (re)picked
     state.gold = startGoldForMap(mapId);
     state.lives = START_LIVES;
@@ -1447,9 +1500,11 @@
     state.mapPicked = true;
     el.mapOverlay.classList.remove('show');
     el.overlay.classList.remove('show');
+    const hardTag = state.hardMode ? ' · HARD' : '';
     el.hint.textContent = wasChange
-      ? 'Map changed — build, then Next Wave'
-      : `${MAPS[mapId].name} ready — green=weak, dark red=elite. Place 2–3 towers, then Next Wave`;
+      ? `Map changed${hardTag} — build, then Next Wave`
+      : `${MAPS[mapId].name}${hardTag} ready — green=weak, dark red=elite. Place 2–3 towers, then Next Wave`;
+    setWavePreview('', false);
     updateWaveButtons();
     updateHUD();
   }
@@ -1689,7 +1744,9 @@
 
   function applyDamage(en, amount, color) {
     if (!en || !state.enemies.includes(en)) return false;
-    en.hp -= amount;
+    const resist = Math.max(0, Math.min(0.75, en.armor || 0));
+    const dealt = Math.max(1, Math.round(amount * (1 - resist)));
+    en.hp -= dealt;
     en.hitFlash = 0.12;
     const p = posOnPath(en.dist);
     burst(p.x, p.y, color, 6);
@@ -1699,6 +1756,11 @@
       flashGold();
       burst(p.x, p.y, '#fbbf24', 18);
       addFloat(p.x, p.y - 16, `+${en.reward}`, '#fde68a');
+      state.killStreak = (state.killStreak || 0) + 1;
+      state.killStreakTimer = 1.35;
+      if (state.killStreak >= 3) {
+        addFloat(p.x, p.y - 30, `x${state.killStreak} streak!`, '#fdba74');
+      }
       const idx = state.enemies.indexOf(en);
       if (idx >= 0) state.enemies.splice(idx, 1);
       updateHUD();
@@ -1794,6 +1856,11 @@
       if (state.betweenWaves && state.waveMode === 'continuous' && !state.awaitingNextWave) {
         state.nextWaveIn -= dt;
         if (state.nextWaveIn <= 0) startNextWave();
+      }
+
+      if (state.killStreakTimer > 0) {
+        state.killStreakTimer -= dt;
+        if (state.killStreakTimer <= 0) state.killStreak = 0;
       }
 
       for (let i = state.enemies.length - 1; i >= 0; i--) {
@@ -2263,8 +2330,8 @@
         // Distinct fallback silhouettes: diamond / circle / square / spiky star
         const makePath = () => {
           ctx.beginPath();
-          if (en.kind === 'tank') {
-            const s = en.r * 0.92;
+          if (en.kind === 'tank' || en.kind === 'shell') {
+            const s = en.r * (en.kind === 'shell' ? 0.88 : 0.92);
             if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.32);
             else ctx.rect(p.x - s, p.y - s, s * 2, s * 2);
           } else if (en.kind === 'fast') {
@@ -2305,6 +2372,13 @@
           ctx.beginPath();
           ctx.arc(p.x, p.y - s * 0.12, s * 0.38, 0, Math.PI * 2);
           ctx.fillStyle = en.hitFlash > 0 ? '#ffedd5' : '#fdba74';
+          ctx.fill();
+        } else if (en.kind === 'shell') {
+          const s = en.r * 0.82;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(p.x - s * 0.7, p.y - s * 0.55, s * 1.4, s * 0.7, 3);
+          else ctx.rect(p.x - s * 0.7, p.y - s * 0.55, s * 1.4, s * 0.7);
+          ctx.fillStyle = en.hitFlash > 0 ? '#e7e5e4' : '#a8a29e';
           ctx.fill();
         } else if (en.kind === 'fast') {
           ctx.beginPath();
@@ -2472,7 +2546,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v24';
+  const BOOT = 'pg-boot-v25';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {

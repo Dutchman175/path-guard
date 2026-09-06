@@ -1,4 +1,4 @@
-const CACHE = 'path-guard-v24';
+const CACHE = 'path-guard-v25';
 const ASSETS = [
   './manifest.webmanifest',
   './icon.svg',
@@ -10,6 +10,7 @@ const ASSETS = [
   './sprites/scout.png',
   './sprites/brute.png',
   './sprites/raider.png',
+  './sprites/shell.png',
 ];
 
 self.addEventListener('install', (e) => {

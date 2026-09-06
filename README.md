@@ -2,8 +2,8 @@
 
 Tower defense — pick a path, place towers, hold the line for 20 waves.
 
-**Color = threat:** green Grunts (weak) → yellow Scouts → orange Brutes → dark red Raiders (elite).
+**Color = threat:** green Grunts → yellow Scouts → orange Brutes → dark red Raiders. Steel **Shells** shrug damage.
 
-Maps (easy → hard): Spiral → Serpentine → Winding → Gauntlet. Challenge waves at 5 / 10 / 15 / 20.
+**Maps (easy → hard):** Spiral → Serpentine → Crosscut → Winding → Gauntlet. Optional Hard Mode adds spawns.
 
-Tap a map, buy Archer/Cannon/Frost/Zap, place on the grid, then Next Wave.
+Challenge waves at 5 / 10 / 15 / 20. Target toggle: First / Strong / Close.
