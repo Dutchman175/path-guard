@@ -10,4 +10,6 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 
 Challenge waves at 5 / 10 / 15 / 20. Between waves: gold **interest**. **Double-tap** a tower to upgrade. Manual Next Wave pays a small early-call bonus. Sell confirms. Mute FX anytime.
 
+**UX (build 42+):** bigger tower taps, tower stats strip, Aim/FX under More, Auto On/Off + early-call gold on Next, first-run tip, scannable win/lose.
+
 **Achievements:** first clear each map, Hard Mode win, Titan kill — checklist always on win/lose overlays. Titan death gets a fanfare float.

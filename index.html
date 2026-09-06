@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 41 -->
+<!-- path-guard-build: 42 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -73,11 +73,11 @@
     background: #1e293b;
     border: 1px solid #334155;
     border-radius: 9px;
-    padding: 6px 4px;
+    padding: 5px 4px;
     text-align: center;
   }
-  .stat .label { color: #94a3b8; font-size: 0.6rem; text-transform: uppercase; }
-  .stat .val { font-weight: 700; font-size: 0.92rem; margin-top: 1px; }
+  .stat .label { color: #94a3b8; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.02em; }
+  .stat .val { font-weight: 800; font-size: 0.9rem; margin-top: 1px; }
   #gold .val { color: #fbbf24; }
   #lives .val { color: #f87171; }
   #wave .val { color: #a78bfa; }
@@ -86,9 +86,14 @@
   #sel .val { color: #34d399; font-size: 0.78rem; }
   #best-line {
     text-align: center;
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     color: #64748b;
-    min-height: 0.9em;
+    min-height: 0;
+    line-height: 1.25;
+    max-height: 1.4em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   #best-line .hard-tag {
     color: #fb923c;
@@ -128,19 +133,19 @@
   #tower-btns {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 3px;
+    gap: 4px;
   }
   .tower-btn {
     appearance: none;
     border: 2px solid #334155;
     background: #1e293b;
     color: #e8eef4;
-    border-radius: 9px;
-    padding: 4px 1px 3px;
-    font-size: 0.6rem;
-    font-weight: 700;
+    border-radius: 10px;
+    padding: 6px 2px 5px;
+    font-size: 0.68rem;
+    font-weight: 800;
     cursor: pointer;
-    min-height: 34px;
+    min-height: 42px;
     min-width: 0;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
     overflow: hidden;
@@ -152,46 +157,68 @@
   .tower-btn.selected {
     border-color: #38bdf8;
     background: #0c4a6e;
-    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
   }
-  .tower-btn .cost { display: block; font-size: 0.5rem; font-weight: 600; color: #fbbf24; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; }
+  .tower-btn .cost { display: block; font-size: 0.58rem; font-weight: 700; color: #fbbf24; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
   #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
   #btn-barrage.selected { border-color: #fb7185; background: #881337; }
-  /* 7 towers: 4 + 3 compact rows. */
+  /* 7 towers: 4 + 3 — keep tap targets roomy on narrow phones */
   @media (max-width: 380px) {
-    #tower-btns { gap: 2px; }
-    .tower-btn { font-size: 0.55rem; padding: 3px 0; min-height: 32px; border-radius: 8px; }
-    .tower-btn .cost { font-size: 0.46rem; }
+    #tower-btns { gap: 3px; }
+    .tower-btn { font-size: 0.62rem; padding: 5px 1px 4px; min-height: 40px; border-radius: 9px; }
+    .tower-btn .cost { font-size: 0.52rem; }
   }
+  #tower-stats {
+    display: none;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 6px 8px;
+    line-height: 1.35;
+    min-height: 2.2em;
+  }
+  #tower-stats.show { display: block; }
+  #tower-stats .muted { color: #94a3b8; font-weight: 600; }
+  #tower-stats .next { color: #c4b5fd; font-weight: 700; }
 
   #util-btns {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
+    gap: 5px;
   }
-  #btn-change-map { grid-column: span 2; }
+  #util-more {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+  #util-more #btn-more { grid-column: 1 / -1; }
+  #util-more.show { display: grid; }
   .util-btn {
     appearance: none;
     border: 1px solid #334155;
     background: #1e293b;
     color: #cbd5e1;
-    border-radius: 8px;
-    padding: 5px 4px;
-    font-size: 0.68rem;
+    border-radius: 9px;
+    padding: 7px 4px;
+    font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 30px;
+    min-height: 36px;
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
   @media (max-width: 380px) {
-    .util-btn { font-size: 0.6rem; padding: 4px 2px; min-height: 28px; }
+    .util-btn { font-size: 0.66rem; padding: 6px 2px; min-height: 34px; }
   }
   .util-btn:active { transform: scale(0.97); }
   .util-btn.active {
@@ -199,6 +226,22 @@
     color: #7dd3fc;
     background: #0c4a6e;
   }
+  #btn-more.active {
+    border-color: #64748b;
+    color: #e2e8f0;
+    background: #334155;
+  }
+  #btn-more-open {
+    width: 100%;
+    min-height: 30px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px dashed #334155;
+    padding: 4px;
+  }
+  #btn-more-open.hidden { display: none !important; }
 
   #wave-btns {
     display: grid;
@@ -290,17 +333,40 @@
   #btn-sell .cost { display: block; font-size: 0.62rem; font-weight: 600; color: #94a3b8; margin-top: 1px; }
   #hint {
     text-align: center;
-    font-size: 0.65rem;
-    color: #64748b;
-    min-height: 1em;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    min-height: 1.15em;
+    line-height: 1.3;
+    padding: 0 4px;
   }
-  #build-ver { text-align: center; font-size: 10px; opacity: 0.45; }
-  .map-tip { font-size: 12px; opacity: 0.85; margin: 0 0 10px; line-height: 1.35; }
+  #onboard-tip {
+    display: none;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #e0f2fe;
+    background: #0c4a6e;
+    border: 1px solid #38bdf8;
+    border-radius: 10px;
+    padding: 8px 10px;
+    line-height: 1.35;
+    margin: 0 0 2px;
+  }
+  #onboard-tip.show { display: block; }
+  #onboard-tip button {
+    appearance: none; border: none; background: transparent;
+    color: #7dd3fc; font-weight: 800; font-size: 0.68rem;
+    margin-left: 6px; cursor: pointer; text-decoration: underline;
+  }
+  #build-ver { text-align: center; font-size: 9px; opacity: 0.35; margin-top: 1px; }
+  .map-tip { font-size: 11px; opacity: 0.9; margin: 0 0 6px; line-height: 1.35; color: #cbd5e1; }
   .hard-mode-row {
-    width: min(280px, 90%); margin: 0 0 10px; display: flex; align-items: center; gap: 8px;
-    font-size: 12px; color: #fde68a; font-weight: 700; justify-content: center;
+    width: min(300px, 94%); margin: 0 0 8px; display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #fde68a; font-weight: 800; justify-content: center;
+    background: rgba(234, 88, 12, 0.12); border: 1px solid rgba(251, 146, 60, 0.45);
+    border-radius: 10px; padding: 8px 12px;
   }
-  .hard-mode-row input { width: 16px; height: 16px; accent-color: #ea580c; }
+  .hard-mode-row input { width: 18px; height: 18px; accent-color: #ea580c; flex-shrink: 0; }
   #wave-preview {
     text-align: center; font-size: 11px; color: #94a3b8; min-height: 14px; margin-top: 2px;
   }
@@ -324,14 +390,14 @@
   #overlay, #map-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 20, 25, 0.9);
+    background: rgba(15, 20, 25, 0.92);
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     z-index: 20;
-    padding: 20px;
+    padding: 16px 14px;
     text-align: center;
     pointer-events: none;
   }
@@ -339,31 +405,41 @@
     display: flex;
     pointer-events: auto;
   }
-  #map-overlay {
+  #overlay {
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-top: 28px;
+    padding-bottom: 20px;
     gap: 8px;
+  }
+  #map-overlay {
+    gap: 7px;
     padding: 10px 12px 16px;
     justify-content: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
-  #map-overlay h2 { font-size: 1.25rem; flex-shrink: 0; margin: 2px 0 0; }
-  #overlay h2 { font-size: 1.6rem; }
-  #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.85rem; max-width: 300px; }
+  #map-overlay h2 { font-size: 1.2rem; flex-shrink: 0; margin: 2px 0 0; }
+  #overlay h2 { font-size: 1.45rem; flex-shrink: 0; }
+  #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.82rem; max-width: 300px; }
+  #overlay-msg { line-height: 1.4; }
   #map-overlay p { margin-bottom: 2px; flex-shrink: 0; }
   #map-overlay .map-tip { max-width: 300px; margin: 0 0 4px; flex-shrink: 0; }
-  #map-overlay .hard-mode-row { flex-shrink: 0; margin-bottom: 6px; }
+  #map-overlay .hard-mode-row { flex-shrink: 0; margin-bottom: 4px; }
   #overlay .win { color: #4ade80; }
   #overlay .lose { color: #f87171; }
-  #overlay .rating { color: #fde68a; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em; }
+  #overlay .rating { color: #fde68a; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
   #overlay-achievements {
-    color: #a5f3fc; font-size: 0.78rem; font-weight: 700;
-    max-width: 300px; line-height: 1.45; min-height: 1.2em;
-    margin-top: 4px; text-align: center;
+    color: #a5f3fc; font-size: 0.74rem; font-weight: 700;
+    max-width: 300px; line-height: 1.4; min-height: 0;
+    margin: 2px 0 6px; text-align: center;
   }
-  #overlay-achievements .new { color: #fde68a; }
+  #overlay-achievements .new { color: #fde68a; display: block; margin-bottom: 4px; }
   #overlay-achievements .muted { color: #64748b; font-weight: 600; }
-  #overlay-achievements .ach-list { color: #94a3b8; font-weight: 600; font-size: 0.72rem; }
+  #overlay-achievements .ach-list { color: #94a3b8; font-weight: 600; font-size: 0.7rem; }
   #overlay-achievements .ach-on { color: #6ee7b7; }
   #overlay-achievements .ach-off { color: #475569; }
   #restart-btn, #replay-btn, .map-pick-btn {
@@ -489,7 +565,7 @@
       <div class="stat" id="gold"><div class="label">Gold</div><div class="val">—</div></div>
       <div class="stat" id="lives"><div class="label">Lives</div><div class="val">8</div></div>
       <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/20</div></div>
-      <div class="stat" id="sel"><div class="label">Selected</div><div class="val">—</div></div>
+      <div class="stat" id="sel"><div class="label">Focus</div><div class="val">—</div></div>
     </div>
     <div id="best-line"></div>
   </header>
@@ -498,9 +574,9 @@
     <canvas id="c" width="400" height="560"></canvas>
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
-      <p>Pick a path, then build towers and hold the line.</p>
-      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel <b>Shells</b> shrug damage · Wave 20 <b>Titan</b> boss · Skitters resist splash.</p>
-      <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
+      <p>Build on green tiles · hold 20 waves.</p>
+      <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
+      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Shells resist · Wave 20 Titan</p>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         <span class="map-title">Map 1: Spiral <span class="diff easy">Easy</span></span>
         <span class="sub">Longest path · more shoot time · +35 start gold</span>
@@ -539,66 +615,72 @@
 
   <div id="controls">
     <div id="tower-btns">
-      <button type="button" class="tower-btn" id="btn-archer" data-type="archer">
-        🏹 Arch
+      <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer">
+        🏹 Archer
         <span class="cost">50g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon">
-        💣 Cann
+      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon">
+        💣 Cannon
         <span class="cost">90g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-frost" data-type="frost">
+      <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost">
         ❄️ Frost
         <span class="cost">75g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-zap" data-type="zap">
+      <button type="button" class="tower-btn" id="btn-zap" data-type="zap" title="Zap">
         ⚡ Zap
         <span class="cost">135g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper">
-        🎯 Snip
+      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper">
+        🎯 Sniper
         <span class="cost">120g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon">
-        🔦 Beac
+      <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon" title="Beacon — slow aura">
+        🔦 Beacon
         <span class="cost">45g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-barrage" data-type="barrage">
-        🔫 Barr
+      <button type="button" class="tower-btn" id="btn-barrage" data-type="barrage" title="Barrage — fast swarm shredder">
+        🔫 Barrage
         <span class="cost">42g</span>
       </button>
     </div>
+    <div id="tower-stats" aria-live="polite"></div>
     <div id="tower-actions">
       <button type="button" class="action-btn" id="btn-upgrade">
-        ⬆ Upgrade tower
+        ⬆ Upgrade
         <span class="cost" id="upgrade-cost">—</span>
       </button>
       <button type="button" class="action-btn" id="btn-sell">
-        Sell for gold
+        Sell
         <span class="cost" id="sell-value">—</span>
       </button>
     </div>
     <div id="sell-confirm">
       <button type="button" class="action-btn" id="btn-sell-yes">
-        Confirm refund
+        Confirm sell
         <span class="cost" id="sell-confirm-value">—</span>
       </button>
-      <button type="button" class="action-btn" id="btn-sell-no">Keep tower</button>
+      <button type="button" class="action-btn" id="btn-sell-no">Keep</button>
     </div>
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
-      <button type="button" class="util-btn" id="btn-target">Target: First</button>
-      <button type="button" class="util-btn" id="btn-juice">FX On</button>
-      <button type="button" class="util-btn" id="btn-change-map" disabled>Map</button>
+      <button type="button" class="util-btn" id="btn-change-map" disabled>Maps</button>
     </div>
+    <div id="util-more">
+      <button type="button" class="util-btn" id="btn-target">Aim: First</button>
+      <button type="button" class="util-btn" id="btn-juice">FX On</button>
+      <button type="button" class="util-btn" id="btn-more">Less ▴</button>
+    </div>
+    <button type="button" class="util-btn" id="btn-more-open">More · Aim &amp; FX ▾</button>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
-      <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
+      <button type="button" class="wave-btn" id="btn-continuous">Auto: Off</button>
     </div>
-    <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
+    <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
+    <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 41</div>
+    <div id="build-ver">build 42</div>
   </div>
 </div>
 
@@ -622,6 +704,8 @@
   const LS_JUICE = 'pg-juice';
   const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs } }
   const LS_ACH = 'pg-achievements'; // { maps:{}, hardWin, titanKill }
+  const LS_UX_TIP = 'pg-ux-tip-v42';
+  const LS_UTIL_MORE = 'pg-util-more';
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -874,6 +958,7 @@
     challengeAwarded: {},
     juice: true,
     runStartedAt: 0,
+    utilMoreOpen: false,
   };
 
   const el = {
@@ -890,6 +975,12 @@
     btnChangeMap: document.getElementById('btn-change-map'),
     btnTarget: document.getElementById('btn-target'),
     btnJuice: document.getElementById('btn-juice'),
+    btnMore: document.getElementById('btn-more'),
+    btnMoreOpen: document.getElementById('btn-more-open'),
+    utilMore: document.getElementById('util-more'),
+    towerStats: document.getElementById('tower-stats'),
+    onboardTip: document.getElementById('onboard-tip'),
+    onboardDismiss: document.getElementById('onboard-dismiss'),
     livesStat: document.getElementById('lives'),
     canvasWrap: document.getElementById('canvas-wrap'),
     overlay: document.getElementById('overlay'),
@@ -991,6 +1082,11 @@
         el.btnJuice.classList.toggle('active', state.juice !== false);
       }
     } catch (_) {}
+    try {
+      const um = localStorage.getItem(LS_UTIL_MORE);
+      state.utilMoreOpen = um === '1' || um === 'true';
+    } catch (_) {}
+    syncUtilMore();
   }
 
   function saveJuice(on) {
@@ -1074,23 +1170,23 @@
   function achievementSummary(newly) {
     const ach = loadAchievements();
     const totalMaps = Object.keys(MAPS).length;
-    const mapNames = Object.keys(MAPS).filter((id) => ach.maps[id]).map((id) => MAPS[id].name);
+    const cleared = Object.keys(MAPS).filter((id) => ach.maps[id]).length;
     const lines = [];
     if (newly && newly.length) {
       lines.push(`<span class="new">New: ${newly.join(' · ')}</span>`);
     }
-    // Always show full checklist on win AND lose overlays
-    const mapBit = mapNames.length
-      ? `<span class="ach-on">Maps ${mapNames.length}/${totalMaps}</span> · ${mapNames.join(', ')}`
+    // Compact checklist — scannable on phone (no long map-name lists)
+    const mapBit = cleared
+      ? `<span class="ach-on">Maps ${cleared}/${totalMaps}</span>`
       : `<span class="ach-off">Maps 0/${totalMaps}</span>`;
     const hardBit = ach.hardWin
-      ? '<span class="ach-on">Hard Mode ✓</span>'
-      : '<span class="ach-off">Hard Mode —</span>';
+      ? '<span class="ach-on">Hard ✓</span>'
+      : '<span class="ach-off">Hard —</span>';
     const titanBit = ach.titanKill
-      ? '<span class="ach-on">Titan Slayer ✓</span>'
-      : '<span class="ach-off">Titan Slayer —</span>';
-    lines.push(`<span class="ach-list">${mapBit}<br>${hardBit} · ${titanBit}</span>`);
-    return lines.join('<br>');
+      ? '<span class="ach-on">Titan ✓</span>'
+      : '<span class="ach-off">Titan —</span>';
+    lines.push(`<span class="ach-list">${mapBit} · ${hardBit} · ${titanBit}</span>`);
+    return lines.join('');
   }
 
   function formatBestTime(ms) {
@@ -1129,15 +1225,18 @@
   function refreshBestLine() {
     const { bestWave, bestWin } = loadBest();
     const parts = [];
-    if (state.hardMode && state.mapPicked) parts.push('<span class="hard-tag">HARD MODE</span>');
-    if (bestWave > 0) parts.push(`Best wave ${bestWave}`);
-    if (bestWin > 0) parts.push(`Best win ${bestWin}♥`);
+    if (state.hardMode && state.mapPicked) parts.push('<span class="hard-tag">HARD</span>');
     if (state.mapPicked) {
       const ms = loadMapStats()[state.mapId];
       if (ms && ms.wins > 0) {
         const t = formatBestTime(ms.bestMs);
-        parts.push(t ? `${MAPS[state.mapId].name} ${ms.wins}W · ${t}` : `${MAPS[state.mapId].name} ${ms.wins}W`);
+        parts.push(t ? `${ms.wins}W · ${t}` : `${ms.wins}W`);
+      } else if (bestWave > 0) {
+        parts.push(`Best W${bestWave}`);
       }
+      if (bestWin > 0) parts.push(`${bestWin}♥ best`);
+    } else if (bestWave > 0) {
+      parts.push(`Best wave ${bestWave}`);
     }
     if (!parts.length) {
       el.bestLine.innerHTML = '';
@@ -1261,13 +1360,10 @@
     state.selectedTower = tw;
     state.sellConfirming = false;
     const st = towerStats(tw);
-    const stats = towerStatLine(tw);
     const up = upgradeCostFor(tw);
-    if (up == null) {
-      el.hint.textContent = `${st.name} Lv${tw.level} — ${stats} (MAX)`;
-    } else {
-      el.hint.textContent = `${st.name} Lv${tw.level} — ${stats} | next: ${upgradeBlurb(tw)} (${up}g)`;
-    }
+    el.hint.textContent = up == null
+      ? `${st.name} maxed — Sell or pick another`
+      : `${st.name} selected — Upgrade, double-tap, or Sell`;
   }
 
   function posOnPath(dist) {
@@ -1289,7 +1385,7 @@
     if (!Number.isFinite(state.gold)) state.gold = 0;
     el.gold.textContent = Math.floor(state.gold);
     el.lives.textContent = state.lives;
-    if (el.btnTarget) el.btnTarget.textContent = `Target: ${targetModeLabel(state.targetMode || 'first')}`;
+    if (el.btnTarget) el.btnTarget.textContent = `Aim: ${targetModeLabel(state.targetMode || 'first')}`;
     el.wave.textContent = `${state.wave}/${state.maxWaves}`;
     const waveStat = document.getElementById('wave');
     if (waveStat) {
@@ -1319,20 +1415,32 @@
     el.towerBtns.classList.toggle('hidden', showActions);
     el.towerActions.classList.toggle('show', showActions && !showConfirm);
     el.sellConfirm.classList.toggle('show', showConfirm);
+    if (el.towerStats) {
+      if (showActions) {
+        const tw = state.selectedTower;
+        const st = towerStats(tw);
+        const curStats = towerStatLine(tw);
+        const cost = upgradeCostFor(tw);
+        const nextBit = cost == null
+          ? '<span class="muted">MAX</span>'
+          : `<span class="next">Next ${cost}g: ${upgradeBlurb(tw)}</span>`;
+        el.towerStats.innerHTML = `<strong>${st.name} Lv${tw.level}</strong> · ${curStats}<br>${nextBit}`;
+        el.towerStats.classList.add('show');
+      } else {
+        el.towerStats.classList.remove('show');
+        el.towerStats.innerHTML = '';
+      }
+    }
     if (showActions) {
       const tw = state.selectedTower;
       const cost = upgradeCostFor(tw);
       const maxed = cost == null;
       const value = sellValueFor(tw);
       el.btnUpgrade.disabled = maxed || state.gold < cost;
-      const curStats = towerStatLine(tw);
-      el.upgradeCost.textContent = maxed
-        ? `MAX · ${curStats}`
-        : `${cost}g · ${upgradeBlurb(tw)}`;
-      // Keep current combat stats visible on the sell line subtitle when confirming is off
+      el.upgradeCost.textContent = maxed ? 'MAX' : `${cost}g`;
       el.sellValue.textContent = `+${value}g`;
-      el.btnUpgrade.title = curStats;
-      el.hint.dataset.towerStats = curStats;
+      el.btnUpgrade.title = towerStatLine(tw);
+      el.hint.dataset.towerStats = towerStatLine(tw);
 
       el.btnSell.disabled = false;
       el.sellConfirmValue.textContent = `+${value}g`;
@@ -1346,20 +1454,53 @@
       el.btnJuice.classList.toggle('active', state.juice !== false);
     }
     if (el.btnChangeMap) {
-      // Enabled whenever a map is in play (mid-wave / between / paused / game over);
-      // disabled only on the map-select overlay itself (!mapPicked).
+      // Enabled whenever a map is in play; disabled only on map-select overlay.
       el.btnChangeMap.disabled = !state.mapPicked;
     }
+    syncUtilMore();
     refreshBestLine();
+    updateWaveButtonLabels();
+  }
+
+  function syncUtilMore() {
+    const open = !!state.utilMoreOpen;
+    if (el.utilMore) el.utilMore.classList.toggle('show', open);
+    if (el.btnMoreOpen) el.btnMoreOpen.classList.toggle('hidden', open);
+  }
+
+  function setUtilMore(open) {
+    state.utilMoreOpen = !!open;
+    try { localStorage.setItem(LS_UTIL_MORE, state.utilMoreOpen ? '1' : '0'); } catch (_) {}
+    syncUtilMore();
+  }
+
+  function earlyCallBonusAmount() {
+    return 4 + Math.floor(state.wave * 0.35);
+  }
+
+  function updateWaveButtonLabels() {
+    if (!el.btnContinuous || !el.btnNextWave) return;
+    const autoOn = state.waveMode === 'continuous';
+    el.btnContinuous.textContent = autoOn ? 'Auto: On' : 'Auto: Off';
+    el.btnContinuous.classList.toggle('active', autoOn);
+    const canEarly = state.mapPicked && !state.gameOver && state.started && state.awaitingNextWave && !autoOn;
+    if (canEarly) {
+      el.btnNextWave.textContent = `Next · +${earlyCallBonusAmount()}g`;
+    } else if (state.mapPicked && !state.started) {
+      el.btnNextWave.textContent = 'Next Wave';
+    } else {
+      el.btnNextWave.textContent = 'Next Wave';
+    }
   }
 
   function updateWaveButtons() {
     const canStart = state.mapPicked && !state.gameOver && (!state.started || state.awaitingNextWave);
     el.btnNextWave.disabled = !canStart;
-    // Continuous: start when awaiting, or toggle on/off anytime after the run has begun
+    // Auto: start when awaiting, or toggle on/off anytime after the run has begun
     const canToggleContinuous = state.mapPicked && !state.gameOver && state.started;
     el.btnContinuous.disabled = !(canStart || canToggleContinuous);
     el.btnContinuous.classList.toggle('active', state.waveMode === 'continuous');
+    updateWaveButtonLabels();
   }
 
   function setWaveMode(mode) {
@@ -1526,8 +1667,8 @@
     const i = TARGET_MODES.indexOf(state.targetMode);
     state.targetMode = TARGET_MODES[(i < 0 ? 0 : i + 1) % TARGET_MODES.length];
     saveTargetMode();
-    if (el.btnTarget) el.btnTarget.textContent = `Target: ${targetModeLabel(state.targetMode)}`;
-    el.hint.textContent = `Towers prioritize: ${targetModeLabel(state.targetMode)}`;
+    if (el.btnTarget) el.btnTarget.textContent = `Aim: ${targetModeLabel(state.targetMode)}`;
+    el.hint.textContent = `Aim: towers prioritize ${targetModeLabel(state.targetMode)}`;
     updateHUD();
   }
 
@@ -1722,10 +1863,12 @@
     if (state.selected) {
       const tile = getTileAt(mx, my);
       if (!tile || !isTileBuildable(tile.col, tile.row)) {
-        state.selected = null;
-        clearTowerSelection();
-        el.hint.textContent = 'Build canceled. Tap a tower type, or tap a tower to upgrade';
-        updateHUD();
+        // Keep build mode — accidental path taps should not cancel selection
+        if (tile) {
+          const c = tileCenter(tile.col, tile.row);
+          placeFeedback(c.x, c.y, false);
+        }
+        el.hint.textContent = 'Can\'t build there — tap a green + tile (or re-tap the tower button to cancel)';
         return;
       }
       if (isTileOccupied(tile.col, tile.row)) {
@@ -1933,7 +2076,7 @@
     const sub = document.getElementById('challenge-sub');
     if (!banner || !info) return;
     title.textContent = info.title;
-    sub.textContent = info.sub;
+    sub.textContent = info.bonus ? `${info.sub} · +${info.bonus}g clear` : info.sub;
     banner.classList.add('show');
     clearTimeout(showChallengeBanner._t);
     showChallengeBanner._t = setTimeout(() => banner.classList.remove('show'), 3600);
@@ -2105,13 +2248,13 @@
       el.overlayRating.textContent = rating.label;
       const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (best ${bestT})` : ''}.` : '';
       const hardBit = state.hardMode ? ' HARD' : '';
-      el.overlayMsg.textContent = `Held ${MAPS[state.mapId].name}${hardBit} through ${state.maxWaves} waves with ${state.lives} lives left. Gold: ${Math.floor(state.gold)}.${timeBit}`;
+      el.overlayMsg.textContent = `${MAPS[state.mapId].name}${hardBit} · ${state.lives}♥ left · ${Math.floor(state.gold)}g.${timeBit}`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(newly);
     } else {
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Barrage shreds swarms · Beacon on bends · double-tap to upgrade!`;
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Barrage for swarms · Beacon on bends · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -2178,11 +2321,28 @@
     el.overlay.classList.remove('show');
     const hardTag = state.hardMode ? ' · HARD' : '';
     el.hint.textContent = wasChange
-      ? `Map changed${hardTag} — build, then Next Wave`
-      : `${MAPS[mapId].name}${hardTag} ready — green=weak, dark red=elite. Place 2–3 towers, then Next Wave`;
+      ? `Map changed${hardTag} — place towers, then Next Wave`
+      : `${MAPS[mapId].name}${hardTag} — place 2–3 towers on green +, then Next Wave`;
     setWavePreview('', false);
+    maybeShowOnboardTip();
     updateWaveButtons();
     updateHUD();
+  }
+
+  function maybeShowOnboardTip() {
+    if (!el.onboardTip) return;
+    try {
+      if (localStorage.getItem(LS_UX_TIP) === '1') {
+        el.onboardTip.classList.remove('show');
+        return;
+      }
+    } catch (_) {}
+    el.onboardTip.classList.add('show');
+  }
+
+  function dismissOnboardTip() {
+    if (el.onboardTip) el.onboardTip.classList.remove('show');
+    try { localStorage.setItem(LS_UX_TIP, '1'); } catch (_) {}
   }
 
   function resetGame() {
@@ -2261,7 +2421,7 @@
     e.preventDefault();
     if (!state.selectedTower || state.gameOver) return;
     state.sellConfirming = true;
-    el.hint.textContent = 'Refund ~half the spend? Tap Confirm refund, or Keep tower.';
+    el.hint.textContent = 'Sell for ~half spent? Confirm or Keep.';
     updateHUD();
   });
 
@@ -2318,6 +2478,25 @@
     });
   }
 
+  if (el.btnMoreOpen) {
+    el.btnMoreOpen.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      setUtilMore(true);
+    });
+  }
+  if (el.btnMore) {
+    el.btnMore.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      setUtilMore(false);
+    });
+  }
+  if (el.onboardDismiss) {
+    el.onboardDismiss.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dismissOnboardTip();
+    });
+  }
+
   el.btnChangeMap.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     // Allow anytime except on the map-select overlay itself
@@ -2371,9 +2550,10 @@
     }
     if (state.awaitingNextWave) {
       // Tempo bonus for calling the next wave yourself
-      const tempo = 4 + Math.floor(state.wave * 0.35);
+      const tempo = earlyCallBonusAmount();
       addGold(tempo);
       addFloat(W / 2, H * 0.28, `+${tempo}g early call`, '#67e8f9', 1.2);
+      el.hint.textContent = `Early call +${tempo}g — wave incoming!`;
       startNextWave();
     }
   }
@@ -2388,7 +2568,7 @@
     if (state.waveMode === 'continuous') {
       setWaveMode('next');
       if (state.started && !state.gameOver) {
-        el.hint.textContent = 'Continuous off — press Next Wave between waves.';
+        el.hint.textContent = 'Auto off — press Next Wave between waves (early call pays gold).';
       }
       return;
     }
@@ -2408,7 +2588,7 @@
     // Mid-wave: arm continuous for after this wave clears
     state.waveMode = 'continuous';
     updateWaveButtons();
-    el.hint.textContent = 'Continuous armed — next wave will auto-start after this one.';
+    el.hint.textContent = 'Auto on — next wave starts when this one clears.';
   }
 
   el.btnNextWave.addEventListener('pointerdown', (e) => {
@@ -3628,7 +3808,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v38';
+  const BOOT = 'pg-boot-v42';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
