@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 19 -->
+<!-- path-guard-build: 20 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -415,7 +415,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 19</div>
+    <div id="build-ver">build 20</div>
   </div>
 </div>
 
@@ -538,10 +538,11 @@
 
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
-    normal: { name: 'Grunt', r: 12, hp: 60, speed: 70, reward: 8, color: '#ef4444', stroke: '#7f1d1d' },
-    fast:   { name: 'Scout', r: 8,  hp: 32, speed: 125, reward: 7, color: '#fbbf24', stroke: '#92400e' },
-    tank:   { name: 'Brute', r: 17, hp: 180, speed: 38, reward: 14, color: '#a78bfa', stroke: '#4c1d95' },
-    raider: { name: 'Raider', r: 13, hp: 200, speed: 125, reward: 20, color: '#f43f5e', stroke: '#9f1239' },
+    // Size by threat: Scout < Grunt < Brute < Raider(largest). Distinct hues.
+    normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  gold: 8,  color: '#ef4444', stroke: '#7f1d1d' },
+    fast:   { name: 'Scout',  r: 7,  hp: 32,  speed: 125, gold: 7,  color: '#facc15', stroke: '#854d0e' },
+    tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  gold: 14, color: '#a855f7', stroke: '#4c1d95' },
+    raider: { name: 'Raider', r: 19, hp: 200, speed: 125, gold: 20, color: '#d946ef', stroke: '#0e7490' },
   };
 
 
@@ -2035,7 +2036,7 @@
       const sprName = ENEMY_SPRITE[en.kind] || 'grunt';
       ctx.save();
       if (spriteReady(sprName)) {
-        const sz = Math.max(28, en.r * 2.6);
+        const sz = Math.max(22, en.r * 2.7);
         if (en.hitFlash > 0) ctx.globalAlpha = 0.85;
         else if (slowed) ctx.globalAlpha = 0.92;
         ctx.drawImage(SPRITES[sprName], p.x - sz / 2, p.y - sz / 2, sz, sz);
@@ -2048,87 +2049,83 @@
           ctx.stroke();
         }
       } else {
-        // Soft silhouette glow (canvas fallback)
-        ctx.beginPath();
-        if (en.kind === 'tank') {
-          const s = en.r * 0.95;
-          if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.45);
-          else {
-            ctx.moveTo(p.x - s + 6, p.y - s);
-            ctx.arcTo(p.x + s, p.y - s, p.x + s, p.y + s, 6);
-            ctx.arcTo(p.x + s, p.y + s, p.x - s, p.y + s, 6);
-            ctx.arcTo(p.x - s, p.y + s, p.x - s, p.y - s, 6);
-            ctx.arcTo(p.x - s, p.y - s, p.x + s, p.y - s, 6);
+        // Distinct fallback silhouettes: diamond / circle / square / spiky star
+        const makePath = () => {
+          ctx.beginPath();
+          if (en.kind === 'tank') {
+            const s = en.r * 0.92;
+            if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.32);
+            else ctx.rect(p.x - s, p.y - s, s * 2, s * 2);
+          } else if (en.kind === 'fast') {
+            const rx = en.r * 1.4, ry = en.r * 0.72;
+            ctx.moveTo(p.x - rx, p.y);
+            ctx.lineTo(p.x, p.y - ry);
+            ctx.lineTo(p.x + rx, p.y);
+            ctx.lineTo(p.x, p.y + ry);
             ctx.closePath();
+          } else if (en.kind === 'raider') {
+            const spikes = 8, R = en.r * 1.15, rIn = en.r * 0.48;
+            for (let i = 0; i < spikes * 2; i++) {
+              const ang = -Math.PI / 2 + (i * Math.PI) / spikes;
+              const rad = (i % 2 === 0) ? R : rIn;
+              const x = p.x + Math.cos(ang) * rad;
+              const y = p.y + Math.sin(ang) * rad;
+              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+          } else {
+            ctx.arc(p.x, p.y, en.r + 1.5, 0, Math.PI * 2);
           }
-        } else if (en.kind === 'fast') {
-          ctx.ellipse(p.x, p.y, en.r * 0.75, en.r * 1.15, 0, 0, Math.PI * 2);
-        } else if (en.kind === 'raider') {
-          ctx.ellipse(p.x, p.y, en.r * 0.95, en.r * 1.05, -0.25, 0, Math.PI * 2);
-        } else {
-          ctx.arc(p.x, p.y, en.r + 1.5, 0, Math.PI * 2);
-        }
+        };
+        makePath();
         ctx.fillStyle = fill;
         ctx.globalAlpha = 0.28;
         ctx.fill();
         ctx.globalAlpha = 1;
+        makePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = en.kind === 'raider' ? '#000' : en.stroke;
+        ctx.lineWidth = en.kind === 'raider' ? 2.8 : (en.kind === 'tank' ? 2.4 : 2);
+        ctx.stroke();
 
-        ctx.beginPath();
         if (en.kind === 'tank') {
           const s = en.r * 0.88;
-          if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.42);
-          else {
-            ctx.moveTo(p.x - s + 5, p.y - s);
-            ctx.arcTo(p.x + s, p.y - s, p.x + s, p.y + s, 5);
-            ctx.arcTo(p.x + s, p.y + s, p.x - s, p.y + s, 5);
-            ctx.arcTo(p.x - s, p.y + s, p.x - s, p.y - s, 5);
-            ctx.arcTo(p.x - s, p.y - s, p.x + s, p.y - s, 5);
-            ctx.closePath();
-          }
-          ctx.fillStyle = fill;
-          ctx.fill();
-          ctx.strokeStyle = en.stroke;
-          ctx.lineWidth = 2.4;
-          ctx.stroke();
           ctx.beginPath();
-          ctx.arc(p.x, p.y - s * 0.15, s * 0.42, 0, Math.PI * 2);
-          ctx.fillStyle = en.hitFlash > 0 ? '#fee2e2' : '#c4b5fd';
+          ctx.arc(p.x, p.y - s * 0.12, s * 0.38, 0, Math.PI * 2);
+          ctx.fillStyle = en.hitFlash > 0 ? '#ede9fe' : '#d8b4fe';
           ctx.fill();
         } else if (en.kind === 'fast') {
-          ctx.ellipse(p.x, p.y, en.r * 0.7, en.r * 1.05, 0, 0, Math.PI * 2);
-          ctx.fillStyle = fill;
-          ctx.fill();
-          ctx.strokeStyle = en.stroke;
-          ctx.lineWidth = 2;
-          ctx.stroke();
           ctx.beginPath();
-          ctx.ellipse(p.x, p.y - en.r * 0.25, en.r * 0.28, en.r * 0.35, 0, 0, Math.PI * 2);
-          ctx.fillStyle = en.hitFlash > 0 ? '#fef3c7' : '#fde68a';
-          ctx.fill();
-        } else if (en.kind === 'raider') {
-          ctx.ellipse(p.x, p.y, en.r * 0.88, en.r * 0.98, -0.25, 0, Math.PI * 2);
-          ctx.fillStyle = fill;
-          ctx.fill();
-          ctx.strokeStyle = en.stroke;
-          ctx.lineWidth = 2.4;
-          ctx.stroke();
-          // visor
-          ctx.beginPath();
-          ctx.ellipse(p.x + 1, p.y - en.r * 0.08, en.r * 0.55, en.r * 0.28, -0.2, 0, Math.PI * 2);
+          ctx.ellipse(p.x - en.r * 0.15, p.y, en.r * 0.45, en.r * 0.4, 0, 0, Math.PI * 2);
           ctx.fillStyle = '#1c1917';
           ctx.fill();
           ctx.beginPath();
-          ctx.arc(p.x - en.r * 0.18, p.y - en.r * 0.1, en.r * 0.1, 0, Math.PI * 2);
-          ctx.arc(p.x + en.r * 0.22, p.y - en.r * 0.06, en.r * 0.1, 0, Math.PI * 2);
-          ctx.fillStyle = en.hitFlash > 0 ? '#fecdd3' : '#fda4af';
+          ctx.arc(p.x - en.r * 0.28, p.y, en.r * 0.12, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, en.r * 0.12, 0, Math.PI * 2);
+          ctx.fillStyle = en.hitFlash > 0 ? '#fef9c3' : '#fde047';
           ctx.fill();
+        } else if (en.kind === 'raider') {
+          ctx.beginPath();
+          const vw = en.r * 0.84, vh = en.r * 0.48;
+          if (ctx.roundRect) ctx.roundRect(p.x - vw / 2, p.y - vh / 2, vw, vh, en.r * 0.12);
+          else ctx.rect(p.x - vw / 2, p.y - vh / 2, vw, vh);
+          ctx.fillStyle = '#000';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(p.x - en.r * 0.18, p.y, en.r * 0.14, 0, Math.PI * 2);
+          ctx.arc(p.x + en.r * 0.18, p.y, en.r * 0.14, 0, Math.PI * 2);
+          ctx.fillStyle = en.hitFlash > 0 ? '#a5f3fc' : '#22d3ee';
+          ctx.fill();
+          for (let i = 0; i < 4; i++) {
+            const ang = -Math.PI / 2 + i * (Math.PI / 2);
+            const R = en.r * 1.15;
+            ctx.beginPath();
+            ctx.arc(p.x + Math.cos(ang) * R, p.y + Math.sin(ang) * R, Math.max(2, en.r * 0.12), 0, Math.PI * 2);
+            ctx.fillStyle = '#22d3ee';
+            ctx.fill();
+          }
         } else {
-          ctx.arc(p.x, p.y, en.r, 0, Math.PI * 2);
-          ctx.fillStyle = fill;
-          ctx.fill();
-          ctx.strokeStyle = en.stroke;
-          ctx.lineWidth = 2;
-          ctx.stroke();
           ctx.beginPath();
           ctx.arc(p.x - en.r * 0.28, p.y - en.r * 0.28, en.r * 0.28, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(255,255,255,0.28)';
@@ -2264,7 +2261,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v19';
+  const BOOT = 'pg-boot-v20';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
