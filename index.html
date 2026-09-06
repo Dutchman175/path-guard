@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 33 -->
+<!-- path-guard-build: 34 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -160,9 +160,8 @@
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
-  /* Row1: Archer/Cannon/Frost. Row2: Zap+Sniper centered. */
-  #btn-zap { grid-column: span 3; }
-  #btn-sniper { grid-column: span 3; }
+  #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
+  /* 6 towers: 3 per row (each span 2 of 6). */
   @media (max-width: 380px) {
     #tower-btns { gap: 2px; }
     .tower-btn { font-size: 0.55rem; padding: 3px 0; min-height: 32px; border-radius: 8px; }
@@ -453,12 +452,16 @@
         Map 3: Crosscut — Medium-Hard <span class="stars">★★★☆☆</span>
         <span class="sub">Bold midfield crossbar · pocket build lanes</span>
       </button>
+      <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
+        Map 4: Ridge — Medium-Hard <span class="stars">★★★☆☆</span>
+        <span class="sub">High plateau jog · open flanks · +8 gold</span>
+      </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
-        Map 4: Winding — Hard <span class="stars">★★★★☆</span>
+        Map 5: Winding — Hard <span class="stars">★★★★☆</span>
         <span class="sub">Tight switchbacks · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
-        Map 5: Gauntlet — Brutal <span class="stars">★★★★★</span>
+        Map 6: Gauntlet — Brutal <span class="stars">★★★★★</span>
         <span class="sub">Short path · elite mix · +10 start gold (Hard still brutal)</span>
       </button>
     </div>
@@ -494,6 +497,10 @@
         🎯 Snip
         <span class="cost">125g</span>
       </button>
+      <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon">
+        🔦 Beac
+        <span class="cost">40g</span>
+      </button>
     </div>
     <div id="tower-actions">
       <button type="button" class="action-btn" id="btn-upgrade">
@@ -525,7 +532,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 33</div>
+    <div id="build-ver">build 34</div>
   </div>
 </div>
 
@@ -594,6 +601,26 @@
         tc(2, 12), tc(2, 7),
         tc(2, 7), tc(6, 7),
         tc(6, 7), tc(6, 13),
+      ],
+    },
+    ridge: {
+      id: 'ridge',
+      name: 'Ridge',
+      difficulty: 3,
+      spawnExtra: 2,
+      hardenChance: 0.2,
+      startGoldBonus: 8,
+      // Medium-Hard: climb a plateau, jog the ridge, drop south — open flanks
+      path: [
+        tc(0, 1), tc(3, 1),
+        tc(3, 1), tc(3, 4),
+        tc(3, 4), tc(8, 4),
+        tc(8, 4), tc(8, 7),
+        tc(8, 7), tc(2, 7),
+        tc(2, 7), tc(2, 10),
+        tc(2, 10), tc(7, 10),
+        tc(7, 10), tc(7, 13),
+        tc(7, 13), tc(1, 13),
       ],
     },
     winding: {
@@ -680,6 +707,13 @@
       color: '#2dd4bf', projectileSpeed: 820, projectileColor: '#99f6e4',
       upgradeCosts: [80, 125, 180, 250],
     },
+    beacon: {
+      name: 'Beacon', cost: 40, range: 0, fireRate: 99, damage: 0,
+      color: '#fbbf24', projectileSpeed: 0, projectileColor: '#fde68a',
+      upgradeCosts: [30, 50, 80, 120],
+      auraRadius: 72, auraSlow: 0.68, // cheap slow-aura support — no shots
+      supportOnly: true,
+    },
   };
 
   // Fixed stats per type — never scale by wave or map
@@ -704,7 +738,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -713,7 +747,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=33`;
+    img.src = `./sprites/${name}.png?v=34`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -990,8 +1024,11 @@
       multiFalloff: def.multiFalloff || (tw.type === 'archer' ? 0.65 : 0.7),
       splashRadius: def.splashRadius ? def.splashRadius + (lv - 1) * 3.25 : 0,
       splashMul: def.splashMul != null ? Math.min(0.6, def.splashMul + (lv - 1) * 0.0375) : 0,
-      auraRadius: def.auraRadius ? def.auraRadius + (lv - 1) * 5 : 0,
-      auraSlow: def.auraSlow || 0,
+      auraRadius: def.auraRadius ? def.auraRadius + (lv - 1) * (def.supportOnly ? 7 : 5) : 0,
+      auraSlow: def.auraSlow
+        ? Math.max(0.45, def.auraSlow - (lv - 1) * (def.supportOnly ? 0.04 : 0.015))
+        : 0,
+      supportOnly: !!def.supportOnly,
     };
   }
 
@@ -1019,7 +1056,14 @@
     if ((next.splashRadius || 0) > (cur.splashRadius || 0) + 0.5) parts.push('bigger splash');
     if ((next.slowDur || 0) > (cur.slowDur || 0) + 0.05) parts.push('longer slow');
     if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
+    if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
     if ((next.splashMul || 0) > (cur.splashMul || 0) + 0.01) parts.push('stronger splash');
+    if (tw.type === 'beacon') {
+      parts.length = 0;
+      if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
+      if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
+      if (!parts.length) parts.push('stronger beacon');
+    }
     if (!parts.length) parts.push('stronger');
     return parts.join(', ');
   }
@@ -1049,7 +1093,13 @@
     if (st.splashRadius) parts.push(`Splash ${Math.round(st.splashRadius)}`);
     if (st.multi) parts.push(`Targets ${st.multi}`);
     if (st.slowMul) parts.push('Slow');
-    if (st.auraRadius) parts.push(`Aura ${Math.round(st.auraRadius)}`);
+    if (st.auraRadius) {
+      const chill = st.auraSlow ? ` · chill ${Math.round((1 - st.auraSlow) * 100)}%` : '';
+      parts.push(`Aura ${Math.round(st.auraRadius)}${chill}`);
+    }
+    if (st.supportOnly) {
+      return `Support · Aura ${Math.round(st.auraRadius || 0)} · chill ${Math.round((1 - (st.auraSlow || 1)) * 100)}%`;
+    }
     return parts.join(' · ');
   }
 
@@ -1980,7 +2030,9 @@
       clearTowerSelection();
       state.selected = state.selected === type ? null : type;
       el.hint.textContent = state.selected
-        ? `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`
+        ? (type === 'beacon'
+          ? 'Selected Beacon — cheap slow aura, no shots. Tap a tile.'
+          : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`)
         : 'Tap tiles to build, tap towers to upgrade';
       updateHUD();
     });
@@ -2343,15 +2395,19 @@
       for (const tw of state.towers) {
         const st = towerStats(tw);
         if (tw.pulse > 0) tw.pulse -= dt;
-        // Frost passive aura: mild slow for enemies in a small radius
-        if (tw.type === 'frost' && st.auraRadius > 0 && st.auraSlow > 0) {
+        // Passive chill aura (Frost mild / Beacon support)
+        if (st.auraRadius > 0 && st.auraSlow > 0 && (tw.type === 'frost' || tw.type === 'beacon')) {
+          const refresh = tw.type === 'beacon' ? 0.45 : 0.35;
           for (const en of state.enemies) {
             const p = posOnPath(en.dist);
             if (Math.hypot(p.x - tw.x, p.y - tw.y) <= st.auraRadius) {
-              applySlow(en, st.auraSlow, 0.35);
+              applySlow(en, st.auraSlow, refresh);
             }
           }
+          // Soft pulse so support reads as active
+          if (tw.type === 'beacon' && (tw.pulse || 0) <= 0) tw.pulse = 0.12;
         }
+        if (st.supportOnly) continue; // Beacon: aura only, never shoots
         tw.cd -= dt;
         if (tw.cd <= 0) {
           if (tw.type === 'zap') {
@@ -2567,6 +2623,19 @@
         ctx.strokeStyle = 'rgba(45, 212, 191, 0.4)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
+      } else if (st.supportOnly && st.auraRadius > 0) {
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, st.auraRadius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.12)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(253, 224, 71, 0.75)';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(253, 224, 71, 0.95)';
+        ctx.font = 'bold 11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('SUPPORT — SLOW AURA ONLY', W / 2, 10);
       } else {
         ctx.beginPath();
         ctx.arc(tw.x, tw.y, st.range, 0, Math.PI * 2);
@@ -2848,32 +2917,52 @@
           ctx.moveTo(6, 8);
           ctx.lineTo(11, 14);
           ctx.stroke();
+        } else if (tw.type === 'beacon') {
+          ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fde68a';
+          ctx.beginPath();
+          ctx.moveTo(0, -11);
+          ctx.lineTo(5, 2);
+          ctx.lineTo(-5, 2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillRect(-2.5, 2, 5, 10);
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(0, -6, 3.2, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
       ctx.restore();
 
-      // Frost aura in world space — always visible, clearer when selected
-      if (tw.type === 'frost' && st.auraRadius > 0) {
+      // Aura rings in world space (Frost cyan / Beacon gold)
+      if (st.auraRadius > 0 && (tw.type === 'frost' || tw.type === 'beacon')) {
         const tSec = performance.now() / 1000;
         const pulse = 0.55 + Math.sin(tSec * 2.6 + (tw.x + tw.y) * 0.01) * 0.2;
-        const alpha = isSel ? 0.16 : 0.08;
+        const isBeacon = tw.type === 'beacon';
+        const alpha = isSel ? 0.16 : (isBeacon ? 0.1 : 0.08);
+        const fill = isBeacon ? `rgba(251, 191, 36, ${alpha * pulse})` : `rgba(103, 232, 249, ${alpha * pulse})`;
+        const strokeSel = isBeacon ? `rgba(253, 224, 71, ${0.55 + pulse * 0.25})` : `rgba(165, 243, 252, ${0.55 + pulse * 0.25})`;
+        const strokeIdle = isBeacon ? `rgba(251, 191, 36, ${0.32 + pulse * 0.15})` : `rgba(103, 232, 249, ${0.28 + pulse * 0.15})`;
         ctx.beginPath();
         ctx.arc(tw.x, tw.y, st.auraRadius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(103, 232, 249, ${alpha * pulse})`;
+        ctx.fillStyle = fill;
         ctx.fill();
-        ctx.strokeStyle = isSel
-          ? `rgba(165, 243, 252, ${0.55 + pulse * 0.25})`
-          : `rgba(103, 232, 249, ${0.28 + pulse * 0.15})`;
+        ctx.strokeStyle = isSel ? strokeSel : strokeIdle;
         ctx.lineWidth = isSel ? 2 : 1.35;
         ctx.setLineDash(isSel ? [] : [5, 4]);
         ctx.stroke();
         ctx.setLineDash([]);
         if (isSel) {
-          ctx.fillStyle = 'rgba(165, 243, 252, 0.9)';
+          ctx.fillStyle = isBeacon ? 'rgba(253, 224, 71, 0.95)' : 'rgba(165, 243, 252, 0.9)';
           ctx.font = 'bold 10px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
-          ctx.fillText('CHILL AURA', tw.x, tw.y - st.auraRadius - 4);
+          ctx.fillText(isBeacon ? 'SLOW AURA' : 'CHILL AURA', tw.x, tw.y - st.auraRadius - 4);
         }
       }
 
@@ -3244,7 +3333,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v33';
+  const BOOT = 'pg-boot-v34';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
