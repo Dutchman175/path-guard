@@ -10,4 +10,4 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 
 Challenge waves at 5 / 10 / 15 / 20. Between waves: gold **interest**. Sell confirms. Mute FX anytime.
 
-**Achievements:** first clear each map, Hard Mode win, Titan kill — shown on the win overlay.
+**Achievements:** first clear each map, Hard Mode win, Titan kill — checklist always on win/lose overlays. Titan death gets a fanfare float.
