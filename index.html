@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 20 -->
+<!-- path-guard-build: 21 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -415,7 +415,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 20</div>
+    <div id="build-ver">build 21</div>
   </div>
 </div>
 
@@ -539,10 +539,10 @@
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
     // Size by threat: Scout < Grunt < Brute < Raider(largest). Distinct hues.
-    normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  gold: 8,  color: '#ef4444', stroke: '#7f1d1d' },
-    fast:   { name: 'Scout',  r: 7,  hp: 32,  speed: 125, gold: 7,  color: '#facc15', stroke: '#854d0e' },
-    tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  gold: 14, color: '#a855f7', stroke: '#4c1d95' },
-    raider: { name: 'Raider', r: 19, hp: 200, speed: 125, gold: 20, color: '#d946ef', stroke: '#0e7490' },
+    normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 8,  color: '#ef4444', stroke: '#7f1d1d' },
+    fast:   { name: 'Scout',  r: 7,  hp: 32,  speed: 125, reward: 7,  color: '#facc15', stroke: '#854d0e' },
+    tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 14, color: '#a855f7', stroke: '#4c1d95' },
+    raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 20, color: '#d946ef', stroke: '#0e7490' },
   };
 
 
@@ -765,6 +765,7 @@
   }
 
   function updateHUD() {
+    if (!Number.isFinite(state.gold)) state.gold = 0;
     el.gold.textContent = Math.floor(state.gold);
     el.lives.textContent = state.lives;
     el.wave.textContent = `${state.wave}/${state.maxWaves}`;
@@ -1024,6 +1025,10 @@
         placeFeedback(center.x, center.y, false);
         return;
       }
+      if (!Number.isFinite(state.gold) || state.gold < def.cost) {
+        el.hint.textContent = 'Not enough gold';
+        return;
+      }
       state.gold -= def.cost;
       flashGold();
       const placed = {
@@ -1167,7 +1172,7 @@
       speed: 0,
       hp,
       maxHp: hp,
-      reward: et.reward,
+      reward: (et.reward != null ? et.reward : et.gold) || 0,
       r: et.r,
       color: et.color,
       stroke: et.stroke,
@@ -1489,7 +1494,8 @@
     const p = posOnPath(en.dist);
     burst(p.x, p.y, color, 6);
     if (en.hp <= 0) {
-      state.gold += en.reward;
+      state.gold += Number(en.reward) || 0;
+      if (!Number.isFinite(state.gold)) state.gold = 0;
       flashGold();
       burst(p.x, p.y, '#fbbf24', 18);
       addFloat(p.x, p.y - 16, `+${en.reward}`, '#fde68a');
@@ -2261,7 +2267,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v20';
+  const BOOT = 'pg-boot-v21';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
