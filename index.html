@@ -127,7 +127,7 @@
   }
   #tower-btns {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 3px;
   }
   .tower-btn {
@@ -137,12 +137,11 @@
     color: #e8eef4;
     border-radius: 9px;
     padding: 4px 1px 3px;
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 700;
     cursor: pointer;
     min-height: 34px;
     min-width: 0;
-    grid-column: span 2;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
     overflow: hidden;
     line-height: 1.15;
@@ -161,7 +160,8 @@
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
   #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
-  /* 6 towers: 3 per row (each span 2 of 6). */
+  #btn-barrage.selected { border-color: #fb7185; background: #881337; }
+  /* 7 towers: 4 + 3 compact rows. */
   @media (max-width: 380px) {
     #tower-btns { gap: 2px; }
     .tower-btn { font-size: 0.55rem; padding: 3px 0; min-height: 32px; border-radius: 8px; }
@@ -512,6 +512,10 @@
         🔦 Beac
         <span class="cost">40g</span>
       </button>
+      <button type="button" class="tower-btn" id="btn-barrage" data-type="barrage">
+        🔫 Barr
+        <span class="cost">35g</span>
+      </button>
     </div>
     <div id="tower-actions">
       <button type="button" class="action-btn" id="btn-upgrade">
@@ -543,7 +547,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 37</div>
+    <div id="build-ver">build 38</div>
   </div>
 </div>
 
@@ -721,6 +725,12 @@
       auraRadius: 72, auraSlow: 0.68, // cheap slow-aura support — no shots
       supportOnly: true,
     },
+    barrage: {
+      name: 'Barrage', cost: 35, range: 86, fireRate: 0.26, damage: 5,
+      color: '#fb7185', projectileSpeed: 480, projectileColor: '#fda4af',
+      upgradeCosts: [25, 45, 70, 100],
+      // Cheap + fast + low dmg — shreds swarms, soft vs Shells/Titans
+    },
   };
 
   // Fixed stats per type — never scale by wave or map
@@ -745,7 +755,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'barrage', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -754,7 +764,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=37`;
+    img.src = `./sprites/${name}.png?v=38`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1092,7 +1102,8 @@
     return {
       name: def.name,
       damage: Math.round(def.damage * dmgMul),
-      fireRate: Math.max(0.22, def.fireRate * rateMul),
+      // Barrage stays below the shared rate floor so upgrades keep the volley humming
+      fireRate: Math.max(tw.type === 'barrage' ? 0.14 : 0.22, def.fireRate * rateMul),
       range: def.range * rangeMul,
       projectileSpeed: def.projectileSpeed,
       projectileColor: def.projectileColor,
@@ -1144,6 +1155,13 @@
       if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
       if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
       if (!parts.length) parts.push('stronger beacon');
+    }
+    if (tw.type === 'barrage') {
+      parts.length = 0;
+      if (dmgGain > 0) parts.push(`+${dmgGain} dmg`);
+      if (next.fireRate < cur.fireRate - 0.001) parts.push('faster volley');
+      if (next.range > cur.range + 0.5) parts.push('more range');
+      if (!parts.length) parts.push('heavier barrage');
     }
     if (!parts.length) parts.push('stronger');
     return parts.join(', ');
@@ -2020,7 +2038,7 @@
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Frost + Beacon on bends!`;
+      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Barrage on swarms · Frost + Beacon on bends!`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -2153,7 +2171,9 @@
       el.hint.textContent = state.selected
         ? (type === 'beacon'
           ? 'Selected Beacon — cheap slow aura, no shots. Tap a tile.'
-          : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`)
+          : (type === 'barrage'
+            ? 'Selected Barrage — cheap, fast, low damage. Great vs swarms.'
+            : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`))
         : 'Tap tiles to build, tap towers to upgrade';
       updateHUD();
     });
@@ -2583,6 +2603,11 @@
               });
               tw.cd = st.fireRate;
               tw.pulse = 0.15;
+              if (tw.type === 'barrage') {
+                burst(tw.x, tw.y - 8, st.projectileColor, 4, {
+                  lifeMul: 0.55, speedMin: 30, speedMax: 90, upBias: 40, gravity: 60, rMin: 1, rMax: 2.2,
+                });
+              }
             }
           }
         }
@@ -3067,6 +3092,24 @@
           ctx.beginPath();
           ctx.arc(0, -6, 3.2, 0, Math.PI * 2);
           ctx.fill();
+        } else if (tw.type === 'barrage') {
+          ctx.fillStyle = 'rgba(251, 113, 133, 0.35)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fda4af';
+          ctx.fillRect(-7, -11, 4, 14);
+          ctx.fillRect(3, -11, 4, 14);
+          ctx.fillStyle = '#fb7185';
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(-9, -2, 18, 12, 3) : ctx.rect(-9, -2, 18, 12);
+          ctx.fill();
+          ctx.fillStyle = '#fde68a';
+          ctx.beginPath();
+          ctx.arc(-5, 12, 2, 0, Math.PI * 2);
+          ctx.arc(0, 12, 2, 0, Math.PI * 2);
+          ctx.arc(5, 12, 2, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
       ctx.restore();
@@ -3482,7 +3525,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v37';
+  const BOOT = 'pg-boot-v38';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
