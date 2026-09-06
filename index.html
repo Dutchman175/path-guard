@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 13 -->
+<!-- path-guard-build: 14 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -339,7 +339,7 @@
       <p>Pick a path, then build towers and hold the line.</p>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         Map 1: Serpentine — Easy
-        <span class="sub">Wide S-lanes, many pads</span>
+        <span class="sub">Wide S-lanes, open grid</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         Map 2: Winding — Medium
@@ -347,11 +347,11 @@
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
         Map 3: Gauntlet — Hard
-        <span class="sub">Short path, awkward pads</span>
+        <span class="sub">Short path, tight grid</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 4: Spiral — Brutal
-        <span class="sub">Long coil, scarce pads</span>
+        <span class="sub">Long coil, tight grid</span>
       </button>
     </div>
     <div id="overlay">
@@ -407,8 +407,8 @@
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
-    <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 13</div>
+    <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
+    <div id="build-ver">build 14</div>
   </div>
 </div>
 
@@ -451,21 +451,6 @@
         { x: 30, y: 490 },
         { x: 30, y: 540 },
       ],
-      // Pads sit in bay centers between horizontals (≥28px from centerline)
-      pads: [
-        { x: 120, y: 85 },
-        { x: 280, y: 85 },
-        { x: 100, y: 175 },
-        { x: 200, y: 175 },
-        { x: 300, y: 175 },
-        { x: 120, y: 265 },
-        { x: 280, y: 265 },
-        { x: 100, y: 355 },
-        { x: 200, y: 355 },
-        { x: 300, y: 355 },
-        { x: 120, y: 445 },
-        { x: 280, y: 445 },
-      ],
     },
     winding: {
       id: 'winding',
@@ -490,18 +475,6 @@
         { x: 200, y: 500 },
         { x: 360, y: 500 },
       ],
-      pads: [
-        { x: 140, y: 90 },
-        { x: 280, y: 90 },
-        { x: 280, y: 200 },
-        { x: 140, y: 200 },
-        { x: 140, y: 320 },
-        { x: 260, y: 320 },
-        { x: 120, y: 440 },
-        { x: 280, y: 440 },
-        { x: 200, y: 80 },
-        { x: 200, y: 320 },
-      ],
     },
     gauntlet: {
       id: 'gauntlet',
@@ -519,17 +492,6 @@
         { x: 350, y: 380 },
         { x: 350, y: 530 },
       ],
-      // 8 pads in awkward bay spots (≥28px off centerline)
-      pads: [
-        { x: 100, y: 120 },
-        { x: 180, y: 120 },
-        { x: 280, y: 120 },
-        { x: 120, y: 290 },
-        { x: 220, y: 290 },
-        { x: 300, y: 290 },
-        { x: 150, y: 455 },
-        { x: 250, y: 455 },
-      ],
     },
     spiral: {
       id: 'spiral',
@@ -537,7 +499,7 @@
       spawnExtra: 5,
       hardenChance: 0.5,
       startGoldBonus: 0,
-      // Rectangular coil then center drop — long path, scarce pads
+      // Rectangular coil then center drop — long path, open grid
       path: [
         { x: 30, y: 30 },
         { x: 370, y: 30 },
@@ -554,16 +516,6 @@
         { x: 150, y: 250 },
         { x: 200, y: 250 },
         { x: 200, y: 545 },
-      ],
-      // 7 sparse ring-pocket pads (≥28px off centerline)
-      pads: [
-        { x: 200, y: 60 },
-        { x: 60, y: 300 },
-        { x: 340, y: 280 },
-        { x: 100, y: 500 },
-        { x: 300, y: 500 },
-        { x: 120, y: 300 },
-        { x: 200, y: 120 },
       ],
     },
   };
@@ -602,8 +554,16 @@
   };
 
   let PATH = MAPS.serpentine.path;
-  let PADS = MAPS.serpentine.pads;
   let PATH_LEN = 0;
+
+  // Build grid (phone-friendly ~40px tiles on 400x560)
+  const TILE = 40;
+  const COLS = Math.floor(W / TILE);
+  const ROWS = Math.floor(H / TILE);
+  const PATH_HALF = 18; // outer path stroke width 36 / 2
+  const PATH_BUFFER = 10; // ~half path width near-path buffer
+  const BUILD_CLEAR = PATH_HALF + PATH_BUFFER; // 28px from centerline
+  let buildable = []; // flat ROWS*COLS booleans
 
   const state = {
     mapId: 'serpentine',
@@ -681,8 +641,8 @@
     const map = MAPS[mapId] || MAPS.serpentine;
     state.mapId = map.id;
     PATH = map.path;
-    PADS = map.pads;
     PATH_LEN = pathLength(PATH);
+    rebuildBuildable();
     try { localStorage.setItem(LS_MAP, map.id); } catch (_) {}
   }
 
@@ -916,17 +876,57 @@
     addFloat(x, y - 18, ok ? 'Built!' : 'Blocked', ok ? '#7dd3fc' : '#fca5a5');
   }
 
-  function getPadAt(mx, my) {
-    const R = 28;
-    for (let i = 0; i < PADS.length; i++) {
-      const p = PADS[i];
-      if (Math.hypot(mx - p.x, my - p.y) <= R) return i;
-    }
-    return -1;
+  function tileIndex(col, row) {
+    return row * COLS + col;
   }
 
-  function isPadOccupied(idx) {
-    return state.towers.some(t => t.pad === idx);
+  function tileCenter(col, row) {
+    return { x: (col + 0.5) * TILE, y: (row + 0.5) * TILE };
+  }
+
+  function distToPath(x, y) {
+    let best = Infinity;
+    for (let i = 1; i < PATH.length; i++) {
+      const a = PATH[i - 1], b = PATH[i];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const len2 = dx * dx + dy * dy;
+      let t = len2 === 0 ? 0 : ((x - a.x) * dx + (y - a.y) * dy) / len2;
+      t = Math.max(0, Math.min(1, t));
+      const px = a.x + dx * t, py = a.y + dy * t;
+      const d = Math.hypot(x - px, y - py);
+      if (d < best) best = d;
+    }
+    return best;
+  }
+
+  function rebuildBuildable() {
+    buildable = new Array(ROWS * COLS);
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const p = tileCenter(c, r);
+        buildable[tileIndex(c, r)] = distToPath(p.x, p.y) >= BUILD_CLEAR;
+      }
+    }
+  }
+
+  function getTileAt(mx, my) {
+    const col = Math.floor(mx / TILE);
+    const row = Math.floor(my / TILE);
+    if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return null;
+    return { col, row, idx: tileIndex(col, row) };
+  }
+
+  function isTileBuildable(col, row) {
+    if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return false;
+    return !!buildable[tileIndex(col, row)];
+  }
+
+  function isTileOccupied(col, row) {
+    return state.towers.some((t) => t.tileCol === col && t.tileRow === row);
+  }
+
+  function towerAtTile(col, row) {
+    return state.towers.find((t) => t.tileCol === col && t.tileRow === row) || null;
   }
 
   function getTowerAt(mx, my) {
@@ -962,16 +962,16 @@
     }
 
     if (state.selected) {
-      const idx = getPadAt(mx, my);
-      if (idx < 0) {
+      const tile = getTileAt(mx, my);
+      if (!tile || !isTileBuildable(tile.col, tile.row)) {
         state.selected = null;
         clearTowerSelection();
         el.hint.textContent = 'Build canceled. Tap a tower type, or tap a tower to upgrade';
         updateHUD();
         return;
       }
-      if (isPadOccupied(idx)) {
-        const occ = state.towers.find(t => t.pad === idx);
+      if (isTileOccupied(tile.col, tile.row)) {
+        const occ = towerAtTile(tile.col, tile.row);
         if (occ) {
           state.selected = null;
           selectTower(occ);
@@ -980,25 +980,27 @@
         return;
       }
       const def = TOWER_DEFS[state.selected];
+      const center = tileCenter(tile.col, tile.row);
       if (state.gold < def.cost) {
         el.hint.textContent = 'Not enough gold';
-        placeFeedback(PADS[idx].x, PADS[idx].y, false);
+        placeFeedback(center.x, center.y, false);
         return;
       }
       state.gold -= def.cost;
       flashGold();
-      const pad = PADS[idx];
       const placed = {
-        pad: idx,
-        x: pad.x,
-        y: pad.y,
+        tileCol: tile.col,
+        tileRow: tile.row,
+        tile: tile.idx,
+        x: center.x,
+        y: center.y,
         type: state.selected,
         level: 1,
         cd: 0,
         pulse: 0.4,
       };
       state.towers.push(placed);
-      placeFeedback(pad.x, pad.y, true);
+      placeFeedback(center.x, center.y, true);
       state.selected = null;
       selectTower(placed);
       el.hint.textContent = `${def.name} placed! Upgrade or pick another tower`;
@@ -1008,7 +1010,7 @@
 
     if (state.selectedTower) {
       clearTowerSelection();
-      el.hint.textContent = 'Tap pads to build, tap towers to upgrade';
+      el.hint.textContent = 'Tap tiles to build, tap towers to upgrade';
       updateHUD();
     }
   }
@@ -1213,7 +1215,7 @@
     el.overlay.classList.remove('show');
     el.hint.textContent = wasChange
       ? 'Map changed — build, then Next Wave'
-      : `${MAPS[mapId].name} ready — build on pads, then Next Wave`;
+      : `${MAPS[mapId].name} ready — build on the grid, then Next Wave`;
     updateWaveButtons();
     updateHUD();
   }
@@ -1267,8 +1269,8 @@
       clearTowerSelection();
       state.selected = state.selected === type ? null : type;
       el.hint.textContent = state.selected
-        ? `Selected ${TOWER_DEFS[type].name} — tap a pad`
-        : 'Tap pads to build, tap towers to upgrade';
+        ? `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`
+        : 'Tap tiles to build, tap towers to upgrade';
       updateHUD();
     });
   });
@@ -1672,55 +1674,67 @@
       ctx.lineWidth = 2;
       ctx.stroke();
     }
-    // Build-type selected: show range ghost on empty pads
-    if (state.selected && TOWER_DEFS[state.selected]) {
+    // Build-type selected: soft range ring at pointer is skipped; tile ghosts cover legality
+    if (state.selected && TOWER_DEFS[state.selected] && !state.selectedTower) {
       const def = TOWER_DEFS[state.selected];
-      for (let i = 0; i < PADS.length; i++) {
-        if (isPadOccupied(i)) continue;
-        const p = PADS[i];
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, def.range, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
+      // faint global hint — one soft wash, not per-tile rings
+      ctx.fillStyle = 'rgba(52, 211, 153, 0.03)';
+      ctx.fillRect(0, 0, W, H);
+      void def;
     }
   }
 
-  function drawPads() {
+  function drawBuildGrid() {
+    if (!state.selected || state.gameOver || !state.mapPicked) return;
     const t = performance.now() / 1000;
-    for (let i = 0; i < PADS.length; i++) {
-      const p = PADS[i];
-      const occ = isPadOccupied(i);
-      const highlight = state.selected && !occ && !state.gameOver;
+    const pulse = 0.5 + Math.sin(t * 4) * 0.22;
+
+    // Subtle grid lines
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.14)';
+    ctx.lineWidth = 1;
+    for (let c = 0; c <= COLS; c++) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
-      if (occ) {
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
-        ctx.strokeStyle = '#475569';
-        ctx.lineWidth = 2;
-      } else if (highlight) {
-        const pulse = 0.55 + Math.sin(t * 4) * 0.25;
-        ctx.fillStyle = `rgba(56, 189, 248, ${0.15 + pulse * 0.15})`;
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2.5;
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 12;
-      } else {
-        ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
-        ctx.strokeStyle = '#64748b';
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 0;
-      }
-      ctx.fill();
+      ctx.moveTo(c * TILE + 0.5, 0);
+      ctx.lineTo(c * TILE + 0.5, ROWS * TILE);
       ctx.stroke();
-      ctx.shadowBlur = 0;
-      if (!occ) {
-        ctx.fillStyle = highlight ? '#7dd3fc' : '#64748b';
-        ctx.font = 'bold 14px system-ui';
+    }
+    for (let r = 0; r <= ROWS; r++) {
+      ctx.beginPath();
+      ctx.moveTo(0, r * TILE + 0.5);
+      ctx.lineTo(COLS * TILE, r * TILE + 0.5);
+      ctx.stroke();
+    }
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const idx = tileIndex(c, r);
+        const x0 = c * TILE;
+        const y0 = r * TILE;
+        if (!buildable[idx]) {
+          // Dim illegal / path tiles
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+          ctx.fillRect(x0 + 1, y0 + 1, TILE - 2, TILE - 2);
+          continue;
+        }
+        if (isTileOccupied(c, r)) continue;
+        const center = tileCenter(c, r);
+        const pad = 3;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x0 + pad, y0 + pad, TILE - pad * 2, TILE - pad * 2, 7);
+        } else {
+          ctx.rect(x0 + pad, y0 + pad, TILE - pad * 2, TILE - pad * 2);
+        }
+        ctx.fillStyle = `rgba(52, 211, 153, ${0.14 + pulse * 0.12})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(52, 211, 153, ${0.55 + pulse * 0.3})`;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.fillStyle = '#6ee7b7';
+        ctx.font = 'bold 15px system-ui';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('+', p.x, p.y + 1);
+        ctx.fillText('+', center.x, center.y + 1);
       }
     }
   }
@@ -2069,7 +2083,7 @@
   function draw() {
     drawPath();
     drawRangePreview();
-    drawPads();
+    drawBuildGrid();
     drawTowers();
     drawEnemies();
     drawProjectiles();
@@ -2102,7 +2116,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v13';
+  const BOOT = 'pg-boot-v14';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
