@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 21 -->
+<!-- path-guard-build: 22 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -385,7 +385,7 @@
       </button>
       <button type="button" class="tower-btn" id="btn-zap" data-type="zap">
         ⚡ Zap
-        <span class="cost">110g</span>
+        <span class="cost">145g</span>
       </button>
     </div>
     <div id="tower-actions">
@@ -415,7 +415,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 21</div>
+    <div id="build-ver">build 22</div>
   </div>
 </div>
 
@@ -529,10 +529,10 @@
       slowMul: 0.5, slowDur: 1.6,
     },
     zap: {
-      name: 'Zap', cost: 110, range: 105, fireRate: 0.95, damage: 20,
+      name: 'Zap', cost: 145, range: 100, fireRate: 1.05, damage: 14,
       color: '#c084fc', projectileSpeed: 560, projectileColor: '#e9d5ff',
-      upgradeCosts: [70, 115, 170, 240],
-      multi: 3, multiFalloff: 0.7,
+      upgradeCosts: [90, 140, 200, 280],
+      multi: 2, multiFalloff: 0.55,
     },
   };
 
@@ -540,7 +540,7 @@
   const ENEMY_TYPES = {
     // Size by threat: Scout < Grunt < Brute < Raider(largest). Distinct hues.
     normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 8,  color: '#ef4444', stroke: '#7f1d1d' },
-    fast:   { name: 'Scout',  r: 7,  hp: 32,  speed: 125, reward: 7,  color: '#facc15', stroke: '#854d0e' },
+    fast:   { name: 'Scout',  r: 10, hp: 32,  speed: 125, reward: 7,  color: '#facc15', stroke: '#854d0e' },
     tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 14, color: '#a855f7', stroke: '#4c1d95' },
     raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 20, color: '#d946ef', stroke: '#0e7490' },
   };
@@ -727,6 +727,23 @@
     return costs[(tw.level || 1) - 1];
   }
 
+  function upgradeBlurb(tw) {
+    if (!tw || (tw.level || 1) >= MAX_TOWER_LEVEL) return 'MAX';
+    const cur = towerStats(tw);
+    const next = towerStats({ type: tw.type, level: (tw.level || 1) + 1 });
+    const parts = [];
+    const dmgGain = next.damage - cur.damage;
+    if (dmgGain > 0) parts.push(`+${dmgGain} dmg`);
+    if (next.fireRate < cur.fireRate - 0.001) parts.push('faster shots');
+    if (next.range > cur.range + 0.5) parts.push('more range');
+    if ((next.multi || 0) > (cur.multi || 0)) parts.push(`${next.multi} targets`);
+    if ((next.splashRadius || 0) > (cur.splashRadius || 0) + 0.5) parts.push('bigger splash');
+    if ((next.slowDur || 0) > (cur.slowDur || 0) + 0.05) parts.push('longer slow');
+    if ((next.splashMul || 0) > (cur.splashMul || 0) + 0.01) parts.push('stronger splash');
+    if (!parts.length) parts.push('stronger');
+    return parts.join(', ');
+  }
+
   function sellValueFor(tw) {
     if (!tw) return 0;
     const def = TOWER_DEFS[tw.type];
@@ -746,7 +763,12 @@
     state.selectedTower = tw;
     state.sellConfirming = false;
     const st = towerStats(tw);
-    el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${Math.round(st.range)}`;
+    const up = upgradeCostFor(tw);
+    if (up == null) {
+      el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${Math.round(st.range)} (MAX)`;
+    } else {
+      el.hint.textContent = `${st.name} Lv${tw.level} — next: ${upgradeBlurb(tw)} (${up}g)`;
+    }
   }
 
   function posOnPath(dist) {
@@ -797,7 +819,9 @@
       const maxed = cost == null;
       const value = sellValueFor(tw);
       el.btnUpgrade.disabled = maxed || state.gold < cost;
-      el.upgradeCost.textContent = maxed ? `MAX Lv${MAX_TOWER_LEVEL}` : `${cost}g → Lv${tw.level + 1}`;
+      el.upgradeCost.textContent = maxed
+        ? `MAX Lv${MAX_TOWER_LEVEL}`
+        : `${cost}g · ${upgradeBlurb(tw)}`;
       el.sellValue.textContent = `+${value}g`;
       el.btnSell.disabled = false;
       el.sellConfirmValue.textContent = `+${value}g`;
@@ -1122,11 +1146,12 @@
     return ['tank', 'raider', 'fast', 'raider', 'tank', 'fast', 'raider'];
   }
 
-  function hardenKind(kind, chance) {
+  function hardenKind(kind, chance, w) {
     if (chance <= 0 || Math.random() >= chance) return kind;
     if (kind === 'normal') return 'fast';
     if (kind === 'fast') return 'tank';
-    if (kind === 'tank') return 'raider';
+    // Raiders only from wave 12+ (even via map hardenChance)
+    if (kind === 'tank' && w >= 12) return 'raider';
     return kind;
   }
 
@@ -1137,7 +1162,7 @@
     const chance = map.hardenChance || 0;
     const q = [];
     for (let i = 0; i < n; i++) {
-      q.push(hardenKind(mix[i % mix.length], chance));
+      q.push(hardenKind(mix[i % mix.length], chance, w));
     }
     // shuffle lightly
     for (let i = q.length - 1; i > 0; i--) {
@@ -2267,7 +2292,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v21';
+  const BOOT = 'pg-boot-v22';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
