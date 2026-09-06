@@ -6,6 +6,6 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 
 **Towers:** Archer, Cannon (slow heavy splash), Frost, Zap (multi), **Sniper** (map-wide range, slow shots).
 
-**Maps (easy → hard):** Spiral → Serpentine → Crosscut → Winding → Gauntlet. Optional Hard Mode adds spawns. Targeting + Hard Mode persist in localStorage.
+**Maps (easy → hard):** Spiral → Serpentine → Crosscut → Winding → Gauntlet. Optional Hard Mode adds spawns. Targeting + Hard Mode persist in localStorage. Build 30+: sniper map-wide range UI, challenge bonus once, tower grid fix.
 
 Challenge waves at 5 / 10 / 15 / 20 (+25 / +40 / +60 / +100g). On lose: **Retry Map** or Change Map.

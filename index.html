@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 29 -->
+<!-- path-guard-build: 30 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -128,7 +128,7 @@
   #tower-btns {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 5px;
+    gap: 4px;
   }
   .tower-btn {
     appearance: none;
@@ -137,10 +137,10 @@
     color: #e8eef4;
     border-radius: 10px;
     padding: 5px 2px;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 38px;
+    min-height: 36px;
     grid-column: span 2;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
   }
@@ -150,13 +150,18 @@
     background: #0c4a6e;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
   }
-  .tower-btn .cost { display: block; font-size: 0.58rem; font-weight: 600; color: #fbbf24; margin-top: 1px; }
+  .tower-btn .cost { display: block; font-size: 0.55rem; font-weight: 600; color: #fbbf24; margin-top: 1px; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
-  #btn-zap { grid-column: 2 / span 2; }
-  #btn-sniper { grid-column: 4 / span 2; }
+  /* Row1: Archer/Cannon/Frost (2+2+2). Row2: Zap+Sniper centered (3+3). */
+  #btn-zap { grid-column: span 3; }
+  #btn-sniper { grid-column: span 3; }
+  @media (max-width: 380px) {
+    .tower-btn { font-size: 0.6rem; padding: 4px 1px; min-height: 34px; }
+    .tower-btn .cost { font-size: 0.5rem; }
+  }
 
   #util-btns {
     display: grid;
@@ -315,9 +320,20 @@
     z-index: 20;
     padding: 20px;
     text-align: center;
+    pointer-events: none;
   }
-  #overlay.show, #map-overlay.show { display: flex; }
-  #map-overlay { gap: 8px; padding: 12px 14px; }
+  #overlay.show, #map-overlay.show {
+    display: flex;
+    pointer-events: auto;
+  }
+  #map-overlay {
+    gap: 6px;
+    padding: 10px 12px 14px;
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
   #map-overlay h2 { font-size: 1.35rem; }
   #overlay h2 { font-size: 1.6rem; }
   #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.85rem; max-width: 280px; }
@@ -492,7 +508,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 29</div>
+    <div id="build-ver">build 30</div>
   </div>
 </div>
 
@@ -513,6 +529,7 @@
   const LS_BEST_WIN = 'pg-best-win'; // lives remaining on best win
   const LS_TARGET = 'pg-target-mode';
   const LS_HARD = 'pg-hard-mode';
+  const LS_JUICE = 'pg-juice';
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -672,7 +689,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=29`;
+    img.src = `./sprites/${name}.png?v=30`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -726,6 +743,9 @@
     paused: false,
     waveLivesStart: START_LIVES,
     wavePerfectClears: 0,
+    challengeAwarded: {},
+    juice: true,
+    runStartedAt: 0,
   };
 
   const el = {
@@ -1057,29 +1077,20 @@
     state.betweenWaves = true;
     const cleared = state.wave;
     const ch = CHALLENGE_WAVES[cleared];
-    if (ch && ch.bonus) {
-      const bg = Number(ch.bonus) || 0;
-      state.gold += bg;
-      if (!Number.isFinite(state.gold)) state.gold = 0;
-      flashGold();
-      addFloat(W / 2, H * 0.26, `+${bg}g CHALLENGE CLEAR`, '#fde68a', 2.2);
-      addFloat(W / 2, H * 0.31, ch.title === 'BOSS' ? 'BOSS DEFEATED!' : 'Challenge cleared!', '#fecaca', 1.8);
-    }
+    const awarded = awardChallengeBonus(cleared);
     // Perfect clear: no lives lost during this wave
     let perfectBit = '';
     const livesStart = state.waveLivesStart != null ? state.waveLivesStart : state.lives;
     if (state.lives >= livesStart && state.lives > 0) {
       const perfectGold = 6 + Math.floor(cleared * 0.75);
-      state.gold += perfectGold;
-      if (!Number.isFinite(state.gold)) state.gold = 0;
+      addGold(perfectGold);
       state.wavePerfectClears = (state.wavePerfectClears || 0) + 1;
-      flashGold();
       addFloat(W / 2, H * 0.34, `+${perfectGold} perfect clear`, '#86efac');
       perfectBit = ` · +${perfectGold}g perfect`;
     }
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
-    const bonusBit = (ch ? ` · +${ch.bonus}g CHALLENGE CLEAR` : '') + perfectBit;
+    const bonusBit = (awarded > 0 ? ` · +${awarded}g CHALLENGE CLEAR` : (ch ? ` · challenge cleared` : '')) + perfectBit;
     state.killStreak = 0;
     state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
@@ -1110,6 +1121,29 @@
     el.goldStat.classList.remove('flash-gold');
     void el.goldStat.offsetWidth;
     el.goldStat.classList.add('flash-gold');
+  }
+
+  function addGold(amount, opts) {
+    const n = Number(amount);
+    const add = Number.isFinite(n) ? n : 0;
+    if (!Number.isFinite(state.gold)) state.gold = 0;
+    state.gold = Math.max(0, state.gold + add);
+    if (!Number.isFinite(state.gold)) state.gold = 0;
+    if (!opts || opts.flash !== false) flashGold();
+    return Math.floor(add);
+  }
+
+  function awardChallengeBonus(wave) {
+    const ch = CHALLENGE_WAVES[wave];
+    if (!ch || !ch.bonus) return 0;
+    if (state.challengeAwarded[wave]) return 0;
+    state.challengeAwarded[wave] = true;
+    const bg = Number(ch.bonus) || 0;
+    if (bg <= 0) return 0;
+    addGold(bg);
+    addFloat(W / 2, H * 0.26, `+${bg}g CHALLENGE CLEAR`, '#fde68a', 2.2);
+    addFloat(W / 2, H * 0.31, ch.title === 'BOSS' ? 'BOSS DEFEATED!' : 'Challenge cleared!', '#fecaca', 1.8);
+    return bg;
   }
 
   function flashLives() {
@@ -1317,8 +1351,7 @@
         el.hint.textContent = 'Not enough gold';
         return;
       }
-      state.gold -= def.cost;
-      flashGold();
+      addGold(-def.cost);
       const placed = {
         tileCol: tile.col,
         tileRow: tile.row,
@@ -1359,8 +1392,7 @@
       flashGold();
       return;
     }
-    state.gold -= cost;
-    flashGold();
+    addGold(-cost);
     tw.level = (tw.level || 1) + 1;
     tw.pulse = 0.45;
     burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 16);
@@ -1374,8 +1406,7 @@
     if (!tw || state.gameOver || !state.sellConfirming) return;
     state.sellConfirming = false;
     const value = sellValueFor(tw);
-    state.gold += value;
-    flashGold();
+    addGold(value);
     burst(tw.x, tw.y, '#94a3b8', 12);
     addFloat(tw.x, tw.y - 18, `+${value}`, '#fde68a');
     const idx = state.towers.indexOf(tw);
@@ -1496,21 +1527,27 @@
     for (let i = 0; i < n; i++) {
       q.push(hardenKind(mix[i % mix.length], chance, w));
     }
-    // Wave 20 only: 1–2 Titans (boss). Hard Mode always gets 2.
+    // Wave 20 only: Titans (boss). Always 2; guarantee they exist even on short queues.
     if (w === 20) {
-      const titans = 2; // always 2 bosses on finale for clarity
+      const titans = 2;
+      if (q.length < titans) {
+        while (q.length < titans) q.push('raider');
+      }
+      // Clear any accidental titans from mix, then inject exactly `titans`
+      for (let i = 0; i < q.length; i++) if (q[i] === 'titan') q[i] = 'raider';
       for (let i = 0; i < titans; i++) {
-        // Replace late fodder slots so boss arrives mid/late pack
         const slot = Math.min(q.length - 1, Math.floor(q.length * (0.55 + i * 0.2)));
         q[slot] = 'titan';
       }
-      // Ensure unique titan count (no accidental extras from mix)
-      let seen = 0;
-      for (let i = 0; i < q.length; i++) {
-        if (q[i] === 'titan') {
-          seen++;
-          if (seen > titans) q[i] = 'raider';
+      // If both slots collided, force a second titan elsewhere
+      const titanIdx = [];
+      for (let i = 0; i < q.length; i++) if (q[i] === 'titan') titanIdx.push(i);
+      if (titanIdx.length < titans) {
+        for (let i = q.length - 1; i >= 0 && titanIdx.length < titans; i--) {
+          if (q[i] !== 'titan') { q[i] = 'titan'; titanIdx.push(i); }
         }
+      } else if (titanIdx.length > titans) {
+        for (let k = titans; k < titanIdx.length; k++) q[titanIdx[k]] = 'raider';
       }
     } else {
       // Never allow titan off wave 20
@@ -1537,6 +1574,7 @@
   function startNextWave() {
     if (state.wave >= state.maxWaves) return;
     state.wave++;
+    if (!state.runStartedAt) state.runStartedAt = performance.now();
     state.waveLivesStart = state.lives;
     state.spawnQueue = buildSpawnQueue(state.wave);
     state.spawnLeft = state.spawnQueue.length;
@@ -1609,6 +1647,8 @@
     hideNextWaveUI();
     el.overlay.classList.add('show');
     if (won) {
+      // Wave 20 skips enterWavePause — still grant challenge/boss clear once
+      awardChallengeBonus(state.wave);
       const rating = victoryRating(state.lives);
       saveBestWin(state.lives);
       el.overlayTitle.className = 'win';
@@ -1676,6 +1716,8 @@
     state.sellConfirming = false;
     state.waveLivesStart = START_LIVES;
     state.wavePerfectClears = 0;
+    state.challengeAwarded = {};
+    state.runStartedAt = 0;
     applyMap(mapId);
     state.mapPicked = true;
     el.mapOverlay.classList.remove('show');
@@ -1953,11 +1995,10 @@
     const p = posOnPath(en.dist);
     burst(p.x, p.y, color, 6);
     if (en.hp <= 0) {
-      state.gold += Number(en.reward) || 0;
-      if (!Number.isFinite(state.gold)) state.gold = 0;
-      flashGold();
+      const reward = Number(en.reward);
+      const got = addGold(Number.isFinite(reward) ? reward : 0);
       burst(p.x, p.y, '#fbbf24', 18);
-      addFloat(p.x, p.y - 16, `+${en.reward}`, '#fde68a');
+      addFloat(p.x, p.y - 16, `+${got}`, '#fde68a');
       state.killStreak = (state.killStreak || 0) + 1;
       state.killStreakTimer = 1.35;
       if (state.killStreak >= 3) {
@@ -2263,21 +2304,52 @@
     // Selected tower range
     if (state.selectedTower) {
       const st = towerStats(state.selectedTower);
-      ctx.beginPath();
-      ctx.arc(state.selectedTower.x, state.selectedTower.y, st.range, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(192, 132, 252, 0.08)';
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(192, 132, 252, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      const tw = state.selectedTower;
+      if (st.range >= 500) {
+        // Sniper / map-wide: don't draw a huge clipped circle — frame the map
+        ctx.fillStyle = 'rgba(45, 212, 191, 0.05)';
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(45, 212, 191, 0.55)';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([8, 6]);
+        ctx.strokeRect(5, 5, W - 10, H - 10);
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(153, 246, 228, 0.95)';
+        ctx.font = 'bold 12px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('MAP-WIDE RANGE', W / 2, 10);
+        // soft local accent around the tower
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, 42, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(45, 212, 191, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, st.range, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(192, 132, 252, 0.08)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(192, 132, 252, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
     }
     // Build-type selected: soft range ring at pointer is skipped; tile ghosts cover legality
     if (state.selected && TOWER_DEFS[state.selected] && !state.selectedTower) {
       const def = TOWER_DEFS[state.selected];
-      // faint global hint — one soft wash, not per-tile rings
-      ctx.fillStyle = 'rgba(52, 211, 153, 0.03)';
-      ctx.fillRect(0, 0, W, H);
-      void def;
+      if (def.range >= 500) {
+        ctx.fillStyle = 'rgba(45, 212, 191, 0.04)';
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(45, 212, 191, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 5]);
+        ctx.strokeRect(5, 5, W - 10, H - 10);
+        ctx.setLineDash([]);
+      } else {
+        ctx.fillStyle = 'rgba(52, 211, 153, 0.03)';
+        ctx.fillRect(0, 0, W, H);
+      }
     }
   }
 
@@ -2855,7 +2927,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v29';
+  const BOOT = 'pg-boot-v30';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
