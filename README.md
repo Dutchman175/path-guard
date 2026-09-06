@@ -4,7 +4,7 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 
 **Color = threat:** green Grunts → yellow Scouts → Skitters (splash resist) → orange Brutes → dark red Raiders. Steel **Shells** shrug damage. Wave 20 **Titan** boss.
 
-**Towers:** Archer (multi-shot at high level), Cannon (heavy splash), Frost (+aura chill), Zap (multi), **Sniper** (map-wide), **Beacon** (cheap slow aura), **Barrage** (cheap/fast/low dmg).
+**Towers:** Archer (multi-shot at high level), Cannon (heavy splash), Frost (+aura chill), Zap (multi), **Sniper** (map-wide), **Beacon** (deep slow aura on bends), **Barrage** (fast swarm shredder, soft vs armor). Streak bounties every 5 kills.
 
 **Maps:** Spiral (Easy) → Serpentine (Medium) → Crosscut (Medium-Hard) → **Ridge** (Medium-Hard) → Winding (Hard) → Gauntlet (Brutal). Hard Mode optional. Per-map wins & best times in localStorage. Win overlay uses plain Perfect/Good/Close labels (no star ratings).
 
