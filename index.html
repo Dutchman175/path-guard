@@ -699,13 +699,13 @@
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
-        <p>Pick a map, place towers on green <strong>+</strong> tiles (build grid). Tap a placed tower to upgrade or sell (sell asks confirm). <strong>Double-tap</strong> a tower to upgrade fast.</p>
+        <p>Pick a map, place towers on green <strong>+</strong> tiles (build grid). <strong>Barrier</strong> goes on the path itself (amber tiles). Tap a placed tower to upgrade or sell (sell asks confirm). <strong>Double-tap</strong> a tower to upgrade fast.</p>
         <p><strong>Next Wave</strong> starts the next round; calling early while waiting pays a small gold bonus. <strong>Auto: On</strong> chains waves after a short pause — use Next for build breaks.</p>
         <p><strong>Challenge waves</strong> at 5 / 10 / 15 / 20 pay clear bonuses. Between waves: gold interest (1%, cap 20g) if you hold ≥100g. Perfect clears (no lives lost that wave) pay extra.</p>
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x. FX toggle mutes particles.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Barrier</strong> = place on the path to full-stop enemies 3s (then cooldown). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x. FX toggle mutes particles.</p>
       </div>
     </div>
     <div id="challenge-banner"><span id="challenge-title">CHALLENGE WAVE</span><span class="sub" id="challenge-sub"></span></div>
@@ -732,6 +732,10 @@
       <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer">
         🏹 Archer
         <span class="cost">50g</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-barrier" data-type="barrier" title="Barrier — halt on path">
+        🚧 Barrier
+        <span class="cost">65g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost">
         ❄️ Frost
@@ -791,7 +795,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 43</div>
+    <div id="build-ver">build 44</div>
   </div>
 </div>
 
@@ -978,6 +982,18 @@
       // Fast swarm shredder; soft vs armor (extra resist in applyDamage)
       softVsArmor: 0.55,
     },
+    barrier: {
+      name: 'Barrier', cost: 65, range: 0, fireRate: 99, damage: 0,
+      color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fde68a',
+      upgradeCosts: [42, 70, 105, 150],
+      // Path-only halt: full stop, then per-enemy cooldown so it cannot soft-lock
+      stunDur: 3,
+      stunCooldown: 4, // free movement after stun before same Barrier can re-stun
+      hitRadius: 22,
+      pathOnly: true,
+      supportOnly: true,
+      haltOnly: true,
+    },
     bank: {
       name: 'Bank', cost: 85, range: 0, fireRate: 99, damage: 0,
       color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fcd34d',
@@ -1010,7 +1026,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'barrage', 'bank', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'barrage', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -1019,7 +1035,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=43`;
+    img.src = `./sprites/${name}.png?v=44`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1029,6 +1045,7 @@
   let PATH = MAPS.spiral.path;
   let PATH_LEN = 0;
   let pathTileSet = new Set(); // tile indices occupied by the road
+  let nextTowerId = 1;
 
   // Path fills one tile corridor; neighbors (40px away) stay buildable
   const PATH_HALF = 20; // ~one tile / 2
@@ -1399,6 +1416,13 @@
         : 0,
       supportOnly: !!def.supportOnly,
       incomeOnly: !!def.incomeOnly,
+      haltOnly: !!def.haltOnly,
+      pathOnly: !!def.pathOnly,
+      stunDur: def.stunDur ? def.stunDur + (lv - 1) * 0.2 : 0, // L1:3 … L5:3.8
+      stunCooldown: def.stunCooldown
+        ? Math.max(2, def.stunCooldown - (lv - 1) * 0.45) // L1:4 … L5:2.2 after stun
+        : 0,
+      hitRadius: def.hitRadius ? def.hitRadius + (lv - 1) * 1.5 : 0,
       incomePerWave: def.incomePerWave
         ? def.incomePerWave + (lv - 1) // L1:10 … L5:14
         : 0,
@@ -1437,6 +1461,13 @@
       if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
       if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
       if (!parts.length) parts.push('stronger beacon');
+    }
+    if (tw.type === 'barrier') {
+      parts.length = 0;
+      if ((next.stunDur || 0) > (cur.stunDur || 0) + 0.05) parts.push('longer halt');
+      if ((next.stunCooldown || 99) < (cur.stunCooldown || 99) - 0.05) parts.push('faster re-stun');
+      if ((next.hitRadius || 0) > (cur.hitRadius || 0) + 0.4) parts.push('wider catch');
+      if (!parts.length) parts.push('stronger barrier');
     }
     if (tw.type === 'bank') {
       parts.length = 0;
@@ -1483,6 +1514,9 @@
     if (st.auraRadius) {
       const chill = st.auraSlow ? ` · chill ${Math.round((1 - st.auraSlow) * 100)}%` : '';
       parts.push(`Aura ${Math.round(st.auraRadius)}${chill}`);
+    }
+    if (st.haltOnly || (st.pathOnly && st.stunDur > 0)) {
+      return `Halt ${st.stunDur.toFixed(1)}s · CD ${st.stunCooldown.toFixed(1)}s · path only`;
     }
     if (st.incomeOnly || (st.incomePerWave > 0 && st.supportOnly && !st.auraRadius)) {
       return `Income +${st.incomePerWave}g/wave`;
@@ -1968,6 +2002,18 @@
     return !!buildable[tileIndex(col, row)];
   }
 
+  function isPathTile(col, row) {
+    if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return false;
+    return pathTileSet.has(tileIndex(col, row));
+  }
+
+  function isTileBuildableFor(type, col, row) {
+    if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return false;
+    const def = TOWER_DEFS[type];
+    if (def && def.pathOnly) return isPathTile(col, row);
+    return isTileBuildable(col, row);
+  }
+
   function isTileOccupied(col, row) {
     return state.towers.some((t) => t.tileCol === col && t.tileRow === row);
   }
@@ -2024,13 +2070,16 @@
 
     if (state.selected) {
       const tile = getTileAt(mx, my);
-      if (!tile || !isTileBuildable(tile.col, tile.row)) {
-        // Keep build mode — accidental path taps should not cancel selection
+      const pathTower = !!(TOWER_DEFS[state.selected] && TOWER_DEFS[state.selected].pathOnly);
+      if (!tile || !isTileBuildableFor(state.selected, tile.col, tile.row)) {
+        // Keep build mode — accidental wrong-zone taps should not cancel selection
         if (tile) {
           const c = tileCenter(tile.col, tile.row);
           placeFeedback(c.x, c.y, false);
         }
-        el.hint.textContent = 'Can\'t build there — tap a green + tile (or re-tap the tower button to cancel)';
+        el.hint.textContent = pathTower
+          ? 'Barrier goes on the path — tap an amber path tile (or re-tap to cancel)'
+          : 'Can\'t build there — tap a green + tile (or re-tap the tower button to cancel)';
         return;
       }
       if (isTileOccupied(tile.col, tile.row)) {
@@ -2055,6 +2104,7 @@
       }
       addGold(-def.cost);
       const placed = {
+        id: nextTowerId++,
         tileCol: tile.col,
         tileRow: tile.row,
         tile: tile.idx,
@@ -2369,6 +2419,7 @@
       hitFlash: 0,
       slowTimer: 0,
       slowMul: 1,
+      barrierCd: {}, // towerId -> seconds until this Barrier can re-stun
     });
   }
 
@@ -2570,7 +2621,9 @@
             ? 'Selected Barrage — fast swarm shredder (soft vs armor).'
             : (type === 'bank'
               ? 'Selected Bank — +gold each wave clear, no shots.'
-              : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`)))
+              : (type === 'barrier'
+                ? 'Selected Barrier — place ON the path. Full stop 3s, then cooldown.'
+                : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`))))
         : 'Tap tiles to build · double-tap a tower to upgrade';
       updateHUD();
     });
@@ -2610,6 +2663,10 @@
     if (def.incomeOnly) {
       const l5 = def.incomePerWave + 4;
       return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots). <span class="muted">Support economy</span></div>`;
+    }
+    if (def.haltOnly || def.pathOnly) {
+      const cd = def.stunCooldown;
+      return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Place on path tiles only. Full-stops an enemy ${def.stunDur}s, then that enemy ignores this Barrier for ${cd}s (upgrades: longer halt / shorter CD). <span class="muted">Path control</span></div>`;
     }
     if (def.supportOnly && def.auraRadius) {
       return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Deep slow aura only (no shots). Place on bends. <span class="muted">Support</span></div>`;
@@ -3018,13 +3075,44 @@
         if (state.killStreakTimer <= 0) state.killStreak = 0;
       }
 
+      // Barrier path-halts — apply before movement so overlap stops immediately
+      for (const tw of state.towers) {
+        if (tw.type !== 'barrier') continue;
+        const stB = towerStats(tw);
+        const tid = tw.id != null ? tw.id : (tw.id = nextTowerId++);
+        for (const en of state.enemies) {
+          if (!en.barrierCd) en.barrierCd = {};
+          if ((en.barrierCd[tid] || 0) > 0) continue;
+          const p = posOnPath(en.dist);
+          if (Math.hypot(p.x - tw.x, p.y - tw.y) <= (stB.hitRadius || 22)) {
+            applySlow(en, 0, stB.stunDur || 3);
+            // Lock out re-stun for stun duration + post-stun cooldown (same tower)
+            en.barrierCd[tid] = (stB.stunDur || 3) + (stB.stunCooldown || 4);
+            if (state.juice !== false) {
+              burst(tw.x, tw.y, '#fbbf24', 6, {
+                lifeMul: 0.45, speedMin: 15, speedMax: 55, upBias: 20, gravity: 50, rMin: 1.2, rMax: 2.8,
+              });
+              addFloat(p.x, p.y - 14, 'HALT', '#fde68a', 0.7);
+            }
+            tw.pulse = 0.35;
+          }
+        }
+      }
+
       for (let i = state.enemies.length - 1; i >= 0; i--) {
         const en = state.enemies[i];
+        if (en.barrierCd) {
+          for (const k of Object.keys(en.barrierCd)) {
+            en.barrierCd[k] -= dt;
+            if (en.barrierCd[k] <= 0) delete en.barrierCd[k];
+          }
+        }
         if (en.slowTimer > 0) {
           en.slowTimer -= dt;
           if (en.slowTimer <= 0) en.slowMul = 1;
         }
-        const spd = en.baseSpeed * (en.slowMul || 1);
+        const mul = (en.slowMul == null ? 1 : en.slowMul);
+        const spd = en.baseSpeed * mul;
         en.speed = spd;
         en.dist += spd * dt;
         if (en.hitFlash > 0) en.hitFlash -= dt;
@@ -3292,6 +3380,21 @@
         ctx.strokeStyle = 'rgba(45, 212, 191, 0.4)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
+      } else if (st.haltOnly || (st.pathOnly && st.stunDur > 0)) {
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
+        ctx.font = 'bold 11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`BARRIER — HALT ${st.stunDur.toFixed(1)}s · CD ${st.stunCooldown.toFixed(1)}s`, W / 2, 10);
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, st.hitRadius || 22, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.7)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
       } else if (st.incomeOnly || (st.supportOnly && !st.auraRadius && st.incomePerWave > 0)) {
         ctx.fillStyle = 'rgba(245, 158, 11, 0.95)';
         ctx.font = 'bold 11px system-ui';
@@ -3369,6 +3472,12 @@
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillText('Bank: income each wave clear — no shots', W / 2, 10);
+        } else if (state.selected === 'barrier') {
+          ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
+          ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Barrier: place ON path — full stop 3s, then cooldown', W / 2, 10);
         }
       }
     }
@@ -3378,6 +3487,7 @@
     if (!state.selected || state.gameOver || !state.mapPicked) return;
     const t = performance.now() / 1000;
     const pulse = 0.5 + Math.sin(t * 4) * 0.22;
+    const pathMode = !!(TOWER_DEFS[state.selected] && TOWER_DEFS[state.selected].pathOnly);
 
     // Subtle grid lines
     ctx.strokeStyle = 'rgba(148, 163, 184, 0.14)';
@@ -3400,8 +3510,9 @@
         const idx = tileIndex(c, r);
         const x0 = c * TILE;
         const y0 = r * TILE;
-        if (!buildable[idx]) {
-          // Dim illegal / path tiles
+        const ok = pathMode ? pathTileSet.has(idx) : !!buildable[idx];
+        if (!ok) {
+          // Dim illegal tiles (off-path for Barrier, path/buffer for others)
           ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
           ctx.fillRect(x0 + 1, y0 + 1, TILE - 2, TILE - 2);
           continue;
@@ -3415,16 +3526,29 @@
         } else {
           ctx.rect(x0 + pad, y0 + pad, TILE - pad * 2, TILE - pad * 2);
         }
-        ctx.fillStyle = `rgba(52, 211, 153, ${0.14 + pulse * 0.12})`;
-        ctx.fill();
-        ctx.strokeStyle = `rgba(52, 211, 153, ${0.55 + pulse * 0.3})`;
-        ctx.lineWidth = 1.6;
-        ctx.stroke();
-        ctx.fillStyle = '#6ee7b7';
-        ctx.font = 'bold 15px system-ui';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('+', center.x, center.y + 1);
+        if (pathMode) {
+          ctx.fillStyle = `rgba(245, 158, 11, ${0.16 + pulse * 0.12})`;
+          ctx.fill();
+          ctx.strokeStyle = `rgba(251, 191, 36, ${0.55 + pulse * 0.3})`;
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 14px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('▦', center.x, center.y + 1);
+        } else {
+          ctx.fillStyle = `rgba(52, 211, 153, ${0.14 + pulse * 0.12})`;
+          ctx.fill();
+          ctx.strokeStyle = `rgba(52, 211, 153, ${0.55 + pulse * 0.3})`;
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+          ctx.fillStyle = '#6ee7b7';
+          ctx.font = 'bold 15px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('+', center.x, center.y + 1);
+        }
       }
     }
   }
@@ -3674,9 +3798,43 @@
           ctx.moveTo(0, 2);
           ctx.lineTo(0, 10);
           ctx.stroke();
+        } else if (tw.type === 'barrier') {
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillRect(-11, -10, 5, 20);
+          ctx.fillRect(6, -10, 5, 20);
+          ctx.fillStyle = '#fbbf24';
+          ctx.fillRect(-12, -6, 24, 4);
+          ctx.fillStyle = '#f59e0b';
+          ctx.fillRect(-12, 0, 24, 4);
+          ctx.fillStyle = '#d97706';
+          ctx.fillRect(-12, 6, 24, 4);
+          ctx.fillStyle = '#7f1d1d';
+          ctx.beginPath();
+          ctx.moveTo(0, -2);
+          ctx.lineTo(-5, 6);
+          ctx.lineTo(5, 6);
+          ctx.closePath();
+          ctx.fill();
         }
       }
       ctx.restore();
+
+      // Barrier catch radius (path halt)
+      if (tw.type === 'barrier' && (st.hitRadius || 0) > 0 && isSel) {
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, st.hitRadius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.1)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.65)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
 
       // Aura rings in world space (Frost cyan / Beacon gold)
       if (st.auraRadius > 0 && (tw.type === 'frost' || tw.type === 'beacon')) {
@@ -3721,13 +3879,15 @@
     for (const en of state.enemies) {
       const p = posOnPath(en.dist);
       en.x = p.x; en.y = p.y;
-      const slowed = (en.slowTimer || 0) > 0;
-      const fill = en.hitFlash > 0 ? '#fecaca' : (slowed ? '#7dd3fc' : en.color);
+      const halted = (en.slowTimer || 0) > 0 && (en.slowMul != null && en.slowMul <= 0.001);
+      const slowed = (en.slowTimer || 0) > 0 && !halted;
+      const fill = en.hitFlash > 0 ? '#fecaca' : (halted ? '#fbbf24' : (slowed ? '#7dd3fc' : en.color));
       const sprName = ENEMY_SPRITE[en.kind] || 'grunt';
       ctx.save();
       if (spriteReady(sprName)) {
         const sz = Math.max(22, en.r * (en.kind === 'titan' ? 2.35 : 2.7));
         if (en.hitFlash > 0) ctx.globalAlpha = 0.85;
+        else if (halted) ctx.globalAlpha = 0.9;
         else if (slowed) ctx.globalAlpha = 0.92;
         ctx.drawImage(SPRITES[sprName], p.x - sz / 2, p.y - sz / 2, sz, sz);
         ctx.globalAlpha = 1;
@@ -3777,7 +3937,13 @@
           ctx.textBaseline = 'bottom';
           ctx.fillText('BOSS', p.x, p.y - sz * 0.52);
         }
-        if (slowed) {
+        if (halted) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, sz * 0.42, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(251, 191, 36, 0.85)';
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
+        } else if (slowed) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, sz * 0.42, 0, Math.PI * 2);
           ctx.strokeStyle = 'rgba(125, 211, 252, 0.65)';
@@ -4089,7 +4255,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v43';
+  const BOOT = 'pg-boot-v44';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
