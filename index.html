@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 22 -->
+<!-- path-guard-build: 23 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -266,6 +266,22 @@
     min-height: 1em;
   }
   #build-ver { text-align: center; font-size: 10px; opacity: 0.45; }
+  .map-tip { font-size: 12px; opacity: 0.85; margin: 0 0 10px; line-height: 1.35; }
+  #challenge-banner {
+    position: absolute; left: 50%; top: 18%; transform: translate(-50%, -50%);
+    pointer-events: none; z-index: 6; text-align: center;
+    font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #fecaca; text-shadow: 0 0 18px rgba(239,68,68,0.85), 0 2px 0 #450a0a;
+    opacity: 0; transition: opacity 0.25s ease;
+    font-size: 18px; white-space: nowrap;
+  }
+  #challenge-banner.show { opacity: 1; animation: challengePulse 1.2s ease-in-out 2; }
+  #challenge-banner .sub { display: block; font-size: 12px; letter-spacing: 0.04em;
+    color: #fde68a; font-weight: 700; margin-top: 4px; text-transform: none; }
+  @keyframes challengePulse {
+    0%,100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.06); }
+  }
 
   #overlay, #map-overlay {
     position: absolute;
@@ -344,23 +360,25 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <p>Pick a path, then build towers and hold the line.</p>
+      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#7f1d1d">dark red elite</span></p>
+      <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
+        Map 1: Spiral — Easy
+        <span class="sub">Longest path · more shoot time · +20 start gold</span>
+      </button>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
-        Map 1: Serpentine — Easy
-        <span class="sub">Grid S-corridors, open build</span>
+        Map 2: Serpentine — Medium
+        <span class="sub">Open S-corridors · light pressure · +5 gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
-        Map 2: Winding — Medium
-        <span class="sub">Tight grid switchbacks</span>
+        Map 3: Winding — Hard
+        <span class="sub">Tight switchbacks · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
-        Map 3: Gauntlet — Hard
-        <span class="sub">Short grid corridor</span>
-      </button>
-      <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
-        Map 4: Spiral — Brutal
-        <span class="sub">Grid coil to the center</span>
+        Map 4: Gauntlet — Brutal
+        <span class="sub">Shortest path · least shoot time · elite mix</span>
       </button>
     </div>
+    <div id="challenge-banner"><span id="challenge-title">CHALLENGE WAVE</span><span class="sub" id="challenge-sub"></span></div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
       <p id="overlay-rating" class="rating"></p>
@@ -415,7 +433,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 22</div>
+    <div id="build-ver">build 23</div>
   </div>
 </div>
 
@@ -426,7 +444,7 @@
   const W = canvas.width;
   const H = canvas.height;
 
-  const START_GOLD = 70;
+  const START_GOLD = 80;
   const START_LIVES = 8;
   const MAX_WAVES = 20;
   const MAX_TOWER_LEVEL = 5;
@@ -445,9 +463,9 @@
     serpentine: {
       id: 'serpentine',
       name: 'Serpentine',
-      spawnExtra: 0,
-      hardenChance: 0,
-      startGoldBonus: 10,
+      spawnExtra: 1,
+      hardenChance: 0.1,
+      startGoldBonus: 5,
       // Easy: full-width S on every other row — open build lanes between
       path: [
         tc(0, 0), tc(9, 0),
@@ -462,8 +480,8 @@
     winding: {
       id: 'winding',
       name: 'Winding',
-      spawnExtra: 1,
-      hardenChance: 0.12,
+      spawnExtra: 3,
+      hardenChance: 0.28,
       startGoldBonus: 0,
       // Medium: tighter switchbacks with uneven corridor lengths
       path: [
@@ -480,8 +498,8 @@
     gauntlet: {
       id: 'gauntlet',
       name: 'Gauntlet',
-      spawnExtra: 3,
-      hardenChance: 0.38,
+      spawnExtra: 5,
+      hardenChance: 0.45,
       startGoldBonus: 0,
       // Hard: a bit longer than the old 3-lane — five passes, simple jogs
       path: [
@@ -497,9 +515,9 @@
     spiral: {
       id: 'spiral',
       name: 'Spiral',
-      spawnExtra: 5,
-      hardenChance: 0.58,
-      startGoldBonus: 0,
+      spawnExtra: 0,
+      hardenChance: 0,
+      startGoldBonus: 20,
       // Brutal: rectangular grid coil (2-tile ring gaps) inward to center
       path: [
         tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
@@ -538,11 +556,18 @@
 
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
-    // Size by threat: Scout < Grunt < Brute < Raider(largest). Distinct hues.
-    normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 8,  color: '#ef4444', stroke: '#7f1d1d' },
-    fast:   { name: 'Scout',  r: 10, hp: 32,  speed: 125, reward: 7,  color: '#facc15', stroke: '#854d0e' },
-    tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 14, color: '#a855f7', stroke: '#4c1d95' },
-    raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 20, color: '#d946ef', stroke: '#0e7490' },
+    // Color = threat (green easy → dark red hardest). Size: Scout < Grunt < Brute < Raider.
+    normal: { name: 'Grunt',  r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
+    fast:   { name: 'Scout',  r: 10, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
+    tank:   { name: 'Brute',  r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
+    raider: { name: 'Raider', r: 19, hp: 200, speed: 125, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
+  };
+
+  const CHALLENGE_WAVES = {
+    5:  { title: 'CHALLENGE WAVE', sub: 'Scout Swarm', bonus: 25 },
+    10: { title: 'CHALLENGE WAVE', sub: 'Brute Push', bonus: 40 },
+    15: { title: 'CHALLENGE WAVE', sub: 'Raider Pack', bonus: 60 },
+    20: { title: 'BOSS RUSH', sub: 'Finale Elite', bonus: 100 },
   };
 
 
@@ -556,14 +581,14 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png`;
+    img.src = `./sprites/${name}.png?v=23`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
     return !!(SPRITE_OK[name] && SPRITES[name] && SPRITES[name].complete && SPRITES[name].naturalWidth > 0);
   }
 
-  let PATH = MAPS.serpentine.path;
+  let PATH = MAPS.spiral.path;
   let PATH_LEN = 0;
   let pathTileSet = new Set(); // tile indices occupied by the road
 
@@ -574,7 +599,7 @@
   let buildable = []; // flat ROWS*COLS booleans
 
   const state = {
-    mapId: 'serpentine',
+    mapId: 'spiral',
     mapPicked: false,
     gold: START_GOLD,
     lives: START_LIVES,
@@ -646,7 +671,7 @@
   }
 
   function applyMap(mapId) {
-    const map = MAPS[mapId] || MAPS.serpentine;
+    const map = MAPS[mapId] || MAPS.spiral;
     state.mapId = map.id;
     PATH = map.path;
     PATH_LEN = pathLength(PATH);
@@ -655,11 +680,11 @@
   }
 
   function activeMap() {
-    return MAPS[state.mapId] || MAPS.serpentine;
+    return MAPS[state.mapId] || MAPS.spiral;
   }
 
   function startGoldForMap(mapId) {
-    const map = MAPS[mapId] || MAPS.serpentine;
+    const map = MAPS[mapId] || MAPS.spiral;
     return START_GOLD + (map.startGoldBonus || 0);
   }
 
@@ -851,14 +876,20 @@
     if (mode !== 'next' && mode !== 'continuous') return;
     state.waveMode = mode;
     if (state.betweenWaves && !state.gameOver && state.started) {
+      const next = state.wave + 1;
+      const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
       if (mode === 'continuous') {
         state.awaitingNextWave = false;
-        state.nextWaveIn = 1.5;
-        el.hint.textContent = `Wave ${state.wave} cleared! Next wave soon…`;
+        state.nextWaveIn = isChallengeWave(state.wave) ? 2.6 : 1.5;
+        el.hint.textContent = preview
+          ? `Wave ${state.wave} cleared! Next: ${preview}…`
+          : `Wave ${state.wave} cleared! Next wave soon…`;
       } else {
         state.awaitingNextWave = true;
         state.nextWaveIn = 0;
-        el.hint.textContent = `Wave ${state.wave} cleared! Build up, then press Next Wave.`;
+        el.hint.textContent = preview
+          ? `Wave ${state.wave} cleared! Next: ${preview}. Build, then Next Wave.`
+          : `Wave ${state.wave} cleared! Build up, then press Next Wave.`;
       }
     }
     updateWaveButtons();
@@ -866,16 +897,32 @@
 
   function enterWavePause() {
     state.betweenWaves = true;
+    const cleared = state.wave;
+    const ch = CHALLENGE_WAVES[cleared];
+    if (ch && ch.bonus) {
+      state.gold += ch.bonus;
+      flashGold();
+      addFloat(W / 2, H * 0.28, `+${ch.bonus} challenge bonus`, '#fde68a');
+    }
+    const next = cleared + 1;
+    const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
+    const bonusBit = ch ? ` (+${ch.bonus}g)` : '';
     if (state.waveMode === 'continuous') {
       state.awaitingNextWave = false;
-      state.nextWaveIn = 1.5;
-      el.hint.textContent = `Wave ${state.wave} cleared! Next wave soon…`;
+      // Longer breath after challenge waves
+      state.nextWaveIn = ch ? 2.6 : 1.5;
+      el.hint.textContent = preview
+        ? `Wave ${cleared} cleared${bonusBit}! Next: ${preview}…`
+        : `Wave ${cleared} cleared${bonusBit}!`;
     } else {
       state.awaitingNextWave = true;
       state.nextWaveIn = 0;
-      el.hint.textContent = `Wave ${state.wave} cleared! Build up, then press Next Wave.`;
+      el.hint.textContent = preview
+        ? `Wave ${cleared} cleared${bonusBit}! Next: ${preview}. Build, then Next Wave.`
+        : `Wave ${cleared} cleared${bonusBit}! Build up, then press Next Wave.`;
     }
     updateWaveButtons();
+    updateHUD();
   }
 
   function hideNextWaveUI() {
@@ -1121,29 +1168,80 @@
     updateHUD();
   }
 
-  function waveEnemyCount(w) {
-    // Soft early, mid ramp, steep late (HP/speed stay fixed per type)
-    if (w <= 5) return 3 + w;                    // 4..8
-    if (w <= 12) return 8 + (w - 5) * 2;         // 10..22
-    return 22 + (w - 12) * 5;                    // 27..62
+  function isChallengeWave(w) {
+    return !!CHALLENGE_WAVES[w];
   }
+
+  function waveEnemyCount(w) {
+    // Easy early → hard late with post-challenge breathers (HP/speed fixed)
+    const table = {
+      1: 3, 2: 4, 3: 5, 4: 6,
+      5: 14,              // Scout swarm
+      6: 6,               // breather
+      7: 8, 8: 10, 9: 12,
+      10: 16,             // Brute push
+      11: 8,              // breather
+      12: 12, 13: 14, 14: 16,
+      15: 18,             // Raider pack
+      16: 10,             // breather
+      17: 16, 18: 18, 19: 20,
+      20: 26,             // Finale elite
+    };
+    return table[w] || (10 + w);
+  }
+
   function enemyMixForWave(w) {
-    // Fixed HP/speed; early mostly Grunts, mid adds Scouts then Brutes, late Raiders
+    // Scripted mixes; Raiders never before 12 (hardenKind also gates)
     if (w <= 2) return ['normal'];
     if (w === 3) return ['normal', 'normal', 'normal', 'fast'];
-    if (w === 4) return ['normal', 'normal', 'normal', 'fast', 'normal'];
-    if (w === 5) return ['normal', 'normal', 'fast', 'normal', 'tank'];
-    if (w === 6) return ['normal', 'fast', 'normal', 'fast', 'tank'];
-    if (w === 7) return ['normal', 'fast', 'tank', 'fast', 'normal'];
+    if (w === 4) return ['normal', 'normal', 'fast', 'normal'];
+    if (w === 5) return ['fast', 'fast', 'fast', 'fast', 'fast', 'normal', 'fast', 'fast']; // scout swarm
+    if (w === 6) return ['normal', 'normal', 'fast', 'normal']; // breather
+    if (w === 7) return ['normal', 'fast', 'normal', 'fast', 'normal'];
     if (w === 8) return ['fast', 'normal', 'tank', 'fast', 'normal'];
     if (w === 9) return ['fast', 'tank', 'normal', 'fast', 'tank'];
-    if (w === 10) return ['fast', 'tank', 'fast', 'normal', 'tank'];
-    if (w === 11) return ['fast', 'tank', 'normal', 'fast', 'tank', 'fast'];
-    if (w === 12) return ['fast', 'tank', 'normal', 'fast', 'tank', 'raider'];
-    if (w <= 14) return ['fast', 'tank', 'tank', 'fast', 'raider', 'normal'];
-    if (w <= 16) return ['tank', 'fast', 'tank', 'raider', 'tank', 'fast'];
-    if (w <= 18) return ['tank', 'raider', 'fast', 'tank', 'raider', 'tank'];
-    return ['tank', 'raider', 'fast', 'raider', 'tank', 'fast', 'raider'];
+    if (w === 10) return ['tank', 'tank', 'tank', 'normal', 'tank', 'fast', 'tank']; // brute push
+    if (w === 11) return ['normal', 'fast', 'normal', 'fast']; // breather
+    if (w === 12) return ['fast', 'tank', 'normal', 'fast', 'raider', 'tank'];
+    if (w === 13) return ['fast', 'tank', 'raider', 'normal', 'tank', 'fast'];
+    if (w === 14) return ['tank', 'fast', 'tank', 'raider', 'fast', 'tank'];
+    if (w === 15) return ['raider', 'tank', 'raider', 'tank', 'raider', 'fast', 'tank']; // raider pack
+    if (w === 16) return ['fast', 'normal', 'tank', 'fast', 'normal']; // breather
+    if (w === 17) return ['tank', 'raider', 'fast', 'tank', 'raider'];
+    if (w === 18) return ['tank', 'raider', 'raider', 'fast', 'tank', 'raider'];
+    if (w === 19) return ['raider', 'tank', 'fast', 'raider', 'tank', 'raider'];
+    return ['raider', 'tank', 'raider', 'tank', 'raider', 'fast', 'raider', 'tank']; // finale
+  }
+
+  function wavePreviewLabel(w) {
+    if (CHALLENGE_WAVES[w]) return CHALLENGE_WAVES[w].sub;
+    const mix = enemyMixForWave(w);
+    const counts = {};
+    const n = waveEnemyCount(w);
+    for (let i = 0; i < n; i++) {
+      const k = mix[i % mix.length];
+      counts[k] = (counts[k] || 0) + 1;
+    }
+    const order = ['normal', 'fast', 'tank', 'raider'];
+    const parts = [];
+    for (const k of order) {
+      if (!counts[k]) continue;
+      parts.push(`${counts[k]} ${ENEMY_TYPES[k].name}${counts[k] > 1 ? 's' : ''}`);
+    }
+    return parts.join(', ') || 'enemies';
+  }
+
+  function showChallengeBanner(w) {
+    const info = CHALLENGE_WAVES[w];
+    const banner = document.getElementById('challenge-banner');
+    const title = document.getElementById('challenge-title');
+    const sub = document.getElementById('challenge-sub');
+    if (!banner || !info) return;
+    title.textContent = info.title;
+    sub.textContent = info.sub;
+    banner.classList.add('show');
+    clearTimeout(showChallengeBanner._t);
+    showChallengeBanner._t = setTimeout(() => banner.classList.remove('show'), 2800);
   }
 
   function hardenKind(kind, chance, w) {
@@ -1183,7 +1281,13 @@
     state.nextWaveIn = 0;
     hideNextWaveUI();
     saveBestWave(state.wave);
-    el.hint.textContent = `Wave ${state.wave} incoming!`;
+    const ch = CHALLENGE_WAVES[state.wave];
+    if (ch) {
+      showChallengeBanner(state.wave);
+      el.hint.textContent = `${ch.title} — ${ch.sub}!`;
+    } else {
+      el.hint.textContent = `Wave ${state.wave} incoming!`;
+    }
     updateHUD();
   }
 
@@ -1243,9 +1347,9 @@
     state.mapPicked = false;
     el.mapOverlay.classList.add('show');
     el.overlay.classList.remove('show');
-    let last = 'serpentine';
-    try { last = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
-    if (!MAPS[last]) last = 'serpentine';
+    let last = 'spiral';
+    try { last = localStorage.getItem(LS_MAP) || 'spiral'; } catch (_) {}
+    if (!MAPS[last]) last = 'spiral';
     document.querySelectorAll('.map-pick-btn').forEach(b => {
       b.classList.toggle('last', b.dataset.map === last);
     });
@@ -1285,7 +1389,7 @@
     el.overlay.classList.remove('show');
     el.hint.textContent = wasChange
       ? 'Map changed — build, then Next Wave'
-      : `${MAPS[mapId].name} ready — build on the grid, then Next Wave`;
+      : `${MAPS[mapId].name} ready — green=weak, dark red=elite. Place 2–3 towers, then Next Wave`;
     updateWaveButtons();
     updateHUD();
   }
@@ -2116,7 +2220,7 @@
         makePath();
         ctx.fillStyle = fill;
         ctx.fill();
-        ctx.strokeStyle = en.kind === 'raider' ? '#000' : en.stroke;
+        ctx.strokeStyle = en.kind === 'raider' ? '#fecaca' : en.stroke;
         ctx.lineWidth = en.kind === 'raider' ? 2.8 : (en.kind === 'tank' ? 2.4 : 2);
         ctx.stroke();
 
@@ -2124,7 +2228,7 @@
           const s = en.r * 0.88;
           ctx.beginPath();
           ctx.arc(p.x, p.y - s * 0.12, s * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = en.hitFlash > 0 ? '#ede9fe' : '#d8b4fe';
+          ctx.fillStyle = en.hitFlash > 0 ? '#ffedd5' : '#fdba74';
           ctx.fill();
         } else if (en.kind === 'fast') {
           ctx.beginPath();
@@ -2146,14 +2250,14 @@
           ctx.beginPath();
           ctx.arc(p.x - en.r * 0.18, p.y, en.r * 0.14, 0, Math.PI * 2);
           ctx.arc(p.x + en.r * 0.18, p.y, en.r * 0.14, 0, Math.PI * 2);
-          ctx.fillStyle = en.hitFlash > 0 ? '#a5f3fc' : '#22d3ee';
+          ctx.fillStyle = en.hitFlash > 0 ? '#fecaca' : '#fb7185';
           ctx.fill();
           for (let i = 0; i < 4; i++) {
             const ang = -Math.PI / 2 + i * (Math.PI / 2);
             const R = en.r * 1.15;
             ctx.beginPath();
             ctx.arc(p.x + Math.cos(ang) * R, p.y + Math.sin(ang) * R, Math.max(2, en.r * 0.12), 0, Math.PI * 2);
-            ctx.fillStyle = '#22d3ee';
+            ctx.fillStyle = '#fecaca';
             ctx.fill();
           }
         } else {
@@ -2280,9 +2384,9 @@
   }
 
   // Init map from last selection for preview path under overlay
-  let initialMap = 'serpentine';
-  try { initialMap = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
-  applyMap(MAPS[initialMap] ? initialMap : 'serpentine');
+  let initialMap = 'spiral';
+  try { initialMap = localStorage.getItem(LS_MAP) || 'spiral'; } catch (_) {}
+  applyMap(MAPS[initialMap] ? initialMap : 'spiral');
   showMapSelect();
   updateWaveButtons();
   updateHUD();
@@ -2292,7 +2396,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v22';
+  const BOOT = 'pg-boot-v23';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
