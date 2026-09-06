@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 18 -->
+<!-- path-guard-build: 19 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -200,6 +200,13 @@
   #btn-continuous {
     background: linear-gradient(180deg, #22c55e, #16a34a);
     color: #052e16;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+  }
+  #btn-continuous.active {
+    border-color: #bbf7d0;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.55), inset 0 0 0 1px rgba(255,255,255,0.25);
+    filter: brightness(1.08);
   }
   #tower-btns.hidden { display: none; }
   #tower-actions {
@@ -408,7 +415,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 18</div>
+    <div id="build-ver">build 19</div>
   </div>
 </div>
 
@@ -474,7 +481,7 @@
       id: 'gauntlet',
       name: 'Gauntlet',
       spawnExtra: 3,
-      hardenChance: 0.32,
+      hardenChance: 0.38,
       startGoldBonus: 0,
       // Hard: a bit longer than the old 3-lane — five passes, simple jogs
       path: [
@@ -491,7 +498,7 @@
       id: 'spiral',
       name: 'Spiral',
       spawnExtra: 5,
-      hardenChance: 0.5,
+      hardenChance: 0.58,
       startGoldBonus: 0,
       // Brutal: rectangular grid coil (2-tile ring gaps) inward to center
       path: [
@@ -534,14 +541,15 @@
     normal: { name: 'Grunt', r: 12, hp: 60, speed: 70, reward: 8, color: '#ef4444', stroke: '#7f1d1d' },
     fast:   { name: 'Scout', r: 8,  hp: 32, speed: 125, reward: 7, color: '#fbbf24', stroke: '#92400e' },
     tank:   { name: 'Brute', r: 17, hp: 180, speed: 38, reward: 14, color: '#a78bfa', stroke: '#4c1d95' },
+    raider: { name: 'Raider', r: 13, hp: 200, speed: 125, reward: 20, color: '#f43f5e', stroke: '#9f1239' },
   };
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'grunt', 'scout', 'brute'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'grunt', 'scout', 'brute', 'raider'];
   const SPRITES = {};
   const SPRITE_OK = {};
-  const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', tank: 'brute' };
+  const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', tank: 'brute', raider: 'raider' };
   for (const name of SPRITE_NAMES) {
     const img = new Image();
     SPRITE_OK[name] = false;
@@ -807,7 +815,10 @@
   function updateWaveButtons() {
     const canStart = state.mapPicked && !state.gameOver && (!state.started || state.awaitingNextWave);
     el.btnNextWave.disabled = !canStart;
-    el.btnContinuous.disabled = !canStart;
+    // Continuous: start when awaiting, or toggle on/off anytime after the run has begun
+    const canToggleContinuous = state.mapPicked && !state.gameOver && state.started;
+    el.btnContinuous.disabled = !(canStart || canToggleContinuous);
+    el.btnContinuous.classList.toggle('active', state.waveMode === 'continuous');
   }
 
   function setWaveMode(mode) {
@@ -1087,7 +1098,7 @@
     return 22 + (w - 12) * 5;                    // 27..62
   }
   function enemyMixForWave(w) {
-    // Fixed HP/speed; early mostly Grunts, mid adds Scouts then Brutes, late heavy mix
+    // Fixed HP/speed; early mostly Grunts, mid adds Scouts then Brutes, late Raiders
     if (w <= 2) return ['normal'];
     if (w === 3) return ['normal', 'normal', 'normal', 'fast'];
     if (w === 4) return ['normal', 'normal', 'normal', 'fast', 'normal'];
@@ -1097,17 +1108,19 @@
     if (w === 8) return ['fast', 'normal', 'tank', 'fast', 'normal'];
     if (w === 9) return ['fast', 'tank', 'normal', 'fast', 'tank'];
     if (w === 10) return ['fast', 'tank', 'fast', 'normal', 'tank'];
-    if (w <= 12) return ['fast', 'tank', 'normal', 'fast', 'tank', 'fast'];
-    if (w <= 14) return ['fast', 'tank', 'tank', 'fast', 'tank', 'normal'];
-    if (w <= 16) return ['tank', 'fast', 'tank', 'fast', 'tank', 'fast'];
-    if (w <= 18) return ['tank', 'tank', 'fast', 'tank', 'fast', 'tank'];
-    return ['tank', 'tank', 'fast', 'tank', 'tank', 'fast'];
+    if (w === 11) return ['fast', 'tank', 'normal', 'fast', 'tank', 'fast'];
+    if (w === 12) return ['fast', 'tank', 'normal', 'fast', 'tank', 'raider'];
+    if (w <= 14) return ['fast', 'tank', 'tank', 'fast', 'raider', 'normal'];
+    if (w <= 16) return ['tank', 'fast', 'tank', 'raider', 'tank', 'fast'];
+    if (w <= 18) return ['tank', 'raider', 'fast', 'tank', 'raider', 'tank'];
+    return ['tank', 'raider', 'fast', 'raider', 'tank', 'fast', 'raider'];
   }
 
   function hardenKind(kind, chance) {
     if (chance <= 0 || Math.random() >= chance) return kind;
     if (kind === 'normal') return 'fast';
     if (kind === 'fast') return 'tank';
+    if (kind === 'tank') return 'raider';
     return kind;
   }
 
@@ -1388,6 +1401,7 @@
     const canStart = !state.started || state.awaitingNextWave;
     if (!canStart) return;
     state.waveMode = mode;
+    updateWaveButtons();
     if (!state.started) {
       state.started = true;
       startNextWave();
@@ -1398,6 +1412,38 @@
     }
   }
 
+  function pressContinuous() {
+    if (state.gameOver || !state.mapPicked) return;
+    if (state.paused) {
+      state.paused = false;
+      updateHUD();
+    }
+    // Toggle off when already continuous (mid-wave or between-wave countdown)
+    if (state.waveMode === 'continuous') {
+      setWaveMode('next');
+      if (state.started && !state.gameOver) {
+        el.hint.textContent = 'Continuous off — press Next Wave between waves.';
+      }
+      return;
+    }
+    // Turn continuous on
+    if (!state.started) {
+      state.waveMode = 'continuous';
+      updateWaveButtons();
+      state.started = true;
+      startNextWave();
+      return;
+    }
+    if (state.betweenWaves) {
+      // Enable auto-advance countdown (do not force-start immediately)
+      setWaveMode('continuous');
+      return;
+    }
+    // Mid-wave: arm continuous for after this wave clears
+    state.waveMode = 'continuous';
+    updateWaveButtons();
+  }
+
   el.btnNextWave.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     pressWaveButton('next');
@@ -1405,7 +1451,7 @@
 
   el.btnContinuous.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    pressWaveButton('continuous');
+    pressContinuous();
   });
 
   document.getElementById('restart-btn').addEventListener('pointerdown', (e) => {
@@ -2017,6 +2063,8 @@
           }
         } else if (en.kind === 'fast') {
           ctx.ellipse(p.x, p.y, en.r * 0.75, en.r * 1.15, 0, 0, Math.PI * 2);
+        } else if (en.kind === 'raider') {
+          ctx.ellipse(p.x, p.y, en.r * 0.95, en.r * 1.05, -0.25, 0, Math.PI * 2);
         } else {
           ctx.arc(p.x, p.y, en.r + 1.5, 0, Math.PI * 2);
         }
@@ -2056,6 +2104,23 @@
           ctx.beginPath();
           ctx.ellipse(p.x, p.y - en.r * 0.25, en.r * 0.28, en.r * 0.35, 0, 0, Math.PI * 2);
           ctx.fillStyle = en.hitFlash > 0 ? '#fef3c7' : '#fde68a';
+          ctx.fill();
+        } else if (en.kind === 'raider') {
+          ctx.ellipse(p.x, p.y, en.r * 0.88, en.r * 0.98, -0.25, 0, Math.PI * 2);
+          ctx.fillStyle = fill;
+          ctx.fill();
+          ctx.strokeStyle = en.stroke;
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
+          // visor
+          ctx.beginPath();
+          ctx.ellipse(p.x + 1, p.y - en.r * 0.08, en.r * 0.55, en.r * 0.28, -0.2, 0, Math.PI * 2);
+          ctx.fillStyle = '#1c1917';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(p.x - en.r * 0.18, p.y - en.r * 0.1, en.r * 0.1, 0, Math.PI * 2);
+          ctx.arc(p.x + en.r * 0.22, p.y - en.r * 0.06, en.r * 0.1, 0, Math.PI * 2);
+          ctx.fillStyle = en.hitFlash > 0 ? '#fecdd3' : '#fda4af';
           ctx.fill();
         } else {
           ctx.arc(p.x, p.y, en.r, 0, Math.PI * 2);
@@ -2199,7 +2264,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v18';
+  const BOOT = 'pg-boot-v19';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
