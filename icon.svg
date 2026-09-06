@@ -1,7 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#0f1419"/>
-  <path d="M80 360 C140 280, 200 280, 256 320 C312 360, 372 360, 432 280" stroke="#38bdf8" stroke-width="36" fill="none" stroke-linecap="round"/>
-  <circle cx="160" cy="300" r="34" fill="#22c55e"/>
-  <circle cx="340" cy="250" r="34" fill="#f59e0b"/>
-  <circle cx="250" cy="180" r="28" fill="#f87171"/>
+  <rect width="512" height="512" rx="112" fill="#0f1419"/>
+  <!-- soft path glow -->
+  <path d="M72 390 C140 300, 200 310, 256 350 C312 390, 372 380, 440 290" stroke="#0ea5e9" stroke-width="48" fill="none" stroke-linecap="round" opacity="0.22"/>
+  <path d="M72 390 C140 300, 200 310, 256 350 C312 390, 372 380, 440 290" stroke="#38bdf8" stroke-width="28" fill="none" stroke-linecap="round"/>
+  <!-- rounded tower base -->
+  <circle cx="256" cy="230" r="78" fill="#22c55e" opacity="0.22"/>
+  <circle cx="256" cy="230" r="62" fill="#1e293b"/>
+  <circle cx="256" cy="230" r="62" fill="none" stroke="#34d399" stroke-width="14"/>
+  <circle cx="256" cy="230" r="44" fill="#0f172a"/>
+  <!-- bow silhouette -->
+  <path d="M236 190 A46 46 0 0 1 236 270" fill="none" stroke="#34d399" stroke-width="14" stroke-linecap="round"/>
+  <line x1="236" y1="190" x2="236" y2="270" stroke="#a7f3d0" stroke-width="8" stroke-linecap="round"/>
+  <line x1="220" y1="230" x2="300" y2="230" stroke="#ecfdf5" stroke-width="10" stroke-linecap="round"/>
+  <path d="M300 230 L278 214 L278 246 Z" fill="#ecfdf5"/>
+  <!-- small enemy dots on path -->
+  <circle cx="150" cy="340" r="18" fill="#ef4444"/>
+  <ellipse cx="360" cy="318" rx="12" ry="18" fill="#fbbf24"/>
 </svg>

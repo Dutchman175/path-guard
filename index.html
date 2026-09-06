@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 12 -->
+<!-- path-guard-build: 13 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -408,7 +408,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on pads, then press Next Wave</div>
-    <div id="build-ver">build 12</div>
+    <div id="build-ver">build 13</div>
   </div>
 </div>
 
@@ -1053,25 +1053,27 @@
   }
 
   function waveEnemyCount(w) {
-    // Gentle climb to 20 waves (HP/speed stay fixed per enemy type)
-    return 5 + w * 2 + Math.max(0, w - 10);
+    // Soft early, mid ramp, steep late (HP/speed stay fixed per type)
+    if (w <= 5) return 3 + w;                    // 4..8
+    if (w <= 12) return 8 + (w - 5) * 2;         // 10..22
+    return 22 + (w - 12) * 5;                    // 27..62
   }
   function enemyMixForWave(w) {
-    // Same HP/speed always; later waves just skew toward Scouts/Brutes
+    // Fixed HP/speed; early mostly Grunts, mid adds Scouts then Brutes, late heavy mix
     if (w <= 2) return ['normal'];
-    if (w === 3) return ['normal', 'normal', 'fast'];
-    if (w === 4) return ['normal', 'fast', 'normal', 'tank'];
-    if (w === 5) return ['normal', 'fast', 'fast', 'tank'];
-    if (w === 6) return ['fast', 'normal', 'tank', 'fast'];
-    if (w === 7) return ['fast', 'tank', 'normal', 'tank', 'fast'];
-    if (w === 8) return ['fast', 'tank', 'tank', 'fast', 'normal'];
-    if (w === 9) return ['tank', 'fast', 'tank', 'fast', 'tank'];
-    if (w === 10) return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
-    if (w <= 12) return ['tank', 'fast', 'tank', 'fast', 'tank', 'normal'];
-    if (w <= 14) return ['tank', 'fast', 'tank', 'tank', 'fast', 'tank'];
-    if (w <= 16) return ['tank', 'tank', 'fast', 'tank', 'fast', 'tank'];
-    if (w <= 18) return ['tank', 'tank', 'fast', 'tank', 'tank', 'fast'];
-    return ['tank', 'tank', 'tank', 'fast', 'tank', 'fast'];
+    if (w === 3) return ['normal', 'normal', 'normal', 'fast'];
+    if (w === 4) return ['normal', 'normal', 'normal', 'fast', 'normal'];
+    if (w === 5) return ['normal', 'normal', 'fast', 'normal', 'tank'];
+    if (w === 6) return ['normal', 'fast', 'normal', 'fast', 'tank'];
+    if (w === 7) return ['normal', 'fast', 'tank', 'fast', 'normal'];
+    if (w === 8) return ['fast', 'normal', 'tank', 'fast', 'normal'];
+    if (w === 9) return ['fast', 'tank', 'normal', 'fast', 'tank'];
+    if (w === 10) return ['fast', 'tank', 'fast', 'normal', 'tank'];
+    if (w <= 12) return ['fast', 'tank', 'normal', 'fast', 'tank', 'fast'];
+    if (w <= 14) return ['fast', 'tank', 'tank', 'fast', 'tank', 'normal'];
+    if (w <= 16) return ['tank', 'fast', 'tank', 'fast', 'tank', 'fast'];
+    if (w <= 18) return ['tank', 'tank', 'fast', 'tank', 'fast', 'tank'];
+    return ['tank', 'tank', 'fast', 'tank', 'tank', 'fast'];
   }
 
   function hardenKind(kind, chance) {
@@ -1737,36 +1739,89 @@
       ctx.scale(scale, scale);
       if (isSel) {
         ctx.beginPath();
-        ctx.arc(0, 0, 22, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(192, 132, 252, 0.7)';
+        ctx.arc(0, 0, 23, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(192, 132, 252, 0.75)';
         ctx.lineWidth = 2.5;
         ctx.stroke();
       }
+      // Soft glow (Style A rounded silhouette)
       ctx.beginPath();
-      ctx.arc(0, 0, 16, 0, Math.PI * 2);
+      ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.fillStyle = def.color;
+      ctx.globalAlpha = 0.22;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      // Circular base
+      ctx.beginPath();
+      ctx.arc(0, 0, 15.5, 0, Math.PI * 2);
       ctx.fillStyle = '#1e293b';
       ctx.fill();
       ctx.strokeStyle = ringColor;
       ctx.lineWidth = 3 + (lv - 1) * 0.4;
       ctx.stroke();
+      // Inner soft disc
+      ctx.beginPath();
+      ctx.arc(0, 0, 11.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#0f172a';
+      ctx.fill();
 
       if (tw.type === 'archer') {
-        ctx.fillStyle = def.color;
+        // Rounded bow silhouette + arrow
+        ctx.strokeStyle = def.color;
+        ctx.lineWidth = 2.4;
+        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(0, -10);
-        ctx.lineTo(8, 8);
-        ctx.lineTo(-8, 8);
+        ctx.arc(1, 0, 9, -Math.PI * 0.72, Math.PI * 0.72);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(1 - 5.5, -7.2);
+        ctx.lineTo(1 - 5.5, 7.2);
+        ctx.strokeStyle = '#a7f3d0';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.strokeStyle = '#ecfdf5';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-7, 0);
+        ctx.lineTo(10, 0);
+        ctx.stroke();
+        ctx.fillStyle = '#ecfdf5';
+        ctx.beginPath();
+        ctx.moveTo(10, 0);
+        ctx.lineTo(6, -2.6);
+        ctx.lineTo(6, 2.6);
         ctx.closePath();
         ctx.fill();
       } else if (tw.type === 'cannon') {
+        // Rounded body + barrel
         ctx.fillStyle = def.color;
         ctx.beginPath();
-        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.arc(0, 2, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fdba74';
+        ctx.beginPath();
+        ctx.ellipse(0, -6, 3.2, 7, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#1e293b';
-        ctx.fillRect(-3, -10, 6, 8);
+        ctx.beginPath();
+        ctx.arc(0, -11.5, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fb923c';
+        ctx.beginPath();
+        ctx.arc(-4, 5, 2.2, 0, Math.PI * 2);
+        ctx.arc(4, 5, 2.2, 0, Math.PI * 2);
+        ctx.fill();
       } else if (tw.type === 'frost') {
-        // Clear 6-arm snowflake (not a triangle like Archer)
+        // Ice crystal + snowflake identity
+        ctx.fillStyle = 'rgba(103, 232, 249, 0.35)';
+        ctx.beginPath();
+        ctx.moveTo(0, -10);
+        ctx.lineTo(5.5, -3);
+        ctx.lineTo(3.5, 8);
+        ctx.lineTo(-3.5, 8);
+        ctx.lineTo(-5.5, -3);
+        ctx.closePath();
+        ctx.fill();
         ctx.strokeStyle = '#e0f2fe';
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
@@ -1779,14 +1834,12 @@
           ctx.moveTo(0, 0);
           ctx.lineTo(cos * 10, sin * 10);
           ctx.stroke();
-          // mid barbs
           const mx = cos * 5.5, my = sin * 5.5;
           ctx.beginPath();
           ctx.moveTo(mx + px * 3.5, my + py * 3.5);
           ctx.lineTo(mx, my);
           ctx.lineTo(mx - px * 3.5, my - py * 3.5);
           ctx.stroke();
-          // outer cross-ticks
           const ox = cos * 8.2, oy = sin * 8.2;
           ctx.beginPath();
           ctx.moveTo(ox + px * 2.4, oy + py * 2.4);
@@ -1795,20 +1848,36 @@
         }
         ctx.fillStyle = '#67e8f9';
         ctx.beginPath();
-        ctx.arc(0, 0, 2.3, 0, Math.PI * 2);
+        ctx.arc(0, 0, 2.4, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = '#a5f3fc';
         ctx.lineWidth = 1;
         ctx.stroke();
       } else if (tw.type === 'zap') {
+        // Lightning rod + glowing orb
+        ctx.strokeStyle = '#e9d5ff';
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(0, 9);
+        ctx.lineTo(0, -4);
+        ctx.stroke();
         ctx.fillStyle = def.color;
         ctx.beginPath();
-        ctx.moveTo(-2, -11);
-        ctx.lineTo(6, -1);
-        ctx.lineTo(1, -1);
-        ctx.lineTo(4, 11);
-        ctx.lineTo(-6, 1);
-        ctx.lineTo(-1, 1);
+        ctx.arc(0, -7, 5.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#f5f3ff';
+        ctx.beginPath();
+        ctx.arc(-1.5, -8.5, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#c084fc';
+        ctx.beginPath();
+        ctx.moveTo(-1.5, -12.5);
+        ctx.lineTo(3.5, -6.5);
+        ctx.lineTo(0.5, -6.5);
+        ctx.lineTo(2.5, -1.5);
+        ctx.lineTo(-3.5, -7.5);
+        ctx.lineTo(-0.5, -7.5);
         ctx.closePath();
         ctx.fill();
       }
@@ -1831,23 +1900,80 @@
       const p = posOnPath(en.dist);
       en.x = p.x; en.y = p.y;
       const slowed = (en.slowTimer || 0) > 0;
+      const fill = en.hitFlash > 0 ? '#fecaca' : (slowed ? '#7dd3fc' : en.color);
+      ctx.save();
+      // Soft silhouette glow
       ctx.beginPath();
       if (en.kind === 'tank') {
-        const s = en.r * 0.85;
-        ctx.rect(p.x - s, p.y - s, s * 2, s * 2);
+        const s = en.r * 0.95;
+        if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.45);
+        else {
+          ctx.moveTo(p.x - s + 6, p.y - s);
+          ctx.arcTo(p.x + s, p.y - s, p.x + s, p.y + s, 6);
+          ctx.arcTo(p.x + s, p.y + s, p.x - s, p.y + s, 6);
+          ctx.arcTo(p.x - s, p.y + s, p.x - s, p.y - s, 6);
+          ctx.arcTo(p.x - s, p.y - s, p.x + s, p.y - s, 6);
+          ctx.closePath();
+        }
       } else if (en.kind === 'fast') {
-        ctx.moveTo(p.x, p.y - en.r);
-        ctx.lineTo(p.x + en.r, p.y + en.r * 0.7);
-        ctx.lineTo(p.x - en.r, p.y + en.r * 0.7);
-        ctx.closePath();
+        ctx.ellipse(p.x, p.y, en.r * 0.75, en.r * 1.15, 0, 0, Math.PI * 2);
       } else {
-        ctx.arc(p.x, p.y, en.r, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, en.r + 1.5, 0, Math.PI * 2);
       }
-      ctx.fillStyle = en.hitFlash > 0 ? '#fecaca' : (slowed ? '#7dd3fc' : en.color);
+      ctx.fillStyle = fill;
+      ctx.globalAlpha = 0.28;
       ctx.fill();
-      ctx.strokeStyle = en.stroke;
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      ctx.beginPath();
+      if (en.kind === 'tank') {
+        // Big rounded Brute
+        const s = en.r * 0.88;
+        if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.42);
+        else {
+          ctx.moveTo(p.x - s + 5, p.y - s);
+          ctx.arcTo(p.x + s, p.y - s, p.x + s, p.y + s, 5);
+          ctx.arcTo(p.x + s, p.y + s, p.x - s, p.y + s, 5);
+          ctx.arcTo(p.x - s, p.y + s, p.x - s, p.y - s, 5);
+          ctx.arcTo(p.x - s, p.y - s, p.x + s, p.y - s, 5);
+          ctx.closePath();
+        }
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = en.stroke;
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
+        // Armor bump
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - s * 0.15, s * 0.42, 0, Math.PI * 2);
+        ctx.fillStyle = en.hitFlash > 0 ? '#fee2e2' : '#c4b5fd';
+        ctx.fill();
+      } else if (en.kind === 'fast') {
+        // Smaller oval Scout
+        ctx.ellipse(p.x, p.y, en.r * 0.7, en.r * 1.05, 0, 0, Math.PI * 2);
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = en.stroke;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y - en.r * 0.25, en.r * 0.28, en.r * 0.35, 0, 0, Math.PI * 2);
+        ctx.fillStyle = en.hitFlash > 0 ? '#fef3c7' : '#fde68a';
+        ctx.fill();
+      } else {
+        // Rounded Grunt
+        ctx.arc(p.x, p.y, en.r, 0, Math.PI * 2);
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = en.stroke;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(p.x - en.r * 0.28, p.y - en.r * 0.28, en.r * 0.28, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.28)';
+        ctx.fill();
+      }
+      ctx.restore();
       const bw = Math.max(18, en.r * 1.6), bh = 4;
       const ratio = Math.max(0, en.hp / en.maxHp);
       ctx.fillStyle = '#1e293b';
@@ -1976,7 +2102,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v12';
+  const BOOT = 'pg-boot-v13';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
