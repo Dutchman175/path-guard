@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 15 -->
+<!-- path-guard-build: 16 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -339,19 +339,19 @@
       <p>Pick a path, then build towers and hold the line.</p>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         Map 1: Serpentine — Easy
-        <span class="sub">Wide S-lanes, open grid</span>
+        <span class="sub">Grid S-corridors, open build</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         Map 2: Winding — Medium
-        <span class="sub">Classic switchback path</span>
+        <span class="sub">Tight grid switchbacks</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
         Map 3: Gauntlet — Hard
-        <span class="sub">Short path, tight grid</span>
+        <span class="sub">Short grid corridor</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 4: Spiral — Brutal
-        <span class="sub">Long coil, tight grid</span>
+        <span class="sub">Grid coil to the center</span>
       </button>
     </div>
     <div id="overlay">
@@ -408,7 +408,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Continuous Waves</button>
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
-    <div id="build-ver">build 15</div>
+    <div id="build-ver">build 16</div>
   </div>
 </div>
 
@@ -428,6 +428,12 @@
   const LS_BEST_WAVE = 'pg-best-wave';
   const LS_BEST_WIN = 'pg-best-win'; // lives remaining on best win
 
+  // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
+  const TILE = 40;
+  const COLS = Math.floor(W / TILE);
+  const ROWS = Math.floor(H / TILE);
+  const tc = (c, r) => ({ x: (c + 0.5) * TILE, y: (r + 0.5) * TILE });
+
   const MAPS = {
     serpentine: {
       id: 'serpentine',
@@ -435,21 +441,15 @@
       spawnExtra: 0,
       hardenChance: 0,
       startGoldBonus: 10,
-      // True horizontal S: alternating full-width lanes (distinct from Winding)
+      // Easy: full-width S on every other row — open build lanes between
       path: [
-        { x: 30, y: 40 },
-        { x: 370, y: 40 },
-        { x: 370, y: 130 },
-        { x: 30, y: 130 },
-        { x: 30, y: 220 },
-        { x: 370, y: 220 },
-        { x: 370, y: 310 },
-        { x: 30, y: 310 },
-        { x: 30, y: 400 },
-        { x: 370, y: 400 },
-        { x: 370, y: 490 },
-        { x: 30, y: 490 },
-        { x: 30, y: 540 },
+        tc(0, 0), tc(9, 0),
+        tc(9, 2), tc(0, 2),
+        tc(0, 4), tc(9, 4),
+        tc(9, 6), tc(0, 6),
+        tc(0, 8), tc(9, 8),
+        tc(9, 10), tc(0, 10),
+        tc(0, 12), tc(9, 12),
       ],
     },
     winding: {
@@ -458,22 +458,16 @@
       spawnExtra: 1,
       hardenChance: 0.12,
       startGoldBonus: 0,
+      // Medium: tighter switchbacks with uneven corridor lengths
       path: [
-        { x: 40, y: 40 },
-        { x: 200, y: 40 },
-        { x: 360, y: 40 },
-        { x: 360, y: 140 },
-        { x: 200, y: 140 },
-        { x: 80, y: 140 },
-        { x: 80, y: 260 },
-        { x: 200, y: 260 },
-        { x: 320, y: 260 },
-        { x: 320, y: 380 },
-        { x: 180, y: 380 },
-        { x: 60, y: 380 },
-        { x: 60, y: 500 },
-        { x: 200, y: 500 },
-        { x: 360, y: 500 },
+        tc(0, 0), tc(9, 0),
+        tc(9, 1), tc(1, 1),
+        tc(1, 3), tc(8, 3),
+        tc(8, 5), tc(2, 5),
+        tc(2, 7), tc(9, 7),
+        tc(9, 9), tc(0, 9),
+        tc(0, 11), tc(8, 11),
+        tc(8, 13), tc(3, 13),
       ],
     },
     gauntlet: {
@@ -482,15 +476,12 @@
       spawnExtra: 3,
       hardenChance: 0.32,
       startGoldBonus: 0,
-      // Short 3-lane corridor — enemies reach the exit faster
+      // Hard: short 3-lane grid corridor — enemies reach the exit faster
       path: [
-        { x: 50, y: 40 },
-        { x: 350, y: 40 },
-        { x: 350, y: 200 },
-        { x: 50, y: 200 },
-        { x: 50, y: 380 },
-        { x: 350, y: 380 },
-        { x: 350, y: 530 },
+        tc(1, 0), tc(8, 0),
+        tc(8, 4), tc(1, 4),
+        tc(1, 9), tc(8, 9),
+        tc(8, 13),
       ],
     },
     spiral: {
@@ -499,23 +490,12 @@
       spawnExtra: 5,
       hardenChance: 0.5,
       startGoldBonus: 0,
-      // Rectangular coil then center drop — long path, open grid
+      // Brutal: rectangular grid coil (2-tile ring gaps) inward to center
       path: [
-        { x: 30, y: 30 },
-        { x: 370, y: 30 },
-        { x: 370, y: 530 },
-        { x: 30, y: 530 },
-        { x: 30, y: 90 },
-        { x: 310, y: 90 },
-        { x: 310, y: 470 },
-        { x: 90, y: 470 },
-        { x: 90, y: 150 },
-        { x: 250, y: 150 },
-        { x: 250, y: 410 },
-        { x: 150, y: 410 },
-        { x: 150, y: 250 },
-        { x: 200, y: 250 },
-        { x: 200, y: 545 },
+        tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
+        tc(0, 2), tc(7, 2), tc(7, 11), tc(2, 11),
+        tc(2, 4), tc(5, 4), tc(5, 9), tc(4, 9),
+        tc(4, 6),
       ],
     },
   };
@@ -573,13 +553,11 @@
 
   let PATH = MAPS.serpentine.path;
   let PATH_LEN = 0;
+  let pathTileSet = new Set(); // tile indices occupied by the road
 
-  // Build grid (phone-friendly ~40px tiles on 400x560)
-  const TILE = 40;
-  const COLS = Math.floor(W / TILE);
-  const ROWS = Math.floor(H / TILE);
-  const PATH_HALF = 18; // outer path stroke width 36 / 2
-  const PATH_BUFFER = 10; // ~half path width near-path buffer
+  // Path fills one tile corridor; neighbors (40px away) stay buildable
+  const PATH_HALF = 20; // ~one tile / 2
+  const PATH_BUFFER = 8;
   const BUILD_CLEAR = PATH_HALF + PATH_BUFFER; // 28px from centerline
   let buildable = []; // flat ROWS*COLS booleans
 
@@ -919,12 +897,37 @@
     return best;
   }
 
+  function collectPathTiles(path) {
+    const set = new Set();
+    for (let i = 1; i < path.length; i++) {
+      const a = path[i - 1], b = path[i];
+      const c0 = Math.round((a.x - TILE * 0.5) / TILE);
+      const r0 = Math.round((a.y - TILE * 0.5) / TILE);
+      const c1 = Math.round((b.x - TILE * 0.5) / TILE);
+      const r1 = Math.round((b.y - TILE * 0.5) / TILE);
+      if (r0 === r1) {
+        const lo = Math.min(c0, c1), hi = Math.max(c0, c1);
+        for (let c = lo; c <= hi; c++) {
+          if (c >= 0 && c < COLS && r0 >= 0 && r0 < ROWS) set.add(tileIndex(c, r0));
+        }
+      } else if (c0 === c1) {
+        const lo = Math.min(r0, r1), hi = Math.max(r0, r1);
+        for (let r = lo; r <= hi; r++) {
+          if (c0 >= 0 && c0 < COLS && r >= 0 && r < ROWS) set.add(tileIndex(c0, r));
+        }
+      }
+    }
+    return set;
+  }
+
   function rebuildBuildable() {
+    pathTileSet = collectPathTiles(PATH);
     buildable = new Array(ROWS * COLS);
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
+        const idx = tileIndex(c, r);
         const p = tileCenter(c, r);
-        buildable[tileIndex(c, r)] = distToPath(p.x, p.y) >= BUILD_CLEAR;
+        buildable[idx] = !pathTileSet.has(idx) && distToPath(p.x, p.y) >= BUILD_CLEAR;
       }
     }
   }
@@ -1666,33 +1669,49 @@
     ctx.fillStyle = '#0b1220';
     ctx.fillRect(0, 0, W, H);
 
-    for (let y = 0; y < H; y += 40) {
-      for (let x = 0; x < W; x += 40) {
-        if ((x / 40 + y / 40) % 2 === 0) {
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if ((c + r) % 2 === 0) {
           ctx.fillStyle = 'rgba(30, 58, 95, 0.15)';
-          ctx.fillRect(x, y, 40, 40);
+          ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
         }
       }
     }
 
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
-    ctx.lineWidth = 36;
-    ctx.beginPath();
-    ctx.moveTo(PATH[0].x, PATH[0].y);
-    for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
-    ctx.stroke();
+    // Path tiles as filled grid squares (the road corridor)
+    for (const idx of pathTileSet) {
+      const c = idx % COLS;
+      const r = (idx / COLS) | 0;
+      const x0 = c * TILE;
+      const y0 = r * TILE;
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x0, y0, TILE, TILE);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x0 + 3, y0 + 3, TILE - 6, TILE - 6);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x0 + 0.5, y0 + 0.5, TILE - 1, TILE - 1);
+    }
 
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 26;
+    // Centerline stroke along tile centers (orthogonal only)
+    ctx.lineCap = 'square';
+    ctx.lineJoin = 'miter';
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
+    ctx.lineWidth = TILE;
     ctx.beginPath();
     ctx.moveTo(PATH[0].x, PATH[0].y);
     for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
     ctx.stroke();
 
     ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 18;
+    ctx.lineWidth = TILE - 10;
+    ctx.beginPath();
+    ctx.moveTo(PATH[0].x, PATH[0].y);
+    for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = TILE - 18;
     ctx.beginPath();
     ctx.moveTo(PATH[0].x, PATH[0].y);
     for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
@@ -2177,7 +2196,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v15';
+  const BOOT = 'pg-boot-v16';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
