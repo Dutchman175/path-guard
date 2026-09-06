@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 26 -->
+<!-- path-guard-build: 27 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -81,12 +81,19 @@
   #gold .val { color: #fbbf24; }
   #lives .val { color: #f87171; }
   #wave .val { color: #a78bfa; }
+  #wave.hard .label { color: #fb923c; font-weight: 800; }
+  #wave.hard .val { color: #fdba74; }
   #sel .val { color: #34d399; font-size: 0.78rem; }
   #best-line {
     text-align: center;
     font-size: 0.62rem;
     color: #64748b;
     min-height: 0.9em;
+  }
+  #best-line .hard-tag {
+    color: #fb923c;
+    font-weight: 800;
+    letter-spacing: 0.04em;
   }
 
   #canvas-wrap {
@@ -382,7 +389,7 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <p>Pick a path, then build towers and hold the line.</p>
-      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel Shells shrug damage.</p>
+      <p class="map-tip">Color = threat: <span style="color:#22c55e">green weak</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#7f1d1d">dark red elite</span>. Steel <b>Shells</b> (shield) shrug ~28% damage.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 1: Spiral — Easy
@@ -462,7 +469,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 26</div>
+    <div id="build-ver">build 27</div>
   </div>
 </div>
 
@@ -628,7 +635,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=26`;
+    img.src = `./sprites/${name}.png?v=27`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -680,6 +687,8 @@
     sellConfirming: false,
     gameSpeed: 1,
     paused: false,
+    waveLivesStart: START_LIVES,
+    wavePerfectClears: 0,
   };
 
   const el = {
@@ -769,14 +778,15 @@
 
   function refreshBestLine() {
     const { bestWave, bestWin } = loadBest();
-    if (bestWave <= 0 && bestWin <= 0) {
-      el.bestLine.textContent = '';
-      return;
-    }
     const parts = [];
+    if (state.hardMode && state.mapPicked) parts.push('<span class="hard-tag">HARD MODE</span>');
     if (bestWave > 0) parts.push(`Best wave ${bestWave}`);
     if (bestWin > 0) parts.push(`Best win ${bestWin}♥`);
-    el.bestLine.textContent = parts.join(' · ');
+    if (!parts.length) {
+      el.bestLine.innerHTML = '';
+      return;
+    }
+    el.bestLine.innerHTML = parts.join(' · ');
   }
 
   function towerStats(tw) {
@@ -844,11 +854,12 @@
     state.selectedTower = tw;
     state.sellConfirming = false;
     const st = towerStats(tw);
+    const rng = Math.round(st.range);
     const up = upgradeCostFor(tw);
     if (up == null) {
-      el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${Math.round(st.range)} (MAX)`;
+      el.hint.textContent = `${st.name} Lv${tw.level} — dmg ${st.damage}, range ${rng} (MAX)`;
     } else {
-      el.hint.textContent = `${st.name} Lv${tw.level} — next: ${upgradeBlurb(tw)} (${up}g)`;
+      el.hint.textContent = `${st.name} Lv${tw.level} — range ${rng} · next: ${upgradeBlurb(tw)} (${up}g)`;
     }
   }
 
@@ -869,11 +880,16 @@
 
   function updateHUD() {
     if (!Number.isFinite(state.gold)) state.gold = 0;
-    if (!Number.isFinite(state.gold)) state.gold = 0;
     el.gold.textContent = Math.floor(state.gold);
     el.lives.textContent = state.lives;
     if (el.btnTarget) el.btnTarget.textContent = `Target: ${targetModeLabel(state.targetMode || 'first')}`;
     el.wave.textContent = `${state.wave}/${state.maxWaves}`;
+    const waveStat = document.getElementById('wave');
+    if (waveStat) {
+      waveStat.classList.toggle('hard', !!state.hardMode);
+      const lab = waveStat.querySelector('.label');
+      if (lab) lab.textContent = state.hardMode ? 'Wave · HARD' : 'Wave';
+    }
     if (state.selectedTower) {
       const tw = state.selectedTower;
       el.sel.textContent = `${TOWER_DEFS[tw.type].name} L${tw.level}`;
@@ -963,9 +979,21 @@
       flashGold();
       addFloat(W / 2, H * 0.28, `+${ch.bonus} challenge bonus`, '#fde68a');
     }
+    // Perfect clear: no lives lost during this wave
+    let perfectBit = '';
+    const livesStart = state.waveLivesStart != null ? state.waveLivesStart : state.lives;
+    if (state.lives >= livesStart && state.lives > 0) {
+      const perfectGold = 6 + Math.floor(cleared * 0.75);
+      state.gold += perfectGold;
+      if (!Number.isFinite(state.gold)) state.gold = 0;
+      state.wavePerfectClears = (state.wavePerfectClears || 0) + 1;
+      flashGold();
+      addFloat(W / 2, H * 0.34, `+${perfectGold} perfect clear`, '#86efac');
+      perfectBit = ` · +${perfectGold}g perfect`;
+    }
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
-    const bonusBit = ch ? ` (+${ch.bonus}g)` : '';
+    const bonusBit = (ch ? ` (+${ch.bonus}g)` : '') + perfectBit;
     state.killStreak = 0;
     state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
@@ -1382,6 +1410,7 @@
   function startNextWave() {
     if (state.wave >= state.maxWaves) return;
     state.wave++;
+    state.waveLivesStart = state.lives;
     state.spawnQueue = buildSpawnQueue(state.wave);
     state.spawnLeft = state.spawnQueue.length;
     state.spawnCD = 0.35;
@@ -1499,6 +1528,8 @@
     state.nextWaveIn = 0;
     state.awaitingNextWave = false;
     state.sellConfirming = false;
+    state.waveLivesStart = START_LIVES;
+    state.wavePerfectClears = 0;
     applyMap(mapId);
     state.mapPicked = true;
     el.mapOverlay.classList.remove('show');
@@ -1703,6 +1734,7 @@
     // Mid-wave: arm continuous for after this wave clears
     state.waveMode = 'continuous';
     updateWaveButtons();
+    el.hint.textContent = 'Continuous armed — next wave will auto-start after this one.';
   }
 
   el.btnNextWave.addEventListener('pointerdown', (e) => {
@@ -2322,6 +2354,19 @@
         else if (slowed) ctx.globalAlpha = 0.92;
         ctx.drawImage(SPRITES[sprName], p.x - sz / 2, p.y - sz / 2, sz, sz);
         ctx.globalAlpha = 1;
+        if (en.kind === 'shell') {
+          // Steel shield rim so Shell reads distinct from soft blobs
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, sz * 0.46, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(214, 211, 209, 0.75)';
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, sz * 0.28, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(68, 64, 60, 0.7)';
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+        }
         if (slowed) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, sz * 0.42, 0, Math.PI * 2);
@@ -2333,8 +2378,16 @@
         // Distinct fallback silhouettes: diamond / circle / square / spiky star
         const makePath = () => {
           ctx.beginPath();
-          if (en.kind === 'tank' || en.kind === 'shell') {
-            const s = en.r * (en.kind === 'shell' ? 0.88 : 0.92);
+          if (en.kind === 'shell') {
+            const s = en.r * 1.05;
+            ctx.moveTo(p.x - s * 0.72, p.y - s * 0.55);
+            ctx.lineTo(p.x + s * 0.72, p.y - s * 0.55);
+            ctx.lineTo(p.x + s * 0.62, p.y + s * 0.15);
+            ctx.lineTo(p.x, p.y + s * 0.9);
+            ctx.lineTo(p.x - s * 0.62, p.y + s * 0.15);
+            ctx.closePath();
+          } else if (en.kind === 'tank') {
+            const s = en.r * 0.92;
             if (ctx.roundRect) ctx.roundRect(p.x - s, p.y - s, s * 2, s * 2, s * 0.32);
             else ctx.rect(p.x - s, p.y - s, s * 2, s * 2);
           } else if (en.kind === 'fast') {
@@ -2377,12 +2430,27 @@
           ctx.fillStyle = en.hitFlash > 0 ? '#ffedd5' : '#fdba74';
           ctx.fill();
         } else if (en.kind === 'shell') {
-          const s = en.r * 0.82;
+          const s = en.r;
+          // Heater shield silhouette (steel) — distinct from Brute square
           ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(p.x - s * 0.7, p.y - s * 0.55, s * 1.4, s * 0.7, 3);
-          else ctx.rect(p.x - s * 0.7, p.y - s * 0.55, s * 1.4, s * 0.7);
+          ctx.moveTo(p.x - s * 0.72, p.y - s * 0.55);
+          ctx.lineTo(p.x + s * 0.72, p.y - s * 0.55);
+          ctx.lineTo(p.x + s * 0.62, p.y + s * 0.15);
+          ctx.lineTo(p.x, p.y + s * 0.85);
+          ctx.lineTo(p.x - s * 0.62, p.y + s * 0.15);
+          ctx.closePath();
           ctx.fillStyle = en.hitFlash > 0 ? '#e7e5e4' : '#a8a29e';
           ctx.fill();
+          ctx.strokeStyle = '#1c1917';
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(p.x, p.y - s * 0.05, s * 0.28, 0, Math.PI * 2);
+          ctx.fillStyle = en.hitFlash > 0 ? '#f5f5f4' : '#78716c';
+          ctx.fill();
+          ctx.strokeStyle = '#292524';
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
         } else if (en.kind === 'fast') {
           ctx.beginPath();
           ctx.ellipse(p.x - en.r * 0.15, p.y, en.r * 0.45, en.r * 0.4, 0, 0, Math.PI * 2);
@@ -2549,7 +2617,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v26';
+  const BOOT = 'pg-boot-v27';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
