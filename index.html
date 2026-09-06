@@ -130,6 +130,7 @@
     flex-direction: column;
     gap: 5px;
   }
+  #controls.pre-map { display: none; }
   #tower-btns {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -166,7 +167,8 @@
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
   #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
   #btn-barrage.selected { border-color: #fb7185; background: #881337; }
-  /* 7 towers: 4 + 3 — keep tap targets roomy on narrow phones */
+  #btn-bank.selected { border-color: #f59e0b; background: #78350f; }
+  /* 8 towers: 4 + 4 — keep tap targets roomy on narrow phones */
   @media (max-width: 380px) {
     #tower-btns { gap: 3px; }
     .tower-btn { font-size: 0.62rem; padding: 5px 1px 4px; min-height: 40px; border-radius: 9px; }
@@ -191,7 +193,7 @@
 
   #util-btns {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 5px;
   }
   #util-more {
@@ -387,6 +389,79 @@
     50% { transform: translate(-50%, -50%) scale(1.06); }
   }
 
+  #faq-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 20, 25, 0.96);
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    z-index: 30;
+    padding: 12px 12px 16px;
+    text-align: left;
+    pointer-events: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  #faq-overlay.show {
+    display: flex;
+    pointer-events: auto;
+  }
+  #faq-overlay .faq-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+  }
+  #faq-overlay h2 { font-size: 1.15rem; margin: 0; color: #e8eef4; }
+  #faq-close {
+    appearance: none;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 36px;
+  }
+  #faq-overlay .faq-sec {
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  #faq-overlay .faq-sec h3 {
+    font-size: 0.85rem;
+    color: #38bdf8;
+    margin: 0 0 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #faq-overlay .faq-sec p, #faq-overlay .faq-item {
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    margin: 0 0 6px;
+  }
+  #faq-overlay .faq-item strong { color: #f8fafc; }
+  #faq-overlay .faq-item .muted { color: #94a3b8; font-weight: 600; }
+  #faq-map-btn {
+    appearance: none;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #cbd5e1;
+    border-radius: 9px;
+    padding: 7px 14px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 36px;
+    flex-shrink: 0;
+  }
+  #faq-map-btn:active { transform: scale(0.97); }
   #overlay, #map-overlay {
     position: absolute;
     inset: 0;
@@ -563,7 +638,7 @@
     <h1>PATH GUARD</h1>
     <div id="hud">
       <div class="stat" id="gold"><div class="label">Gold</div><div class="val">—</div></div>
-      <div class="stat" id="lives"><div class="label">Lives</div><div class="val">8</div></div>
+      <div class="stat" id="lives"><div class="label">Lives</div><div class="val">10</div></div>
       <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/20</div></div>
       <div class="stat" id="sel"><div class="label">Focus</div><div class="val">—</div></div>
     </div>
@@ -574,6 +649,7 @@
     <canvas id="c" width="400" height="560"></canvas>
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
+      <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
       <p>Build on green tiles · hold 20 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
       <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Shells resist · Wave 20 Titan</p>
@@ -602,6 +678,36 @@
         <span class="sub">Short path · elite mix · +10 start gold (Hard still brutal)</span>
       </button>
     </div>
+    <div id="faq-overlay" aria-hidden="true">
+      <div class="faq-head">
+        <h2>Path Guard FAQ</h2>
+        <button type="button" id="faq-close">Close</button>
+      </div>
+      <div class="faq-sec" id="faq-towers">
+        <h3>Towers</h3>
+        <!-- filled by JS in cost order -->
+      </div>
+      <div class="faq-sec">
+        <h3>Enemies</h3>
+        <div class="faq-item"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. <span class="muted">Green</span></div>
+        <div class="faq-item"><strong style="color:#eab308">Scout</strong> — fast, low HP. <span class="muted">Yellow</span></div>
+        <div class="faq-item"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash resist. <span class="muted">Lime</span></div>
+        <div class="faq-item"><strong style="color:#78716c">Shell</strong> — armored tank (damage resist). <span class="muted">Steel</span></div>
+        <div class="faq-item"><strong style="color:#ea580c">Brute</strong> — high HP, slow. <span class="muted">Orange</span></div>
+        <div class="faq-item"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. <span class="muted">Dark red</span></div>
+        <div class="faq-item"><strong style="color:#450a0a">Titan</strong> — Wave 20 boss · armor. <span class="muted">Near-black</span></div>
+      </div>
+      <div class="faq-sec">
+        <h3>How to play</h3>
+        <p>Pick a map, place towers on green <strong>+</strong> tiles (build grid). Tap a placed tower to upgrade or sell (sell asks confirm). <strong>Double-tap</strong> a tower to upgrade fast.</p>
+        <p><strong>Next Wave</strong> starts the next round; calling early while waiting pays a small gold bonus. <strong>Auto: On</strong> chains waves after a short pause — use Next for build breaks.</p>
+        <p><strong>Challenge waves</strong> at 5 / 10 / 15 / 20 pay clear bonuses. Between waves: gold interest (1%, cap 20g) if you hold ≥100g. Perfect clears (no lives lost that wave) pay extra.</p>
+      </div>
+      <div class="faq-sec">
+        <h3>Tips &amp; extras</h3>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x. FX toggle mutes particles.</p>
+      </div>
+    </div>
     <div id="challenge-banner"><span id="challenge-title">CHALLENGE WAVE</span><span class="sub" id="challenge-sub"></span></div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
@@ -615,33 +721,37 @@
 
   <div id="controls">
     <div id="tower-btns">
-      <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer">
-        🏹 Archer
-        <span class="cost">50g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon">
-        💣 Cannon
-        <span class="cost">90g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost">
-        ❄️ Frost
-        <span class="cost">75g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-zap" data-type="zap" title="Zap">
-        ⚡ Zap
-        <span class="cost">135g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper">
-        🎯 Sniper
-        <span class="cost">120g</span>
+      <button type="button" class="tower-btn" id="btn-barrage" data-type="barrage" title="Barrage — fast swarm shredder">
+        🔫 Barrage
+        <span class="cost">42g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon" title="Beacon — slow aura">
         🔦 Beacon
         <span class="cost">45g</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-barrage" data-type="barrage" title="Barrage — fast swarm shredder">
-        🔫 Barrage
-        <span class="cost">42g</span>
+      <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer">
+        🏹 Archer
+        <span class="cost">50g</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost">
+        ❄️ Frost
+        <span class="cost">75g</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-bank" data-type="bank" title="Bank — gold each wave clear">
+        🏦 Bank
+        <span class="cost">85g</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon">
+        💣 Cannon
+        <span class="cost">90g</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper">
+        🎯 Sniper
+        <span class="cost">120g</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-zap" data-type="zap" title="Zap">
+        ⚡ Zap
+        <span class="cost">135g</span>
       </button>
     </div>
     <div id="tower-stats" aria-live="polite"></div>
@@ -666,6 +776,7 @@
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
       <button type="button" class="util-btn" id="btn-change-map" disabled>Maps</button>
+      <button type="button" class="util-btn" id="btn-faq" title="FAQ">FAQ</button>
     </div>
     <div id="util-more">
       <button type="button" class="util-btn" id="btn-target">Aim: First</button>
@@ -680,7 +791,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 42</div>
+    <div id="build-ver">build 43</div>
   </div>
 </div>
 
@@ -692,7 +803,7 @@
   const H = canvas.height;
 
   const START_GOLD = 80;
-  const START_LIVES = 8;
+  const START_LIVES = 10;
   const MAX_WAVES = 20;
   const MAX_TOWER_LEVEL = 5;
   const LEVEL_RING = ['#34d399', '#fbbf24', '#c084fc', '#f472b6', '#38bdf8'];
@@ -867,6 +978,14 @@
       // Fast swarm shredder; soft vs armor (extra resist in applyDamage)
       softVsArmor: 0.55,
     },
+    bank: {
+      name: 'Bank', cost: 85, range: 0, fireRate: 99, damage: 0,
+      color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fcd34d',
+      upgradeCosts: [50, 80, 120, 170],
+      incomePerWave: 10, // L1 +10g/wave; +1 per level → L5 +14g
+      supportOnly: true,
+      incomeOnly: true,
+    },
   };
 
   // Fixed stats per type — never scale by wave or map
@@ -891,7 +1010,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'barrage', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'barrage', 'bank', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -900,7 +1019,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=41`;
+    img.src = `./sprites/${name}.png?v=43`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -973,6 +1092,12 @@
     btnSpeed: document.getElementById('btn-speed'),
     btnPause: document.getElementById('btn-pause'),
     btnChangeMap: document.getElementById('btn-change-map'),
+    btnFaq: document.getElementById('btn-faq'),
+    faqMapBtn: document.getElementById('faq-map-btn'),
+    faqOverlay: document.getElementById('faq-overlay'),
+    faqClose: document.getElementById('faq-close'),
+    faqTowers: document.getElementById('faq-towers'),
+    controls: document.getElementById('controls'),
     btnTarget: document.getElementById('btn-target'),
     btnJuice: document.getElementById('btn-juice'),
     btnMore: document.getElementById('btn-more'),
@@ -1273,6 +1398,10 @@
         ? Math.max(0.45, def.auraSlow - (lv - 1) * (def.supportOnly ? 0.04 : 0.015))
         : 0,
       supportOnly: !!def.supportOnly,
+      incomeOnly: !!def.incomeOnly,
+      incomePerWave: def.incomePerWave
+        ? def.incomePerWave + (lv - 1) // L1:10 … L5:14
+        : 0,
       softVsArmor: def.softVsArmor != null ? def.softVsArmor : 1,
     };
   }
@@ -1308,6 +1437,12 @@
       if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
       if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
       if (!parts.length) parts.push('stronger beacon');
+    }
+    if (tw.type === 'bank') {
+      parts.length = 0;
+      const gain = (next.incomePerWave || 0) - (cur.incomePerWave || 0);
+      if (gain > 0) parts.push(`+${gain}g/wave`);
+      if (!parts.length) parts.push('more income');
     }
     if (tw.type === 'barrage') {
       parts.length = 0;
@@ -1348,6 +1483,9 @@
     if (st.auraRadius) {
       const chill = st.auraSlow ? ` · chill ${Math.round((1 - st.auraSlow) * 100)}%` : '';
       parts.push(`Aura ${Math.round(st.auraRadius)}${chill}`);
+    }
+    if (st.incomeOnly || (st.incomePerWave > 0 && st.supportOnly && !st.auraRadius)) {
+      return `Income +${st.incomePerWave}g/wave`;
     }
     if (st.supportOnly) {
       return `Support · Aura ${Math.round(st.auraRadius || 0)} · chill ${Math.round((1 - (st.auraSlow || 1)) * 100)}%`;
@@ -1457,6 +1595,7 @@
       // Enabled whenever a map is in play; disabled only on map-select overlay.
       el.btnChangeMap.disabled = !state.mapPicked;
     }
+    if (el.controls) el.controls.classList.toggle('pre-map', !state.mapPicked);
     syncUtilMore();
     refreshBestLine();
     updateWaveButtonLabels();
@@ -1526,6 +1665,24 @@
     updateWaveButtons();
   }
 
+  function bankIncomeTotal() {
+    let total = 0;
+    for (const tw of state.towers) {
+      if (tw.type !== 'bank') continue;
+      const st = towerStats(tw);
+      total += st.incomePerWave || 0;
+    }
+    return total;
+  }
+
+  function grantBankIncome() {
+    const bankGold = bankIncomeTotal();
+    if (bankGold <= 0) return { gold: 0, bit: '' };
+    addGold(bankGold);
+    addFloat(W / 2, H * 0.38, `+${bankGold}g Bank`, '#fbbf24', 1.2);
+    return { gold: bankGold, bit: ` · +${bankGold}g Bank` };
+  }
+
   function enterWavePause() {
     state.betweenWaves = true;
     const cleared = state.wave;
@@ -1540,6 +1697,7 @@
         interestBit = ` · +${interest}g interest`;
       }
     }
+    const bankPay = grantBankIncome();
     const awarded = awardChallengeBonus(cleared);
     // Perfect clear: no lives lost during this wave
     let perfectBit = '';
@@ -1553,7 +1711,7 @@
     }
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
-    const bonusBit = interestBit + (awarded > 0 ? ` · +${awarded}g CHALLENGE CLEAR` : '') + perfectBit;
+    const bonusBit = interestBit + bankPay.bit + (awarded > 0 ? ` · +${awarded}g CHALLENGE CLEAR` : '') + perfectBit;
     state.killStreak = 0;
     state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
@@ -1625,6 +1783,10 @@
           bits += ` · +${interest}g interest`;
         }
       }
+    }
+    if (o.bank !== false) {
+      const bankPay = grantBankIncome();
+      bits += bankPay.bit;
     }
     const awarded = awardChallengeBonus(wave);
     if (awarded > 0) bits += ` · +${awarded}g CHALLENGE CLEAR`;
@@ -2212,7 +2374,7 @@
 
   function victoryRating(livesLeft) {
     if (livesLeft >= START_LIVES) return { label: 'Perfect Clear' };
-    if (livesLeft >= 4) return { label: 'Good Clear' };
+    if (livesLeft >= 5) return { label: 'Good Clear' }; // half of 10
     return { label: 'Close Call' };
   }
 
@@ -2406,7 +2568,9 @@
           ? 'Selected Beacon — deep slow aura, no shots. Place on bends.'
           : (type === 'barrage'
             ? 'Selected Barrage — fast swarm shredder (soft vs armor).'
-            : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`))
+            : (type === 'bank'
+              ? 'Selected Bank — +gold each wave clear, no shots.'
+              : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`)))
         : 'Tap tiles to build · double-tap a tower to upgrade';
       updateHUD();
     });
@@ -2439,6 +2603,76 @@
     }
     updateHUD();
   });
+
+  function towerFaqBlurb(type) {
+    const def = TOWER_DEFS[type];
+    if (!def) return '';
+    if (def.incomeOnly) {
+      const l5 = def.incomePerWave + 4;
+      return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots). <span class="muted">Support economy</span></div>`;
+    }
+    if (def.supportOnly && def.auraRadius) {
+      return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Deep slow aura only (no shots). Place on bends. <span class="muted">Support</span></div>`;
+    }
+    const bits = [];
+    if (def.damage) bits.push(`dmg ${def.damage}`);
+    if (def.fireRate) bits.push(`rate ${def.fireRate}s`);
+    if (def.range >= 500) bits.push('map-wide');
+    else if (def.range) bits.push(`range ${def.range}`);
+    if (def.splashRadius) bits.push('splash');
+    if (def.multi) bits.push(`multi ×${def.multi}`);
+    if (def.slowMul) bits.push('slow shots');
+    if (def.auraRadius) bits.push('chill aura');
+    if (def.softVsArmor != null && def.softVsArmor < 1) bits.push('soft vs armor');
+    const role = type === 'barrage' ? 'Swarm shredder'
+      : type === 'cannon' ? 'AoE punch'
+      : type === 'sniper' ? 'Map-wide pick'
+      : type === 'zap' ? 'Chain targets'
+      : type === 'frost' ? 'Slow + chill'
+      : type === 'archer' ? 'Cheap DPS'
+      : 'Tower';
+    return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — ${role}. <span class="muted">${bits.join(' · ')}</span></div>`;
+  }
+
+  function fillFaqTowers() {
+    if (!el.faqTowers) return;
+    const ordered = Object.keys(TOWER_DEFS).sort((a, b) => TOWER_DEFS[a].cost - TOWER_DEFS[b].cost);
+    el.faqTowers.innerHTML = '<h3>Towers</h3>' + ordered.map(towerFaqBlurb).join('');
+  }
+
+  function openFaq() {
+    fillFaqTowers();
+    if (el.faqOverlay) {
+      el.faqOverlay.classList.add('show');
+      el.faqOverlay.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function closeFaq() {
+    if (el.faqOverlay) {
+      el.faqOverlay.classList.remove('show');
+      el.faqOverlay.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function wireFaqButtons() {
+    const openers = [el.btnFaq, el.faqMapBtn].filter(Boolean);
+    openers.forEach((btn) => {
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openFaq();
+      });
+    });
+    if (el.faqClose) {
+      el.faqClose.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeFaq();
+      });
+    }
+  }
+  wireFaqButtons();
 
   el.btnSpeed.addEventListener('pointerdown', (e) => {
     e.preventDefault();
@@ -3058,6 +3292,19 @@
         ctx.strokeStyle = 'rgba(45, 212, 191, 0.4)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
+      } else if (st.incomeOnly || (st.supportOnly && !st.auraRadius && st.incomePerWave > 0)) {
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.95)';
+        ctx.font = 'bold 11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`BANK — +${st.incomePerWave}g / WAVE CLEAR`, W / 2, 10);
+        ctx.beginPath();
+        ctx.arc(tw.x, tw.y, 36, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
       } else if (st.supportOnly && st.auraRadius > 0) {
         ctx.beginPath();
         ctx.arc(tw.x, tw.y, st.auraRadius, 0, Math.PI * 2);
@@ -3116,6 +3363,12 @@
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillText('Beacon: deep slow aura — no shots', W / 2, 10);
+        } else if (state.selected === 'bank') {
+          ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
+          ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Bank: income each wave clear — no shots', W / 2, 10);
         }
       }
     }
@@ -3393,6 +3646,34 @@
           ctx.arc(0, 12, 2, 0, Math.PI * 2);
           ctx.arc(5, 12, 2, 0, Math.PI * 2);
           ctx.fill();
+        } else if (tw.type === 'bank') {
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(0, -6, 6.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fde68a';
+          ctx.beginPath();
+          ctx.arc(0, -6, 4.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#92400e';
+          ctx.font = 'bold 8px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('$', 0, -5.5);
+          ctx.fillStyle = '#64748b';
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(-8, 0, 16, 12, 2) : ctx.rect(-8, 0, 16, 12);
+          ctx.fill();
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(0, 2);
+          ctx.lineTo(0, 10);
+          ctx.stroke();
         }
       }
       ctx.restore();
@@ -3808,7 +4089,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v42';
+  const BOOT = 'pg-boot-v43';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
