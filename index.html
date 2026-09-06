@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 31 -->
+<!-- path-guard-build: 32 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -384,6 +384,7 @@
   }
   .map-pick-btn .sub { font-size: 0.68rem; font-weight: 600; color: #94a3b8; }
   .map-pick-btn .stars { color: #fbbf24; font-size: 0.78rem; letter-spacing: 0.02em; margin-left: 4px; }
+  .map-pick-btn .map-stats { display: block; font-size: 0.62rem; font-weight: 600; color: #67e8f9; margin-top: 1px; }
   .map-pick-btn:active { transform: scale(0.97); }
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
@@ -429,7 +430,7 @@
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode (+spawns, tougher mix)</label>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         Map 1: Spiral — Easy <span class="stars">★☆☆☆☆</span>
-        <span class="sub">Longest path · more shoot time · +30 start gold</span>
+        <span class="sub">Longest path · more shoot time · +35 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         Map 2: Serpentine — Medium <span class="stars">★★☆☆☆</span>
@@ -511,7 +512,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 31</div>
+    <div id="build-ver">build 32</div>
   </div>
 </div>
 
@@ -533,6 +534,7 @@
   const LS_TARGET = 'pg-target-mode';
   const LS_HARD = 'pg-hard-mode';
   const LS_JUICE = 'pg-juice';
+  const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs } }
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -624,7 +626,7 @@
       difficulty: 1,
       spawnExtra: 0,
       hardenChance: 0,
-      startGoldBonus: 30,
+      startGoldBonus: 35,
       // Brutal: rectangular grid coil (2-tile ring gaps) inward to center
       path: [
         tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
@@ -642,10 +644,10 @@
       upgradeCosts: [40, 70, 110, 160],
     },
     cannon: {
-      name: 'Cannon', cost: 90, range: 80, fireRate: 1.65, damage: 62,
+      name: 'Cannon', cost: 90, range: 80, fireRate: 1.55, damage: 72,
       color: '#fb923c', projectileSpeed: 240, projectileColor: '#fdba74',
       upgradeCosts: [60, 100, 150, 210],
-      splashRadius: 48, splashMul: 0.55,
+      splashRadius: 50, splashMul: 0.58, // better vs Shell clusters
     },
     frost: {
       name: 'Frost', cost: 75, range: 100, fireRate: 0.85, damage: 8,
@@ -661,8 +663,8 @@
       multi: 2, multiFalloff: 0.55,
     },
     sniper: {
-      name: 'Sniper', cost: 125, range: 720, fireRate: 2.25, damage: 32,
-      color: '#2dd4bf', projectileSpeed: 780, projectileColor: '#99f6e4',
+      name: 'Sniper', cost: 125, range: 720, fireRate: 2.05, damage: 42,
+      color: '#2dd4bf', projectileSpeed: 820, projectileColor: '#99f6e4',
       upgradeCosts: [80, 125, 180, 250],
     },
   };
@@ -674,10 +676,10 @@
     normal:  { name: 'Grunt',   r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
     fast:    { name: 'Scout',   r: 12, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
     skitter: { name: 'Skitter', r: 11, hp: 55,  speed: 100, reward: 12, color: '#4ade80', stroke: '#14532d', splashResist: 0.5 },
-    shell:   { name: 'Shell',   r: 15, hp: 220, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.28 },
+    shell:   { name: 'Shell',   r: 15, hp: 210, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.22 },
     tank:    { name: 'Brute',   r: 16, hp: 180, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
-    raider:  { name: 'Raider',  r: 19, hp: 200, speed: 125, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
-    titan:   { name: 'Titan',   r: 28, hp: 500, speed: 26,  reward: 50, color: '#450a0a', stroke: '#fecaca', armor: 0.12 },
+    raider:  { name: 'Raider',  r: 19, hp: 190, speed: 120, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
+    titan:   { name: 'Titan',   r: 28, hp: 560, speed: 24,  reward: 50, color: '#450a0a', stroke: '#fecaca', armor: 0.1 },
   };
 
   const CHALLENGE_WAVES = {
@@ -698,7 +700,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=31`;
+    img.src = `./sprites/${name}.png?v=32`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -877,12 +879,67 @@
     try { localStorage.setItem(LS_HARD, on ? '1' : '0'); } catch (_) {}
   }
 
+  function loadMapStats() {
+    try {
+      const raw = localStorage.getItem(LS_MAP_STATS);
+      if (!raw) return {};
+      const o = JSON.parse(raw);
+      return o && typeof o === 'object' ? o : {};
+    } catch (_) { return {}; }
+  }
+
+  function saveMapWin(mapId, elapsedMs) {
+    try {
+      const all = loadMapStats();
+      const cur = all[mapId] || { wins: 0, bestMs: 0 };
+      cur.wins = (cur.wins || 0) + 1;
+      if (elapsedMs > 0 && (!cur.bestMs || elapsedMs < cur.bestMs)) cur.bestMs = Math.floor(elapsedMs);
+      all[mapId] = cur;
+      localStorage.setItem(LS_MAP_STATS, JSON.stringify(all));
+    } catch (_) {}
+  }
+
+  function formatBestTime(ms) {
+    if (!ms || ms <= 0) return '';
+    const s = Math.floor(ms / 1000);
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return m > 0 ? `${m}:${String(r).padStart(2, '0')}` : `${r}s`;
+  }
+
+  function refreshMapPickStats() {
+    const all = loadMapStats();
+    document.querySelectorAll('.map-pick-btn').forEach((btn) => {
+      const id = btn.dataset.map;
+      const st = all[id];
+      let line = btn.querySelector('.map-stats');
+      if (!line) {
+        line = document.createElement('span');
+        line.className = 'map-stats';
+        btn.appendChild(line);
+      }
+      if (!st || !(st.wins > 0)) {
+        line.textContent = 'No wins yet';
+        return;
+      }
+      const t = formatBestTime(st.bestMs);
+      line.textContent = t ? `${st.wins} win${st.wins > 1 ? 's' : ''} · best ${t}` : `${st.wins} win${st.wins > 1 ? 's' : ''}`;
+    });
+  }
+
   function refreshBestLine() {
     const { bestWave, bestWin } = loadBest();
     const parts = [];
     if (state.hardMode && state.mapPicked) parts.push('<span class="hard-tag">HARD MODE</span>');
     if (bestWave > 0) parts.push(`Best wave ${bestWave}`);
     if (bestWin > 0) parts.push(`Best win ${bestWin}♥`);
+    if (state.mapPicked) {
+      const ms = loadMapStats()[state.mapId];
+      if (ms && ms.wins > 0) {
+        const t = formatBestTime(ms.bestMs);
+        parts.push(t ? `${MAPS[state.mapId].name} ${ms.wins}W · ${t}` : `${MAPS[state.mapId].name} ${ms.wins}W`);
+      }
+    }
     if (!parts.length) {
       el.bestLine.innerHTML = '';
       return;
@@ -906,8 +963,10 @@
       color: def.color,
       slowMul: def.slowMul,
       slowDur: def.slowDur ? def.slowDur + (lv - 1) * 0.2 : 0,
-      multi: def.multi ? Math.min(5, def.multi + Math.floor((lv - 1) / 2)) : 0,
-      multiFalloff: def.multiFalloff || 0.7,
+      multi: def.multi
+        ? Math.min(5, def.multi + Math.floor((lv - 1) / 2))
+        : (tw.type === 'archer' && lv >= 4 ? (lv >= 5 ? 3 : 2) : 0),
+      multiFalloff: def.multiFalloff || (tw.type === 'archer' ? 0.65 : 0.7),
       splashRadius: def.splashRadius ? def.splashRadius + (lv - 1) * 3.25 : 0,
       splashMul: def.splashMul != null ? Math.min(0.6, def.splashMul + (lv - 1) * 0.0375) : 0,
       auraRadius: def.auraRadius ? def.auraRadius + (lv - 1) * 5 : 0,
@@ -933,7 +992,9 @@
     if (tw.type === 'sniper' && (tw.level || 1) < MAX_TOWER_LEVEL) {
       /* still map-wide; emphasize punch */
     }
-    if ((next.multi || 0) > (cur.multi || 0)) parts.push(`${next.multi} targets`);
+    if ((next.multi || 0) > (cur.multi || 0)) {
+      parts.push(tw.type === 'archer' ? `multi-shot ×${next.multi}` : `${next.multi} targets`);
+    }
     if ((next.splashRadius || 0) > (cur.splashRadius || 0) + 0.5) parts.push('bigger splash');
     if ((next.slowDur || 0) > (cur.slowDur || 0) + 0.05) parts.push('longer slow');
     if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
@@ -1475,8 +1536,12 @@
       20: 24,             // Finale elite
     };
     let n = table[w] || (10 + w);
-    // Spiral early: one fewer grunt on waves 1–4
-    if (state.mapId === 'spiral' && w <= 4) n = Math.max(2, n - 1);
+    // Spiral stays easy: fewer early + lighter scout swarm
+    if (state.mapId === 'spiral') {
+      if (w <= 4) n = Math.max(2, n - 1);
+      else if (w === 5) n = Math.max(8, n - 3);
+      else if (w === 6) n = Math.max(4, n - 1);
+    }
     return n;
   }
 
@@ -1664,7 +1729,7 @@
         addFloat(W / 2, H * 0.22, `CHALLENGE · +${ch.bonus}g`, '#fde68a', 1.8);
       }
     } else if (state.wave === 8) {
-      el.hint.textContent = 'Wave 8 — Shells incoming! Steel armor shrugs ~28% damage.';
+      el.hint.textContent = 'Wave 8 — Shells incoming! Steel armor shrugs ~22% damage.';
       setWavePreview(wavePreviewLabel(state.wave), false);
     } else if (state.wave === 9) {
       el.hint.textContent = 'Wave 9 — Skitters! They take 50% less splash (Cannon AoE).';
@@ -1719,10 +1784,14 @@
       awardChallengeBonus(state.wave);
       const rating = victoryRating(state.lives);
       saveBestWin(state.lives);
+      const elapsed = state.runStartedAt ? (performance.now() - state.runStartedAt) : 0;
+      saveMapWin(state.mapId, elapsed);
+      const bestT = formatBestTime(loadMapStats()[state.mapId]?.bestMs);
       el.overlayTitle.className = 'win';
       el.overlayTitle.textContent = 'Victory!';
       el.overlayRating.textContent = `${rating.stars}  ${rating.label}`;
-      el.overlayMsg.textContent = `Held ${MAPS[state.mapId].name} through ${state.maxWaves} waves with ${state.lives} lives left. Gold: ${Math.floor(state.gold)}.`;
+      const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (best ${bestT})` : ''}.` : '';
+      el.overlayMsg.textContent = `Held ${MAPS[state.mapId].name} through ${state.maxWaves} waves with ${state.lives} lives left. Gold: ${Math.floor(state.gold)}.${timeBit}`;
     } else {
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
@@ -1744,6 +1813,7 @@
     document.querySelectorAll('.map-pick-btn').forEach(b => {
       b.classList.toggle('last', b.dataset.map === last);
     });
+    refreshMapPickStats();
     try {
       const hm = localStorage.getItem(LS_HARD);
       const on = hm === '1' || hm === 'true' || state.hardMode;
@@ -2226,6 +2296,29 @@
         if (tw.cd <= 0) {
           if (tw.type === 'zap') {
             if (fireZap(tw, st)) {
+              tw.cd = st.fireRate;
+              tw.pulse = 0.15;
+            }
+          } else if (tw.type === 'archer' && (st.multi || 0) >= 2) {
+            const targets = findTargetsInRange(tw, st.multi);
+            if (targets.length) {
+              for (let i = 0; i < targets.length; i++) {
+                const tgt = targets[i];
+                const lead = Math.min(40, tgt.baseSpeed * 0.15);
+                const aim = posOnPath(Math.min(PATH_LEN, tgt.dist + lead));
+                const dmg = i === 0
+                  ? st.damage
+                  : Math.max(1, Math.round(st.damage * Math.pow(st.multiFalloff || 0.65, i)));
+                state.projectiles.push({
+                  x: tw.x, y: tw.y,
+                  tx: aim.x, ty: aim.y,
+                  speed: st.projectileSpeed,
+                  damage: dmg,
+                  color: st.projectileColor,
+                  target: tgt,
+                  type: tw.type,
+                });
+              }
               tw.cd = st.fireRate;
               tw.pulse = 0.15;
             }
@@ -2721,14 +2814,47 @@
           // Steel shield rim so Shell reads distinct from soft blobs
           ctx.beginPath();
           ctx.arc(p.x, p.y, sz * 0.46, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(214, 211, 209, 0.75)';
-          ctx.lineWidth = 2.4;
+          ctx.strokeStyle = 'rgba(214, 211, 209, 0.85)';
+          ctx.lineWidth = 2.8;
           ctx.stroke();
           ctx.beginPath();
           ctx.arc(p.x, p.y, sz * 0.28, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(68, 64, 60, 0.7)';
-          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = 'rgba(68, 64, 60, 0.8)';
+          ctx.lineWidth = 1.8;
           ctx.stroke();
+          // armor plate notch
+          ctx.fillStyle = 'rgba(231, 229, 228, 0.55)';
+          ctx.fillRect(p.x - 3, p.y - sz * 0.38, 6, 5);
+        }
+        if (en.kind === 'skitter') {
+          // Extra legs so splash-resist bugs read as Skitters, not Grunts
+          ctx.strokeStyle = 'rgba(134, 239, 172, 0.9)';
+          ctx.lineWidth = 1.8;
+          ctx.lineCap = 'round';
+          for (const ang of [-1.1, -0.55, 0.55, 1.1]) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y + 2);
+            ctx.lineTo(p.x + Math.cos(ang) * sz * 0.62, p.y + Math.sin(ang) * sz * 0.38);
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(p.x - 4, p.y - 3, 2.2, 0, Math.PI * 2);
+          ctx.arc(p.x + 4, p.y - 3, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        if (en.kind === 'titan') {
+          // Boss crown + thick rim
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, sz * 0.48, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(254, 202, 202, 0.85)';
+          ctx.lineWidth = 3.2;
+          ctx.stroke();
+          ctx.fillStyle = '#fecaca';
+          ctx.font = 'bold 11px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('BOSS', p.x, p.y - sz * 0.52);
         }
         if (slowed) {
           ctx.beginPath();
@@ -3025,7 +3151,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v31';
+  const BOOT = 'pg-boot-v32';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
