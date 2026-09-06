@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 40 -->
+<!-- path-guard-build: 41 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -374,9 +374,11 @@
     font-weight: 800;
     font-size: 1rem;
     border-radius: 12px;
+    cursor: pointer;
+  }
+  #restart-btn, #replay-btn {
     padding: 12px 28px;
     min-height: 48px;
-    cursor: pointer;
   }
   #replay-btn {
     background: linear-gradient(180deg, #34d399, #059669);
@@ -596,7 +598,7 @@
     </div>
     <div id="hint">Pick a map, build on the grid, then press Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 40</div>
+    <div id="build-ver">build 41</div>
   </div>
 </div>
 
@@ -814,7 +816,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=40`;
+    img.src = `./sprites/${name}.png?v=41`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -838,6 +840,7 @@
     hardMode: false,
     killStreak: 0,
     killStreakTimer: 0,
+    lastTowerTapAt: 0,
     gold: START_GOLD,
     lives: START_LIVES,
     wave: 0,
@@ -1698,6 +1701,18 @@
 
     const hitTower = getTowerAt(mx, my);
     if (hitTower) {
+      const now = performance.now();
+      // Double-tap same tower → upgrade (fun QoL)
+      if (
+        state.selectedTower === hitTower &&
+        state.lastTowerTapAt &&
+        (now - state.lastTowerTapAt) < 450
+      ) {
+        state.lastTowerTapAt = 0;
+        upgradeSelectedTower();
+        return;
+      }
+      state.lastTowerTapAt = now;
       state.selected = null;
       selectTower(hitTower);
       updateHUD();
@@ -1777,7 +1792,14 @@
     addGold(-cost);
     tw.level = (tw.level || 1) + 1;
     tw.pulse = 0.45;
-    burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 16);
+    burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 18);
+    if (state.juice !== false) {
+      state.rings.push({
+        x: tw.x, y: tw.y, r: 8, maxR: 36,
+        life: 0.28, maxLife: 0.28,
+        color: LEVEL_RING[tw.level - 1],
+      });
+    }
     addFloat(tw.x, tw.y - 20, `Lv${tw.level}!`, LEVEL_RING[tw.level - 1]);
     selectTower(tw);
     updateHUD();
@@ -2089,7 +2111,7 @@
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Try Barrage on swarms · Frost + Beacon on bends!`;
+      el.overlayMsg.textContent = `Reached wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Barrage shreds swarms · Beacon on bends · double-tap to upgrade!`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -2225,7 +2247,7 @@
           : (type === 'barrage'
             ? 'Selected Barrage — fast swarm shredder (soft vs armor).'
             : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`))
-        : 'Tap tiles to build, tap towers to upgrade';
+        : 'Tap tiles to build · double-tap a tower to upgrade';
       updateHUD();
     });
   });
@@ -2348,6 +2370,10 @@
       return;
     }
     if (state.awaitingNextWave) {
+      // Tempo bonus for calling the next wave yourself
+      const tempo = 4 + Math.floor(state.wave * 0.35);
+      addGold(tempo);
+      addFloat(W / 2, H * 0.28, `+${tempo}g early call`, '#67e8f9', 1.2);
       startNextWave();
     }
   }
