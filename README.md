@@ -10,6 +10,6 @@ Tower defense — pick a path, place towers, hold the line for 20 waves.
 
 Challenge waves at 5 / 10 / 15 / 20. Between waves: gold **interest** + Bank income. **Double-tap** a tower to upgrade. Manual Next Wave pays a small early-call bonus. Sell confirms. Mute FX anytime. Speed cycles 1x → 2x → 3x. Start with **10 lives**.
 
-**UX (build 46+):** Barrage removed; **Barrier** path-halt; hide controls until map picked; FAQ; cost-sorted bar; Bank income; 10 lives; 3x speed; **Crucible** nightmare map.
+**UX (build 47+):** Choose Map scroll no longer picks a map (tap only); Barrage removed; **Barrier** path-halt; hide controls until map picked; FAQ; cost-sorted bar; Bank income; 10 lives; 3x speed; **Crucible** nightmare map.
 
 **Achievements:** first clear each map, Hard Mode win, Titan kill — checklist always on win/lose overlays. Titan death gets a fanfare float.

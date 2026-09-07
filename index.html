@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 46 -->
+<!-- path-guard-build: 47 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -795,7 +795,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 46</div>
+    <div id="build-ver">build 47</div>
   </div>
 </div>
 
@@ -1050,7 +1050,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=46`;
+    img.src = `./sprites/${name}.png?v=47`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2912,12 +2912,37 @@
     });
   }
 
+  // Map cards: tap selects; scroll/drag must not (finger often lands on a card)
+  const MAP_TAP_SLOP = 10;
+  let mapPickGesture = null;
   document.querySelectorAll('.map-pick-btn').forEach(btn => {
     btn.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      mapPickGesture = { btn, id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
+    });
+    btn.addEventListener('pointermove', (e) => {
+      if (!mapPickGesture || mapPickGesture.id !== e.pointerId) return;
+      const dx = e.clientX - mapPickGesture.x;
+      const dy = e.clientY - mapPickGesture.y;
+      if (dx * dx + dy * dy > MAP_TAP_SLOP * MAP_TAP_SLOP) mapPickGesture.moved = true;
+    });
+    btn.addEventListener('pointerup', (e) => {
+      if (!mapPickGesture || mapPickGesture.id !== e.pointerId || mapPickGesture.btn !== btn) return;
+      const g = mapPickGesture;
+      mapPickGesture = null;
+      if (g.moved) return;
       e.preventDefault();
       pickMap(btn.dataset.map);
     });
+    btn.addEventListener('pointercancel', (e) => {
+      if (mapPickGesture && mapPickGesture.id === e.pointerId) mapPickGesture = null;
+    });
   });
+  if (el.mapOverlay) {
+    el.mapOverlay.addEventListener('scroll', () => {
+      if (mapPickGesture) mapPickGesture.moved = true;
+    }, { passive: true });
+  }
 
   function findTarget(tower) {
     const st = towerStats(tower);
@@ -4227,7 +4252,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v46';
+  const BOOT = 'pg-boot-v47';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
