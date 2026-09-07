@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 45 -->
+<!-- path-guard-build: 46 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -588,6 +588,7 @@
   .map-pick-btn .diff.medhard { background: #fdba74; }
   .map-pick-btn .diff.hard { background: #fca5a5; }
   .map-pick-btn .diff.brutal { background: #f87171; color: #450a0a; }
+  .map-pick-btn .diff.nightmare { background: #7f1d1d; color: #fecaca; }
   .map-pick-btn .sub {
     display: block;
     font-size: 0.7rem;
@@ -675,6 +676,10 @@
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
         <span class="map-title">Map 6: Gauntlet <span class="diff brutal">Brutal</span></span>
         <span class="sub">Short path · elite mix · +10 start gold (Hard still brutal)</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-crucible" data-map="crucible">
+        <span class="map-title">Map 7: Crucible <span class="diff nightmare">Nightmare</span></span>
+        <span class="sub">Packed switchbacks · tiny build flanks · densest spawns</span>
       </button>
     </div>
     <div id="faq-overlay" aria-hidden="true">
@@ -790,7 +795,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 45</div>
+    <div id="build-ver">build 46</div>
   </div>
 </div>
 
@@ -916,6 +921,28 @@
 
       ],
     },
+    crucible: {
+      id: 'crucible',
+      name: 'Crucible',
+      difficulty: 6,
+      spawnExtra: 4,
+      hardenChance: 0.4,
+      startGoldBonus: 10,
+      // Nightmare: packed every-row switchbacks — long path but tiny flank build space
+      path: [
+        tc(0, 0), tc(9, 0),
+        tc(9, 1), tc(1, 1),
+        tc(1, 2), tc(9, 2),
+        tc(9, 4), tc(0, 4),
+        tc(0, 5), tc(8, 5),
+        tc(8, 6), tc(0, 6),
+        tc(0, 8), tc(9, 8),
+        tc(9, 9), tc(1, 9),
+        tc(1, 10), tc(9, 10),
+        tc(9, 12), tc(0, 12),
+        tc(0, 13), tc(5, 13),
+      ],
+    },
     spiral: {
       id: 'spiral',
       name: 'Spiral',
@@ -1023,7 +1050,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=45`;
+    img.src = `./sprites/${name}.png?v=46`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -4200,7 +4227,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v45';
+  const BOOT = 'pg-boot-v46';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
