@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 47 -->
+<!-- path-guard-build: 48 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -51,33 +51,34 @@
 
   header {
     flex-shrink: 0;
-    padding: 4px 10px 2px;
+    padding: 2px 8px 1px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
   }
   h1 {
-    font-size: 0.88rem;
+    font-size: 0.78rem;
     font-weight: 800;
     letter-spacing: 0.04em;
     color: #7dd3fc;
     text-align: center;
+    line-height: 1.1;
   }
   #hud {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 5px;
-    font-size: 0.74rem;
+    gap: 3px;
+    font-size: 0.7rem;
   }
   .stat {
     background: #1e293b;
     border: 1px solid #334155;
-    border-radius: 9px;
-    padding: 5px 4px;
+    border-radius: 8px;
+    padding: 3px 2px;
     text-align: center;
   }
-  .stat .label { color: #94a3b8; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.02em; }
-  .stat .val { font-weight: 800; font-size: 0.9rem; margin-top: 1px; }
+  .stat .label { color: #94a3b8; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.02em; }
+  .stat .val { font-weight: 800; font-size: 0.82rem; margin-top: 0; }
   #gold .val { color: #fbbf24; }
   #lives .val { color: #f87171; }
   #wave .val { color: #a78bfa; }
@@ -107,7 +108,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px 8px;
+    padding: 1px 6px;
     position: relative;
   }
   canvas {
@@ -125,32 +126,41 @@
 
   #controls {
     flex-shrink: 0;
-    padding: 4px 10px 8px;
+    padding: 2px 8px 4px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
   }
   #controls.pre-map { display: none; }
+  /* Single compact scrollable tower strip — frees a full row of height */
   #tower-btns {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: nowrap;
     gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 1px 0 2px;
+    touch-action: pan-x;
   }
+  #tower-btns::-webkit-scrollbar { display: none; }
   .tower-btn {
     appearance: none;
     border: 2px solid #334155;
     background: #1e293b;
     color: #e8eef4;
-    border-radius: 10px;
-    padding: 6px 2px 5px;
-    font-size: 0.68rem;
+    border-radius: 9px;
+    padding: 5px 2px 4px;
+    font-size: 1.05rem;
     font-weight: 800;
     cursor: pointer;
-    min-height: 42px;
-    min-width: 0;
+    flex: 0 0 auto;
+    width: 48px;
+    min-height: 44px;
+    min-width: 48px;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
     overflow: hidden;
-    line-height: 1.15;
+    line-height: 1.1;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
@@ -160,66 +170,67 @@
     background: #0c4a6e;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
   }
-  .tower-btn .cost { display: block; font-size: 0.58rem; font-weight: 700; color: #fbbf24; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
+  .tower-btn .cost { display: block; font-size: 0.52rem; font-weight: 700; color: #fbbf24; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
   #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
   #btn-bank.selected { border-color: #f59e0b; background: #78350f; }
-  /* 8 towers: 4 + 4 — keep tap targets roomy on narrow phones */
   @media (max-width: 380px) {
-    #tower-btns { gap: 3px; }
-    .tower-btn { font-size: 0.62rem; padding: 5px 1px 4px; min-height: 40px; border-radius: 9px; }
-    .tower-btn .cost { font-size: 0.52rem; }
+    .tower-btn { width: 46px; min-width: 46px; min-height: 42px; font-size: 0.98rem; }
+    .tower-btn .cost { font-size: 0.48rem; }
   }
   #tower-stats {
     display: none;
     text-align: center;
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     font-weight: 700;
     color: #cbd5e1;
     background: #1e293b;
     border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 6px 8px;
-    line-height: 1.35;
-    min-height: 2.2em;
+    border-radius: 7px;
+    padding: 3px 6px;
+    line-height: 1.25;
+    min-height: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   #tower-stats.show { display: block; }
   #tower-stats .muted { color: #94a3b8; font-weight: 600; }
   #tower-stats .next { color: #c4b5fd; font-weight: 700; }
 
+  /* Compact util chip row: Speed Pause Maps FAQ More */
   #util-btns {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 5px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
   }
   #util-more {
     display: none;
     grid-template-columns: 1fr 1fr;
-    gap: 5px;
+    gap: 3px;
   }
-  #util-more #btn-more { grid-column: 1 / -1; }
   #util-more.show { display: grid; }
   .util-btn {
     appearance: none;
     border: 1px solid #334155;
     background: #1e293b;
     color: #cbd5e1;
-    border-radius: 9px;
-    padding: 7px 4px;
-    font-size: 0.72rem;
+    border-radius: 8px;
+    padding: 5px 2px;
+    font-size: 0.66rem;
     font-weight: 700;
     cursor: pointer;
-    min-height: 36px;
+    min-height: 34px;
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
   @media (max-width: 380px) {
-    .util-btn { font-size: 0.66rem; padding: 6px 2px; min-height: 34px; }
+    .util-btn { font-size: 0.6rem; padding: 4px 1px; min-height: 32px; }
   }
   .util-btn:active { transform: scale(0.97); }
   .util-btn.active {
@@ -232,32 +243,21 @@
     color: #e2e8f0;
     background: #334155;
   }
-  #btn-more-open {
-    width: 100%;
-    min-height: 30px;
-    font-size: 0.66rem;
-    font-weight: 700;
-    color: #94a3b8;
-    background: transparent;
-    border: 1px dashed #334155;
-    padding: 4px;
-  }
-  #btn-more-open.hidden { display: none !important; }
 
   #wave-btns {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 4px;
   }
   .wave-btn {
     appearance: none;
     border: none;
-    border-radius: 10px;
-    padding: 10px 6px;
-    font-size: 0.85rem;
+    border-radius: 9px;
+    padding: 7px 4px;
+    font-size: 0.78rem;
     font-weight: 800;
     cursor: pointer;
-    min-height: 42px;
+    min-height: 36px;
     letter-spacing: 0.02em;
   }
   .wave-btn:active { transform: scale(0.97); }
@@ -285,13 +285,13 @@
   #tower-actions {
     display: none;
     grid-template-columns: 1.4fr 1fr;
-    gap: 6px;
+    gap: 4px;
   }
   #tower-actions.show { display: grid; }
   #sell-confirm {
     display: none;
     grid-template-columns: 1.4fr 1fr;
-    gap: 6px;
+    gap: 4px;
   }
   #sell-confirm.show { display: grid; }
   #btn-sell-yes {
@@ -310,12 +310,12 @@
     border: 2px solid #334155;
     background: #1e293b;
     color: #e8eef4;
-    border-radius: 10px;
-    padding: 8px 6px;
-    font-size: 0.82rem;
+    border-radius: 9px;
+    padding: 6px 4px;
+    font-size: 0.76rem;
     font-weight: 800;
     cursor: pointer;
-    min-height: 40px;
+    min-height: 36px;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
   }
   .action-btn:active { transform: scale(0.97); }
@@ -334,11 +334,11 @@
   #btn-sell .cost { display: block; font-size: 0.62rem; font-weight: 600; color: #94a3b8; margin-top: 1px; }
   #hint {
     text-align: center;
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     color: #94a3b8;
-    min-height: 1.15em;
-    line-height: 1.3;
-    padding: 0 4px;
+    min-height: 1em;
+    line-height: 1.2;
+    padding: 0 2px;
   }
   #onboard-tip {
     display: none;
@@ -359,7 +359,7 @@
     color: #7dd3fc; font-weight: 800; font-size: 0.68rem;
     margin-left: 6px; cursor: pointer; text-decoration: underline;
   }
-  #build-ver { text-align: center; font-size: 9px; opacity: 0.35; margin-top: 1px; }
+  #build-ver { text-align: center; font-size: 8px; opacity: 0.3; margin-top: 0; line-height: 1; }
   .map-tip { font-size: 11px; opacity: 0.9; margin: 0 0 6px; line-height: 1.35; color: #cbd5e1; }
   .hard-mode-row {
     width: min(300px, 94%); margin: 0 0 8px; display: flex; align-items: center; gap: 10px;
@@ -369,7 +369,7 @@
   }
   .hard-mode-row input { width: 18px; height: 18px; accent-color: #ea580c; flex-shrink: 0; }
   #wave-preview {
-    text-align: center; font-size: 11px; color: #94a3b8; min-height: 14px; margin-top: 2px;
+    text-align: center; font-size: 10px; color: #94a3b8; min-height: 12px; margin-top: 0;
   }
   #wave-preview.hot { color: #fecaca; font-weight: 700; }
   #challenge-banner {
@@ -726,35 +726,35 @@
   <div id="controls">
     <div id="tower-btns">
       <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon" title="Beacon — slow aura">
-        🔦 Beacon
+        🔦
         <span class="cost">45g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer">
-        🏹 Archer
+        🏹
         <span class="cost">50g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-barrier" data-type="barrier" title="Barrier — halt on path">
-        🚧 Barrier
+        🚧
         <span class="cost">65g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost">
-        ❄️ Frost
+        ❄️
         <span class="cost">75g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-bank" data-type="bank" title="Bank — gold each wave clear">
-        🏦 Bank
+        🏦
         <span class="cost">85g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon">
-        💣 Cannon
+        💣
         <span class="cost">90g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper">
-        🎯 Sniper
+        🎯
         <span class="cost">120g</span>
       </button>
       <button type="button" class="tower-btn" id="btn-zap" data-type="zap" title="Zap">
-        ⚡ Zap
+        ⚡
         <span class="cost">135g</span>
       </button>
     </div>
@@ -781,13 +781,12 @@
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
       <button type="button" class="util-btn" id="btn-change-map" disabled>Maps</button>
       <button type="button" class="util-btn" id="btn-faq" title="FAQ">FAQ</button>
+      <button type="button" class="util-btn" id="btn-more" title="Aim &amp; FX">More ▾</button>
     </div>
     <div id="util-more">
       <button type="button" class="util-btn" id="btn-target">Aim: First</button>
       <button type="button" class="util-btn" id="btn-juice">FX On</button>
-      <button type="button" class="util-btn" id="btn-more">Less ▴</button>
     </div>
-    <button type="button" class="util-btn" id="btn-more-open">More · Aim &amp; FX ▾</button>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
       <button type="button" class="wave-btn" id="btn-continuous">Auto: Off</button>
@@ -795,7 +794,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 47</div>
+    <div id="build-ver">build 48</div>
   </div>
 </div>
 
@@ -1050,7 +1049,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=47`;
+    img.src = `./sprites/${name}.png?v=48`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1133,7 +1132,6 @@
     btnTarget: document.getElementById('btn-target'),
     btnJuice: document.getElementById('btn-juice'),
     btnMore: document.getElementById('btn-more'),
-    btnMoreOpen: document.getElementById('btn-more-open'),
     utilMore: document.getElementById('util-more'),
     towerStats: document.getElementById('tower-stats'),
     onboardTip: document.getElementById('onboard-tip'),
@@ -1602,7 +1600,7 @@
         const nextBit = cost == null
           ? '<span class="muted">MAX</span>'
           : `<span class="next">Next ${cost}g: ${upgradeBlurb(tw)}</span>`;
-        el.towerStats.innerHTML = `<strong>${st.name} Lv${tw.level}</strong> · ${curStats}<br>${nextBit}`;
+        el.towerStats.innerHTML = `<strong>${st.name} L${tw.level}</strong> · ${curStats} · ${nextBit}`;
         el.towerStats.classList.add('show');
       } else {
         el.towerStats.classList.remove('show');
@@ -1644,7 +1642,10 @@
   function syncUtilMore() {
     const open = !!state.utilMoreOpen;
     if (el.utilMore) el.utilMore.classList.toggle('show', open);
-    if (el.btnMoreOpen) el.btnMoreOpen.classList.toggle('hidden', open);
+    if (el.btnMore) {
+      el.btnMore.classList.toggle('active', open);
+      el.btnMore.textContent = open ? 'Less ▴' : 'More ▾';
+    }
   }
 
   function setUtilMore(open) {
@@ -2771,16 +2772,10 @@
     });
   }
 
-  if (el.btnMoreOpen) {
-    el.btnMoreOpen.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      setUtilMore(true);
-    });
-  }
   if (el.btnMore) {
     el.btnMore.addEventListener('pointerdown', (e) => {
       e.preventDefault();
-      setUtilMore(false);
+      setUtilMore(!state.utilMoreOpen);
     });
   }
   if (el.onboardDismiss) {
@@ -4252,7 +4247,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v47';
+  const BOOT = 'pg-boot-v48';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
