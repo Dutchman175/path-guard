@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 48 -->
+<!-- path-guard-build: 49 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -372,22 +372,6 @@
     text-align: center; font-size: 10px; color: #94a3b8; min-height: 12px; margin-top: 0;
   }
   #wave-preview.hot { color: #fecaca; font-weight: 700; }
-  #challenge-banner {
-    position: absolute; left: 50%; top: 18%; transform: translate(-50%, -50%);
-    pointer-events: none; z-index: 6; text-align: center;
-    font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
-    color: #fecaca; text-shadow: 0 0 18px rgba(239,68,68,0.85), 0 2px 0 #450a0a;
-    opacity: 0; transition: opacity 0.25s ease;
-    font-size: 22px; white-space: nowrap;
-  }
-  #challenge-banner.show { opacity: 1; animation: challengePulse 1.2s ease-in-out 2; }
-  #challenge-banner .sub { display: block; font-size: 12px; letter-spacing: 0.04em;
-    color: #fde68a; font-weight: 700; margin-top: 4px; text-transform: none; }
-  @keyframes challengePulse {
-    0%,100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.06); }
-  }
-
   #faq-overlay {
     position: absolute;
     inset: 0;
@@ -704,15 +688,14 @@
       <div class="faq-sec">
         <h3>How to play</h3>
         <p>Pick a map, place towers on green <strong>+</strong> tiles (build grid). <strong>Barrier</strong> goes on the path itself (amber tiles). Tap a placed tower to upgrade or sell (sell asks confirm). <strong>Double-tap</strong> a tower to upgrade fast.</p>
-        <p><strong>Next Wave</strong> starts the next round; calling early while waiting pays a small gold bonus. <strong>Auto: On</strong> chains waves after a short pause — use Next for build breaks.</p>
-        <p><strong>Challenge waves</strong> at 5 / 10 / 15 / 20 pay clear bonuses. Between waves: gold interest (1%, cap 20g) if you hold ≥100g. Perfect clears (no lives lost that wave) pay extra.</p>
+        <p><strong>Next Wave</strong> starts the next round. <strong>Auto: On</strong> chains waves after a short pause — use Next for build breaks.</p>
+        <p>Later waves get denser and tougher (especially around 5 / 10 / 15 / 20). Gold comes from kills and <strong>Bank</strong> income on wave clear — no early-call, interest, or clear bonuses.</p>
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
         <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Barrier</strong> = place on the path to full-stop enemies 3s (then cooldown). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x. FX toggle mutes particles.</p>
       </div>
     </div>
-    <div id="challenge-banner"><span id="challenge-title">CHALLENGE WAVE</span><span class="sub" id="challenge-sub"></span></div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
       <p id="overlay-rating" class="rating"></p>
@@ -791,10 +774,10 @@
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
       <button type="button" class="wave-btn" id="btn-continuous">Auto: Off</button>
     </div>
-    <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Next Wave early = bonus gold<button type="button" id="onboard-dismiss">Got it</button></div>
+    <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 48</div>
+    <div id="build-ver">build 49</div>
   </div>
 </div>
 
@@ -1031,12 +1014,8 @@
     titan:   { name: 'Titan',   r: 28, hp: 520, speed: 24,  reward: 55, color: '#450a0a', stroke: '#fecaca', armor: 0.1 },
   };
 
-  const CHALLENGE_WAVES = {
-    5:  { title: 'CHALLENGE WAVE', sub: 'Scout Swarm', bonus: 25 },
-    10: { title: 'CHALLENGE WAVE', sub: 'Brute Push', bonus: 40 },
-    15: { title: 'CHALLENGE WAVE', sub: 'Raider Pack', bonus: 60 },
-    20: { title: 'BOSS', sub: 'Titan Finale', bonus: 100 },
-  };
+  // Dense waves (tougher count/mix) — slightly longer auto pause, no Challenge branding/bonuses
+  const DENSE_WAVES = new Set([5, 10, 15, 20]);
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
@@ -1049,7 +1028,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=48`;
+    img.src = `./sprites/${name}.png?v=49`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1104,8 +1083,6 @@
     gameSpeed: 1,
     paused: false,
     waveLivesStart: START_LIVES,
-    wavePerfectClears: 0,
-    challengeAwarded: {},
     juice: true,
     runStartedAt: 0,
     utilMoreOpen: false,
@@ -1654,23 +1631,12 @@
     syncUtilMore();
   }
 
-  function earlyCallBonusAmount() {
-    return 4 + Math.floor(state.wave * 0.35);
-  }
-
   function updateWaveButtonLabels() {
     if (!el.btnContinuous || !el.btnNextWave) return;
     const autoOn = state.waveMode === 'continuous';
     el.btnContinuous.textContent = autoOn ? 'Auto: On' : 'Auto: Off';
     el.btnContinuous.classList.toggle('active', autoOn);
-    const canEarly = state.mapPicked && !state.gameOver && state.started && state.awaitingNextWave && !autoOn;
-    if (canEarly) {
-      el.btnNextWave.textContent = `Next · +${earlyCallBonusAmount()}g`;
-    } else if (state.mapPicked && !state.started) {
-      el.btnNextWave.textContent = 'Next Wave';
-    } else {
-      el.btnNextWave.textContent = 'Next Wave';
-    }
+    el.btnNextWave.textContent = 'Next Wave';
   }
 
   function updateWaveButtons() {
@@ -1691,7 +1657,7 @@
       const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
       if (mode === 'continuous') {
         state.awaitingNextWave = false;
-        state.nextWaveIn = isChallengeWave(state.wave) ? 2.6 : 1.5;
+        state.nextWaveIn = DENSE_WAVES.has(state.wave) ? 2.6 : 1.5;
         el.hint.textContent = preview
           ? `Wave ${state.wave} cleared! Next: ${preview}…`
           : `Wave ${state.wave} cleared! Next wave soon…`;
@@ -1727,49 +1693,27 @@
   function enterWavePause() {
     state.betweenWaves = true;
     const cleared = state.wave;
-    const ch = CHALLENGE_WAVES[cleared];
-    // Interest first: banked gold only (before clear bonuses) — +1% cap 20g
-    let interestBit = '';
-    if (Number.isFinite(state.gold) && state.gold >= 100) {
-      const interest = Math.min(20, Math.floor(state.gold * 0.01));
-      if (interest > 0) {
-        addGold(interest);
-        addFloat(W / 2, H * 0.42, `+${interest}g interest`, '#fde68a', 1.15);
-        interestBit = ` · +${interest}g interest`;
-      }
-    }
     const bankPay = grantBankIncome();
-    const awarded = awardChallengeBonus(cleared);
-    // Perfect clear: no lives lost during this wave
-    let perfectBit = '';
-    const livesStart = state.waveLivesStart != null ? state.waveLivesStart : state.lives;
-    if (state.lives >= livesStart && state.lives > 0) {
-      const perfectGold = 6 + Math.floor(cleared * 0.75);
-      addGold(perfectGold);
-      state.wavePerfectClears = (state.wavePerfectClears || 0) + 1;
-      addFloat(W / 2, H * 0.34, `+${perfectGold} perfect clear`, '#86efac');
-      perfectBit = ` · +${perfectGold}g perfect`;
-    }
     const next = cleared + 1;
     const preview = next <= state.maxWaves ? wavePreviewLabel(next) : null;
-    const bonusBit = interestBit + bankPay.bit + (awarded > 0 ? ` · +${awarded}g CHALLENGE CLEAR` : '') + perfectBit;
+    const payBit = bankPay.bit;
     state.killStreak = 0;
     state.killStreakTimer = 0;
     if (state.waveMode === 'continuous') {
       state.awaitingNextWave = false;
-      // Longer breath after challenge waves
-      state.nextWaveIn = ch ? 2.6 : 1.5;
+      // Slightly longer breath after dense waves
+      state.nextWaveIn = DENSE_WAVES.has(cleared) ? 2.6 : 1.5;
       el.hint.textContent = preview
-        ? `Wave ${cleared} cleared${bonusBit}! Next: ${preview}…`
-        : `Wave ${cleared} cleared${bonusBit}!`;
+        ? `Wave ${cleared} cleared${payBit}! Next: ${preview}…`
+        : `Wave ${cleared} cleared${payBit}!`;
     } else {
       state.awaitingNextWave = true;
       state.nextWaveIn = 0;
       el.hint.textContent = preview
-        ? `Wave ${cleared} cleared${bonusBit}! Next: ${preview}. Build, then Next Wave.`
-        : `Wave ${cleared} cleared${bonusBit}! Build up, then press Next Wave.`;
+        ? `Wave ${cleared} cleared${payBit}! Next: ${preview}. Build, then Next Wave.`
+        : `Wave ${cleared} cleared${payBit}! Build up, then press Next Wave.`;
     }
-    setWavePreview(preview ? `Incoming: ${preview}` : '', !!(preview && isChallengeWave(next)));
+    setWavePreview(preview ? `Incoming: ${preview}` : '', !!(preview && DENSE_WAVES.has(next)));
     updateWaveButtons();
     updateHUD();
   }
@@ -1795,53 +1739,10 @@
     return Math.floor(add);
   }
 
-  function awardChallengeBonus(wave) {
-    const ch = CHALLENGE_WAVES[wave];
-    if (!ch || !ch.bonus) return 0;
-    const key = String(wave);
-    if (state.challengeAwarded[key] || state.challengeAwarded[wave]) return 0;
-    const bg = Number(ch.bonus) || 0;
-    if (bg <= 0) return 0;
-    // Mark before addGold so a re-entrant endGame cannot double-pay
-    state.challengeAwarded[key] = true;
-    state.challengeAwarded[wave] = true;
-    addGold(bg);
-    addFloat(W / 2, H * 0.26, `+${bg}g CHALLENGE CLEAR`, '#fde68a', 2.2);
-    addFloat(W / 2, H * 0.31, ch.title === 'BOSS' ? 'BOSS DEFEATED!' : 'Challenge cleared!', '#fecaca', 1.8);
-    return bg;
-  }
-
-  function grantWaveClearExtras(wave, opts) {
-    // Shared by enterWavePause + final-wave win (interest already handled by caller if needed)
-    const o = opts || {};
-    let bits = '';
-    if (o.interest) {
-      if (Number.isFinite(state.gold) && state.gold >= 100) {
-        const interest = Math.min(20, Math.floor(state.gold * 0.01));
-        if (interest > 0) {
-          addGold(interest);
-          addFloat(W / 2, H * 0.42, `+${interest}g interest`, '#fde68a', 1.15);
-          bits += ` · +${interest}g interest`;
-        }
-      }
-    }
-    if (o.bank !== false) {
-      const bankPay = grantBankIncome();
-      bits += bankPay.bit;
-    }
-    const awarded = awardChallengeBonus(wave);
-    if (awarded > 0) bits += ` · +${awarded}g CHALLENGE CLEAR`;
-    if (o.perfect) {
-      const livesStart = state.waveLivesStart != null ? state.waveLivesStart : state.lives;
-      if (state.lives >= livesStart && state.lives > 0) {
-        const perfectGold = 6 + Math.floor(wave * 0.75);
-        addGold(perfectGold);
-        state.wavePerfectClears = (state.wavePerfectClears || 0) + 1;
-        addFloat(W / 2, H * 0.34, `+${perfectGold} perfect clear`, '#86efac');
-        bits += ` · +${perfectGold}g perfect`;
-      }
-    }
-    return { awarded, bits };
+  function grantWaveClearExtras() {
+    // Final-wave win skips enterWavePause — Bank income only
+    const bankPay = grantBankIncome();
+    return { bits: bankPay.bit };
   }
 
   function flashLives() {
@@ -2182,12 +2083,8 @@
     updateHUD();
   }
 
-  function isChallengeWave(w) {
-    return !!CHALLENGE_WAVES[w];
-  }
-
   function waveEnemyCount(w) {
-    // Easy early → hard late with post-challenge breathers (HP/speed fixed)
+    // Easy early → hard late with post-dense breathers (HP/speed fixed)
     const table = {
       1: 3, 2: 4, 3: 5, 4: 6,
       5: 14,              // Scout swarm
@@ -2277,28 +2174,13 @@
 
   function wavePreviewLabel(w) {
     const counts = wavePreviewCounts(w);
-    const list = formatEnemyCounts(counts);
-    if (CHALLENGE_WAVES[w]) return `${CHALLENGE_WAVES[w].sub} — ${list}`;
-    return list;
+    return formatEnemyCounts(counts);
   }
 
   function setWavePreview(text, hot) {
     if (!el.wavePreview) return;
     el.wavePreview.textContent = text || '';
     el.wavePreview.classList.toggle('hot', !!hot);
-  }
-
-  function showChallengeBanner(w) {
-    const info = CHALLENGE_WAVES[w];
-    const banner = document.getElementById('challenge-banner');
-    const title = document.getElementById('challenge-title');
-    const sub = document.getElementById('challenge-sub');
-    if (!banner || !info) return;
-    title.textContent = info.title;
-    sub.textContent = info.bonus ? `${info.sub} · +${info.bonus}g clear` : info.sub;
-    banner.classList.add('show');
-    clearTimeout(showChallengeBanner._t);
-    showChallengeBanner._t = setTimeout(() => banner.classList.remove('show'), 3600);
   }
 
   function hardenKind(kind, chance, w) {
@@ -2383,17 +2265,10 @@
     state.nextWaveIn = 0;
     hideNextWaveUI();
     saveBestWave(state.wave);
-    const ch = CHALLENGE_WAVES[state.wave];
-    if (ch) {
-      showChallengeBanner(state.wave);
-      const bossBit = ch.title === 'BOSS' ? ' ☠ BOSS INCOMING' : '';
-      el.hint.textContent = `${ch.title} — ${ch.sub}! Clear for +${ch.bonus}g bonus.${bossBit}`;
-      setWavePreview(`${ch.sub} · +${ch.bonus}g clear bonus`, true);
-      if (ch.title === 'BOSS') {
-        addFloat(W / 2, H * 0.22, 'BOSS — TITAN', '#fecaca', 2.4);
-      } else {
-        addFloat(W / 2, H * 0.22, `CHALLENGE · +${ch.bonus}g`, '#fde68a', 1.8);
-      }
+    if (state.wave === 20) {
+      el.hint.textContent = `Wave 20 — Titans incoming! ${wavePreviewLabel(state.wave)}`;
+      setWavePreview(wavePreviewLabel(state.wave), true);
+      addFloat(W / 2, H * 0.22, 'TITANS INCOMING', '#fecaca', 2.4);
     } else if (state.wave === 8) {
       el.hint.textContent = 'Wave 8 — Shells incoming! Steel armor shrugs ~22% damage.';
       setWavePreview(wavePreviewLabel(state.wave), false);
@@ -2401,8 +2276,9 @@
       el.hint.textContent = 'Wave 9 — Skitters! They take 50% less splash (Cannon AoE).';
       setWavePreview(wavePreviewLabel(state.wave), false);
     } else {
+      const hot = DENSE_WAVES.has(state.wave);
       el.hint.textContent = `Wave ${state.wave} incoming — ${wavePreviewLabel(state.wave)}`;
-      setWavePreview(wavePreviewLabel(state.wave), false);
+      setWavePreview(wavePreviewLabel(state.wave), hot);
     }
     updateHUD();
   }
@@ -2448,8 +2324,8 @@
     hideNextWaveUI();
     el.overlay.classList.add('show');
     if (won) {
-      // Wave 20 skips enterWavePause — interest + boss clear + perfect once
-      grantWaveClearExtras(state.wave, { interest: true, perfect: true });
+      // Wave 20 skips enterWavePause — Bank income once
+      grantWaveClearExtras();
       const rating = victoryRating(state.lives);
       saveBestWin(state.lives);
       const elapsed = state.runStartedAt ? (performance.now() - state.runStartedAt) : 0;
@@ -2532,8 +2408,6 @@
     state.awaitingNextWave = false;
     state.sellConfirming = false;
     state.waveLivesStart = START_LIVES;
-    state.wavePerfectClears = 0;
-    state.challengeAwarded = {};
     state.runStartedAt = 0;
     applyMap(mapId);
     state.mapPicked = true;
@@ -2837,11 +2711,7 @@
       return;
     }
     if (state.awaitingNextWave) {
-      // Tempo bonus for calling the next wave yourself
-      const tempo = earlyCallBonusAmount();
-      addGold(tempo);
-      addFloat(W / 2, H * 0.28, `+${tempo}g early call`, '#67e8f9', 1.2);
-      el.hint.textContent = `Early call +${tempo}g — wave incoming!`;
+      el.hint.textContent = 'Wave incoming!';
       startNextWave();
     }
   }
@@ -2856,7 +2726,7 @@
     if (state.waveMode === 'continuous') {
       setWaveMode('next');
       if (state.started && !state.gameOver) {
-        el.hint.textContent = 'Auto off — press Next Wave between waves (early call pays gold).';
+        el.hint.textContent = 'Auto off — press Next Wave between waves.';
       }
       return;
     }
@@ -2975,12 +2845,6 @@
       state.killStreakTimer = 1.45;
       if (state.killStreak >= 3) {
         addFloat(p.x, p.y - 30, `x${state.killStreak} streak!`, '#fdba74');
-      }
-      // Streak bounty every 5 kills — fun tempo gold
-      if (state.killStreak > 0 && state.killStreak % 5 === 0) {
-        const bounty = 3 + Math.floor(state.killStreak / 5);
-        addGold(bounty);
-        addFloat(p.x, p.y - 46, `BOUNTY +${bounty}g`, '#fb7185', 1.35);
       }
       if (en.kind === 'titan') {
         unlockAchievement('titan');
@@ -4247,7 +4111,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v48';
+  const BOOT = 'pg-boot-v49';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
