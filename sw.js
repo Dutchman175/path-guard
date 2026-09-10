@@ -1,13 +1,14 @@
-const CACHE = 'path-guard-v51';
+const CACHE = 'path-guard-v52';
 const ASSETS = [
   './manifest.webmanifest',
   './icon.svg',
   './sprites/archer.png',
+  './sprites/crossbow.png',
   './sprites/cannon.png',
   './sprites/frost.png',
-  './sprites/zap.png',
+  './sprites/fire.png',
+  './sprites/lightning.png',
   './sprites/sniper.png',
-  './sprites/beacon.png',
   './sprites/bank.png',
   './sprites/barrier.png',
   './sprites/grunt.png',

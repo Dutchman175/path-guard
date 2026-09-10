@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 51 -->
+<!-- path-guard-build: 52 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -150,14 +150,14 @@
     background: #1e293b;
     color: #e8eef4;
     border-radius: 9px;
-    padding: 5px 2px 4px;
-    font-size: 1.05rem;
+    padding: 4px 2px 3px;
+    font-size: 1.0rem;
     font-weight: 800;
     cursor: pointer;
     flex: 0 0 auto;
-    width: 48px;
-    min-height: 44px;
-    min-width: 48px;
+    width: 54px;
+    min-height: 52px;
+    min-width: 54px;
     transition: transform 0.08s, border-color 0.15s, background 0.15s;
     overflow: hidden;
     line-height: 1.1;
@@ -170,16 +170,27 @@
     background: #0c4a6e;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
   }
-  .tower-btn .cost { display: block; font-size: 0.52rem; font-weight: 700; color: #fbbf24; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; }
+  .tower-btn .tname { display: block; font-size: 0.48rem; font-weight: 800; color: #e2e8f0; margin-top: 1px; line-height: 1.05; overflow: hidden; text-overflow: ellipsis; }
+  .tower-btn .cost { display: block; font-size: 0.5rem; font-weight: 700; color: #fbbf24; margin-top: 0; overflow: hidden; text-overflow: ellipsis; }
+  .tower-btn .cat { display: inline-block; font-size: 0.42rem; font-weight: 800; letter-spacing: 0.02em; color: #94a3b8; background: #0f172a; border: 1px solid #334155; border-radius: 3px; padding: 0 3px; margin-top: 1px; line-height: 1.2; }
+  .tower-btn .cat.m { color: #86efac; border-color: #166534; }
+  .tower-btn .cat.e { color: #67e8f9; border-color: #0e7490; }
+  .tower-btn .cat.g { color: #fdba74; border-color: #9a3412; }
+  .tower-btn .cat.s { color: #fcd34d; border-color: #a16207; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
-  #btn-zap.selected { border-color: #c084fc; background: #3b0764; }
+  #btn-fire.selected { border-color: #f97316; background: #7c2d12; }
+  #btn-lightning.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
-  #btn-beacon.selected { border-color: #fbbf24; background: #78350f; }
+  #btn-crossbow.selected { border-color: #f59e0b; background: #78350f; }
   #btn-bank.selected { border-color: #f59e0b; background: #78350f; }
+  #btn-barrier.selected { border-color: #f59e0b; background: #451a03; }
+  #tower-stats .hits { color: #86efac; }
+  #tower-stats .weak { color: #fca5a5; }
   @media (max-width: 380px) {
-    .tower-btn { width: 46px; min-width: 46px; min-height: 42px; font-size: 0.98rem; }
-    .tower-btn .cost { font-size: 0.48rem; }
+    .tower-btn { width: 50px; min-width: 50px; min-height: 46px; font-size: 0.92rem; }
+    .tower-btn .tname { font-size: 0.44rem; }
+    .tower-btn .cost { font-size: 0.46rem; }
   }
   #tower-stats {
     display: none;
@@ -677,13 +688,20 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. <span class="muted">Green</span></div>
-        <div class="faq-item"><strong style="color:#eab308">Scout</strong> — fast, low HP. <span class="muted">Yellow</span></div>
-        <div class="faq-item"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash resist. <span class="muted">Lime</span></div>
-        <div class="faq-item"><strong style="color:#78716c">Shell</strong> — armored tank (damage resist). <span class="muted">Steel</span></div>
-        <div class="faq-item"><strong style="color:#ea580c">Brute</strong> — high HP, slow. <span class="muted">Orange</span></div>
-        <div class="faq-item"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. <span class="muted">Dark red</span></div>
-        <div class="faq-item"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. <span class="muted">Near-black</span></div>
+        <div class="faq-item"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="muted">Green</span></div>
+        <div class="faq-item"><strong style="color:#eab308">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="muted">Yellow</span></div>
+        <div class="faq-item"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="muted">Lime</span></div>
+        <div class="faq-item"><strong style="color:#78716c">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="muted">Steel</span></div>
+        <div class="faq-item"><strong style="color:#ea580c">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="muted">Orange</span></div>
+        <div class="faq-item"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. Sniper strong. <span class="muted">Dark red</span></div>
+        <div class="faq-item"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="muted">Near-black</span></div>
+      </div>
+      <div class="faq-sec">
+        <h3>Counters</h3>
+        <div class="faq-item"><strong>Marksman (M)</strong> — soft DPS. Archer Immune vs Shell/Titan; Crossbow 0.25x vs armor.</div>
+        <div class="faq-item"><strong>Elemental (E)</strong> — Frost (dmg+slow, Scout Immune) · Fire (burn/splash, Skitter resist, weak armor) · Lightning (chain, Scout Immune, strong vs armor).</div>
+        <div class="faq-item"><strong>Gunnery (G)</strong> — Cannon splash vs Shell clusters · Sniper map-wide pierce vs Brute/Raider/Shell/Titan.</div>
+        <div class="faq-item"><strong>Support (S)</strong> — Barrier path halt · Bank income. No damage.</div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
@@ -693,7 +711,8 @@
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Barrier</strong> = place on the path to full-stop enemies 3s (then cooldown). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x → 5x. FX toggle mutes particles.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Counters:</strong> Marksman (M) soft only · Elemental Frost/Fire/Lightning each have immunities · Gunnery (Cannon/Sniper) vs armor. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x. FX toggle mutes particles.</p>
+        <p class="muted" style="margin-top:6px"><strong>Counter table:</strong> M Archer Immune Shell/Titan · M Crossbow 0.25x armor · E Frost Scout Immune · E Lightning Scout Immune / strong Shell·Brute·Titan · E Fire weak Shell/Titan · G Cannon Shell splash · G Sniper armor pierce.</p>
       </div>
     </div>
     <div id="overlay">
@@ -708,37 +727,59 @@
 
   <div id="controls">
     <div id="tower-btns">
-      <button type="button" class="tower-btn" id="btn-beacon" data-type="beacon" title="Beacon — slow aura">
-        🔦
-        <span class="cost">45g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer">
+      <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer — Hits: soft · Blocked: Shell/Titan Immune">
         🏹
-        <span class="cost">50g</span>
+        <span class="tname">Archer</span>
+        <span class="cost">40g</span>
+        <span class="cat m">M</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-barrier" data-type="barrier" title="Barrier — halt on path">
-        🚧
-        <span class="cost">65g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost">
-        ❄️
-        <span class="cost">75g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-bank" data-type="bank" title="Bank — gold each wave clear">
-        🏦
-        <span class="cost">85g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon">
-        💣
-        <span class="cost">90g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper">
+      <button type="button" class="tower-btn" id="btn-crossbow" data-type="crossbow" title="Crossbow — Hits: soft · Weak: Shell/Titan 0.25x">
         🎯
-        <span class="cost">120g</span>
+        <span class="tname">Crossbow</span>
+        <span class="cost">70g</span>
+        <span class="cat m">M</span>
       </button>
-      <button type="button" class="tower-btn" id="btn-zap" data-type="zap" title="Zap">
+      <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost — Hits: soft + slow · Blocked: Scout Immune · Weak: Shell/Titan">
+        ❄️
+        <span class="tname">Frost</span>
+        <span class="cost">75g</span>
+        <span class="cat e">E</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-fire" data-type="fire" title="Fire — Hits: packs + burn · Weak: Shell/Titan · Skitter resists splash/DoT">
+        🔥
+        <span class="tname">Fire</span>
+        <span class="cost">95g</span>
+        <span class="cat e">E</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon — Hits: Shell clusters (splash) · Skitter splash resist">
+        💣
+        <span class="tname">Cannon</span>
+        <span class="cost">110g</span>
+        <span class="cat g">G</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-lightning" data-type="lightning" title="Lightning — Hits: Shell/Brute/Titan · Blocked: Scout Immune">
         ⚡
-        <span class="cost">135g</span>
+        <span class="tname">Lightning</span>
+        <span class="cost">180g</span>
+        <span class="cat e">E</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper — Hits: Brute/Raider/Shell/Titan (armor pierce)">
+        🔭
+        <span class="tname">Sniper</span>
+        <span class="cost">200g</span>
+        <span class="cat g">G</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-barrier" data-type="barrier" title="Barrier — path halt 3s + cooldown · no damage">
+        🚧
+        <span class="tname">Barrier</span>
+        <span class="cost">65g</span>
+        <span class="cat s">S</span>
+      </button>
+      <button type="button" class="tower-btn" id="btn-bank" data-type="bank" title="Bank — gold each wave clear · no shots">
+        🏦
+        <span class="tname">Bank</span>
+        <span class="cost">85g</span>
+        <span class="cat s">S</span>
       </button>
     </div>
     <div id="tower-stats" aria-live="polite"></div>
@@ -777,7 +818,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 51</div>
+    <div id="build-ver">build 52</div>
   </div>
 </div>
 
@@ -942,62 +983,86 @@
     },
   };
 
+  const CAT_TAG = { marksman: 'M', elemental: 'E', gunnery: 'G', support: 'S' };
+  const TOWER_ORDER = ['archer', 'crossbow', 'frost', 'fire', 'cannon', 'lightning', 'sniper', 'barrier', 'bank'];
   const TOWER_DEFS = {
     archer: {
-      name: 'Archer', cost: 50, range: 98, fireRate: 0.5, damage: 13,
+      name: 'Archer', category: 'marksman', cost: 40, range: 98, fireRate: 0.45, damage: 7,
       color: '#34d399', projectileSpeed: 420, projectileColor: '#a7f3d0',
-      upgradeCosts: [40, 70, 110, 160],
+      upgradeCosts: [32, 55, 90, 130],
+      hits: 'Grunt, Scout, Skitter, Brute, Raider',
+      blocked: 'Shell/Titan Immune',
     },
-    cannon: {
-      name: 'Cannon', cost: 90, range: 80, fireRate: 1.55, damage: 72,
-      color: '#fb923c', projectileSpeed: 240, projectileColor: '#fdba74',
-      upgradeCosts: [60, 100, 150, 210],
-      splashRadius: 50, splashMul: 0.58, // better vs Shell clusters
+    crossbow: {
+      name: 'Crossbow', category: 'marksman', cost: 70, range: 112, fireRate: 0.7, damage: 16,
+      color: '#f59e0b', projectileSpeed: 400, projectileColor: '#fcd34d',
+      upgradeCosts: [48, 80, 120, 170],
+      hits: 'Soft + mid packs',
+      blocked: 'Shell/Titan 0.25x (Resisted)',
     },
     frost: {
-      name: 'Frost', cost: 75, range: 100, fireRate: 0.85, damage: 8,
+      name: 'Frost', category: 'elemental', cost: 75, range: 100, fireRate: 0.9, damage: 12,
       color: '#67e8f9', projectileSpeed: 360, projectileColor: '#a5f3fc',
       upgradeCosts: [50, 85, 130, 180],
       slowMul: 0.5, slowDur: 1.6,
-      auraRadius: 56, auraSlow: 0.78, // passive chill — always-drawn ring
+      auraRadius: 56, auraSlow: 0.78,
+      hits: 'Soft + slow shots (+ chill aura)',
+      blocked: 'Scout Immune · Shell/Titan 0.4x',
     },
-    zap: {
-      name: 'Zap', cost: 135, range: 105, fireRate: 1.0, damage: 15,
+    fire: {
+      name: 'Fire', category: 'elemental', cost: 95, range: 92, fireRate: 0.85, damage: 18,
+      color: '#f97316', projectileSpeed: 300, projectileColor: '#fdba74',
+      upgradeCosts: [65, 105, 155, 220],
+      splashRadius: 36, splashMul: 0.45,
+      burnTicks: 3, burnMul: 0.28,
+      hits: 'Grunt/Scout packs + burn DoT',
+      blocked: 'Shell/Titan 0.35x · Skitter resists splash/DoT',
+    },
+    cannon: {
+      name: 'Cannon', category: 'gunnery', cost: 110, range: 80, fireRate: 1.55, damage: 60,
+      color: '#fb923c', projectileSpeed: 240, projectileColor: '#fdba74',
+      upgradeCosts: [75, 120, 175, 245],
+      splashRadius: 50, splashMul: 0.58,
+      hits: 'Shell clusters (splash, armor cut)',
+      blocked: 'Skitter splash resist · mid vs soft',
+    },
+    lightning: {
+      name: 'Lightning', category: 'elemental', cost: 180, range: 105, fireRate: 1.0, damage: 28,
       color: '#c084fc', projectileSpeed: 560, projectileColor: '#e9d5ff',
-      upgradeCosts: [90, 140, 200, 280],
-      multi: 2, multiFalloff: 0.55,
+      upgradeCosts: [120, 180, 250, 340],
+      multi: 3, multiFalloff: 0.55,
+      hits: 'Shell, Brute, Titan (armor pierce)',
+      blocked: 'Scout Immune',
     },
     sniper: {
-      name: 'Sniper', cost: 120, range: 720, fireRate: 1.95, damage: 44,
+      name: 'Sniper', category: 'gunnery', cost: 200, range: 720, fireRate: 2.1, damage: 90,
       color: '#2dd4bf', projectileSpeed: 820, projectileColor: '#99f6e4',
-      upgradeCosts: [80, 125, 180, 250],
-    },
-    beacon: {
-      name: 'Beacon', cost: 45, range: 0, fireRate: 99, damage: 0,
-      color: '#fbbf24', projectileSpeed: 0, projectileColor: '#fde68a',
-      upgradeCosts: [35, 55, 85, 125],
-      auraRadius: 64, auraSlow: 0.62, // deeper chill, tighter radius — placement matters
-      supportOnly: true,
+      upgradeCosts: [130, 195, 275, 370],
+      hits: 'Brute, Raider, Shell, Titan (1.15x pierce)',
+      blocked: '— (expensive vs soft)',
     },
     barrier: {
-      name: 'Barrier', cost: 65, range: 0, fireRate: 99, damage: 0,
+      name: 'Barrier', category: 'support', cost: 65, range: 0, fireRate: 99, damage: 0,
       color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fde68a',
       upgradeCosts: [42, 70, 105, 150],
-      // Path-only halt: full stop, then per-enemy cooldown so it cannot soft-lock
       stunDur: 3,
-      stunCooldown: 4, // free movement after stun before same Barrier can re-stun
+      stunCooldown: 4,
       hitRadius: 22,
       pathOnly: true,
       supportOnly: true,
       haltOnly: true,
+      hits: 'Path halt (no damage)',
+      blocked: '—',
     },
     bank: {
-      name: 'Bank', cost: 85, range: 0, fireRate: 99, damage: 0,
+      name: 'Bank', category: 'support', cost: 85, range: 0, fireRate: 99, damage: 0,
       color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fcd34d',
       upgradeCosts: [50, 80, 120, 170],
-      incomePerWave: 10, // L1 +10g/wave; +1 per level → L5 +14g
+      incomePerWave: 10,
       supportOnly: true,
       incomeOnly: true,
+      hits: 'Income each wave clear',
+      blocked: '—',
     },
   };
 
@@ -1019,7 +1084,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'cannon', 'frost', 'zap', 'sniper', 'beacon', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'crossbow', 'cannon', 'frost', 'fire', 'lightning', 'sniper', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -1028,7 +1093,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=51`;
+    img.src = `./sprites/${name}.png?v=52`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1415,6 +1480,11 @@
       incomePerWave: def.incomePerWave
         ? def.incomePerWave + (lv - 1) // L1:10 … L5:14
         : 0,
+      category: def.category || null,
+      burnTicks: def.burnTicks || 0,
+      burnMul: def.burnMul || 0,
+      hits: def.hits || '',
+      blocked: def.blocked || '',
     };
   }
 
@@ -1444,12 +1514,7 @@
     if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
     if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
     if ((next.splashMul || 0) > (cur.splashMul || 0) + 0.01) parts.push('stronger splash');
-    if (tw.type === 'beacon') {
-      parts.length = 0;
-      if ((next.auraRadius || 0) > (cur.auraRadius || 0) + 0.5) parts.push('wider aura');
-      if ((next.auraSlow || 1) < (cur.auraSlow || 1) - 0.005) parts.push('deeper chill');
-      if (!parts.length) parts.push('stronger beacon');
-    }
+    if (tw.type === 'fire' && (next.burnTicks || 0) > 0) parts.push('hotter burn');
     if (tw.type === 'barrier') {
       parts.length = 0;
       if ((next.stunDur || 0) > (cur.stunDur || 0) + 0.05) parts.push('longer halt');
@@ -1505,7 +1570,14 @@
     if (st.supportOnly) {
       return `Support · Aura ${Math.round(st.auraRadius || 0)} · chill ${Math.round((1 - (st.auraSlow || 1)) * 100)}%`;
     }
+    if (st.burnTicks) parts.push(`Burn ×${st.burnTicks}`);
     return parts.join(' · ');
+  }
+
+  function towerCounterLines(typeOrDef) {
+    const def = typeof typeOrDef === 'string' ? TOWER_DEFS[typeOrDef] : typeOrDef;
+    if (!def) return { hits: '', blocked: '' };
+    return { hits: def.hits || '', blocked: def.blocked || '' };
   }
 
   function selectTower(tw) {
@@ -1577,7 +1649,17 @@
         const nextBit = cost == null
           ? '<span class="muted">MAX</span>'
           : `<span class="next">Next ${cost}g: ${upgradeBlurb(tw)}</span>`;
-        el.towerStats.innerHTML = `<strong>${st.name} L${tw.level}</strong> · ${curStats} · ${nextBit}`;
+        const ctr = towerCounterLines(tw.type);
+        const hitBit = ctr.hits ? ` · <span class="hits">Hits: ${ctr.hits}</span>` : '';
+        const weakBit = ctr.blocked ? ` · <span class="weak">Blocked/Weak: ${ctr.blocked}</span>` : '';
+        el.towerStats.innerHTML = `<strong>${st.name} L${tw.level}</strong> · ${curStats}${hitBit}${weakBit} · ${nextBit}`;
+        el.towerStats.classList.add('show');
+      } else if (state.selected && TOWER_DEFS[state.selected]) {
+        const def = TOWER_DEFS[state.selected];
+        const ctr = towerCounterLines(def);
+        const hitBit = ctr.hits ? `<span class="hits">Hits: ${ctr.hits}</span>` : '';
+        const weakBit = ctr.blocked ? ` · <span class="weak">Blocked/Weak: ${ctr.blocked}</span>` : '';
+        el.towerStats.innerHTML = `<strong>${def.name}</strong> · ${def.cost}g · ${hitBit}${weakBit}`;
         el.towerStats.classList.add('show');
       } else {
         el.towerStats.classList.remove('show');
@@ -2205,7 +2287,8 @@
     const parts = [];
     for (const k of order) {
       if (!counts[k]) continue;
-      parts.push(`${counts[k]} ${ENEMY_TYPES[k].name}${counts[k] > 1 ? 's' : ''}`);
+      const tag = (k === 'shell' || k === 'titan') ? ' (armor)' : '';
+      parts.push(`${counts[k]} ${ENEMY_TYPES[k].name}${counts[k] > 1 ? 's' : ''}${tag}`);
     }
     return parts.join(', ') || 'enemies';
   }
@@ -2392,7 +2475,7 @@
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Beacon on bends · Archer for cheap DPS · double-tap to upgrade.`;
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Marksman vs soft · Lightning/Cannon vs armor · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -2537,14 +2620,13 @@
       const type = btn.dataset.type;
       clearTowerSelection();
       state.selected = state.selected === type ? null : type;
+      const def = TOWER_DEFS[type];
       el.hint.textContent = state.selected
-        ? (type === 'beacon'
-          ? 'Selected Beacon — deep slow aura, no shots. Place on bends.'
-          : (type === 'bank'
+        ? (type === 'bank'
             ? 'Selected Bank — +gold each wave clear, no shots.'
             : (type === 'barrier'
               ? 'Selected Barrier — place ON the path. Full stop 3s, then cooldown.'
-              : `Selected ${TOWER_DEFS[type].name} — tap a buildable tile`)))
+              : `Selected ${def.name} — Hits: ${def.hits || '—'} · Blocked/Weak: ${def.blocked || '—'}`))
         : 'Tap tiles to build · double-tap a tower to upgrade';
       updateHUD();
     });
@@ -2581,16 +2663,14 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
+    const tag = CAT_TAG[def.category] || '?';
     if (def.incomeOnly) {
       const l5 = def.incomePerWave + 4;
-      return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots). <span class="muted">Support economy</span></div>`;
+      return `<div class="faq-item"><strong>${def.name}</strong> [${tag}] · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots). <span class="muted">Support</span></div>`;
     }
     if (def.haltOnly || def.pathOnly) {
       const cd = def.stunCooldown;
-      return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Place on path tiles only. Full-stops an enemy ${def.stunDur}s, then that enemy ignores this Barrier for ${cd}s (upgrades: longer halt / shorter CD). <span class="muted">Path control</span></div>`;
-    }
-    if (def.supportOnly && def.auraRadius) {
-      return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — Deep slow aura only (no shots). Place on bends. <span class="muted">Support</span></div>`;
+      return `<div class="faq-item"><strong>${def.name}</strong> [${tag}] · ${def.cost}g — Path only. Halt ${def.stunDur}s, then ${cd}s ignore CD. <span class="muted">Hits: ${def.hits || '—'} · Blocked/Weak: ${def.blocked || '—'}</span></div>`;
     }
     const bits = [];
     if (def.damage) bits.push(`dmg ${def.damage}`);
@@ -2601,18 +2681,21 @@
     if (def.multi) bits.push(`multi ×${def.multi}`);
     if (def.slowMul) bits.push('slow shots');
     if (def.auraRadius) bits.push('chill aura');
+    if (def.burnTicks) bits.push(`burn ×${def.burnTicks}`);
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
-      : type === 'zap' ? 'Chain targets'
-      : type === 'frost' ? 'Slow + chill'
-      : type === 'archer' ? 'Cheap DPS'
+      : type === 'lightning' ? 'Chain targets'
+      : type === 'frost' ? 'Shot damage + slow'
+      : type === 'fire' ? 'Burn / soft packs'
+      : type === 'crossbow' ? 'Mid marksman'
+      : type === 'archer' ? 'Entry marksman'
       : 'Tower';
-    return `<div class="faq-item"><strong>${def.name}</strong> · ${def.cost}g — ${role}. <span class="muted">${bits.join(' · ')}</span></div>`;
+    return `<div class="faq-item"><strong>${def.name}</strong> [${tag}] · ${def.cost}g — ${role}. Hits: ${def.hits || '—'}. Blocked/Weak: ${def.blocked || '—'}. <span class="muted">${bits.join(' · ')}</span></div>`;
   }
 
   function fillFaqTowers() {
     if (!el.faqTowers) return;
-    const ordered = Object.keys(TOWER_DEFS).sort((a, b) => TOWER_DEFS[a].cost - TOWER_DEFS[b].cost);
+    const ordered = TOWER_ORDER.filter((t) => TOWER_DEFS[t]);
     el.faqTowers.innerHTML = '<h3>Towers</h3>' + ordered.map(towerFaqBlurb).join('');
   }
 
@@ -2870,14 +2953,82 @@
     return best;
   }
 
+  // Category counters: mul before armor. Immune → 0 dmg + float. ignoreArmor for gunnery/lightning answers.
+  function categoryDamageInfo(towerType, category, en, opts) {
+    const o = opts || {};
+    const kind = en.kind;
+    const cat = category || (TOWER_DEFS[towerType] && TOWER_DEFS[towerType].category) || null;
+    const info = { mul: 1, immune: false, resisted: false, ignoreArmor: false };
+    if (!towerType && !cat) return info;
+
+    if (towerType === 'archer' || (cat === 'marksman' && towerType === 'archer')) {
+      if (kind === 'shell' || kind === 'titan') { info.mul = 0; info.immune = true; return info; }
+      return info;
+    }
+    if (towerType === 'crossbow') {
+      if (kind === 'shell' || kind === 'titan') { info.mul = 0.25; info.resisted = true; return info; }
+      return info;
+    }
+    if (towerType === 'frost') {
+      if (kind === 'fast') { info.mul = 0; info.immune = true; return info; }
+      if (kind === 'shell' || kind === 'titan') { info.mul = 0.4; info.resisted = true; return info; }
+      return info;
+    }
+    if (towerType === 'lightning') {
+      if (kind === 'fast') { info.mul = 0; info.immune = true; return info; }
+      if (kind === 'shell' || kind === 'tank' || kind === 'titan') {
+        info.mul = 1.2; info.ignoreArmor = true; return info;
+      }
+      return info;
+    }
+    if (towerType === 'fire') {
+      if (kind === 'shell' || kind === 'titan') { info.mul = 0.35; info.resisted = true; return info; }
+      return info;
+    }
+    if (towerType === 'cannon') {
+      if (kind === 'shell') { info.mul = 1.2; info.ignoreArmor = true; return info; }
+      return info;
+    }
+    if (towerType === 'sniper') {
+      if (kind === 'tank' || kind === 'raider' || kind === 'shell' || kind === 'titan') {
+        info.mul = 1.15; info.ignoreArmor = true; return info;
+      }
+      return info;
+    }
+    return info;
+  }
+
   function applyDamage(en, amount, color, opts) {
     if (!en || !state.enemies.includes(en)) return false;
     const o = opts || {};
-    const resist = Math.max(0, Math.min(0.75, en.armor || 0));
-    const dealt = Math.max(1, Math.round(amount * (1 - resist)));
+    const p = posOnPath(en.dist);
+    let raw = amount;
+    let ignoreArmor = !!o.ignoreArmor;
+    if (o.towerType || o.category) {
+      const info = categoryDamageInfo(o.towerType, o.category, en, o);
+      if (info.immune || info.mul <= 0) {
+        addFloat(p.x, p.y - 14, 'Immune', '#f87171');
+        en.hitFlash = 0.08;
+        return false;
+      }
+      raw = amount * info.mul;
+      if (info.ignoreArmor) ignoreArmor = true;
+      if (info.resisted && info.mul <= 0.4) {
+        addFloat(p.x, p.y - 14, 'Resisted', '#94a3b8');
+      }
+    }
+    // Splash / Fire DoT: Skitter splashResist
+    if ((o.isSplash || o.isDot) && en.splashResist) {
+      raw *= (1 - Math.max(0, Math.min(0.9, en.splashResist)));
+    }
+    const resist = ignoreArmor ? 0 : Math.max(0, Math.min(0.75, en.armor || 0));
+    let dealt = Math.round(raw * (1 - resist));
+    if (dealt <= 0) {
+      addFloat(p.x, p.y - 14, 'Immune', '#f87171');
+      return false;
+    }
     en.hp -= dealt;
     en.hitFlash = 0.12;
-    const p = posOnPath(en.dist);
     burst(p.x, p.y, color, o.burstN != null ? o.burstN : 6);
     if (en.hp <= 0) {
       const reward = Number(en.reward);
@@ -2901,10 +3052,25 @@
     return false;
   }
 
-  function applySlow(en, mul, dur) {
+  function applySlow(en, mul, dur, opts) {
     if (!en || !state.enemies.includes(en)) return;
+    const o = opts || {};
+    // Scout Immune to Frost slow/aura
+    if (o.fromFrost && en.kind === 'fast') return;
     en.slowMul = Math.min(en.slowMul || 1, mul);
     en.slowTimer = Math.max(en.slowTimer || 0, dur);
+  }
+
+  function applyBurn(en, tickDmg, ticks, color) {
+    if (!en || !state.enemies.includes(en)) return;
+    if (en.kind === 'fast' && false) return; // Fire hits Scouts (strong vs packs)
+    const dmg = Math.max(1, Math.round(tickDmg));
+    // Refresh if stronger
+    if (!en.burn || (en.burn.dmg || 0) <= dmg) {
+      en.burn = { dmg, ticks: ticks, cd: 0.35, color: color || '#fb923c' };
+    } else {
+      en.burn.ticks = Math.max(en.burn.ticks || 0, ticks);
+    }
   }
 
   function findTargetsInRange(tower, maxN) {
@@ -2922,7 +3088,7 @@
     return list.slice(0, maxN).map((x) => x.en);
   }
 
-  function fireZap(tw, st) {
+  function fireLightning(tw, st) {
     const targets = findTargetsInRange(tw, st.multi || 3);
     if (!targets.length) return false;
     for (let i = 0; i < targets.length; i++) {
@@ -2936,13 +3102,15 @@
         x1: tw.x, y1: tw.y, x2: p.x, y2: p.y,
         life: 0.22, color: st.projectileColor,
       });
-      applyDamage(en, hitDmg, st.projectileColor);
+      applyDamage(en, hitDmg, st.projectileColor, {
+        towerType: 'lightning', category: 'elemental',
+      });
     }
     burst(tw.x, tw.y, st.projectileColor, 8);
     return true;
   }
 
-  function applyCannonSplash(impactX, impactY, primary, damage, splashRadius, splashMul, color) {
+  function applyCannonSplash(impactX, impactY, primary, damage, splashRadius, splashMul, color, towerType) {
     if (state.juice !== false) {
       state.rings.push({
         x: impactX, y: impactY,
@@ -2953,16 +3121,17 @@
     }
     burst(impactX, impactY, color, 18);
     const secondary = Math.max(1, Math.round(damage * splashMul));
-    // snapshot because applyDamage may splice
+    const tType = towerType || 'cannon';
+    const cat = (TOWER_DEFS[tType] && TOWER_DEFS[tType].category) || 'gunnery';
     const others = state.enemies.slice();
     for (const en of others) {
       if (en === primary) continue;
       if (!state.enemies.includes(en)) continue;
       const p = posOnPath(en.dist);
       if (Math.hypot(p.x - impactX, p.y - impactY) <= splashRadius) {
-        const resist = Math.max(0, Math.min(0.9, en.splashResist || 0));
-        const dealt = Math.max(1, Math.round(secondary * (1 - resist)));
-        applyDamage(en, dealt, color);
+        applyDamage(en, secondary, color, {
+          towerType: tType, category: cat, isSplash: true,
+        });
       }
     }
   }
@@ -3040,6 +3209,18 @@
         en.speed = spd;
         en.dist += spd * dt;
         if (en.hitFlash > 0) en.hitFlash -= dt;
+        if (en.burn && en.burn.ticks > 0) {
+          en.burn.cd -= dt;
+          if (en.burn.cd <= 0) {
+            en.burn.cd = 0.4;
+            en.burn.ticks -= 1;
+            const killedByBurn = applyDamage(en, en.burn.dmg, en.burn.color || '#fb923c', {
+              towerType: 'fire', category: 'elemental', isDot: true, burstN: 3,
+            });
+            if (!en.burn || en.burn.ticks <= 0) en.burn = null;
+            if (killedByBurn || !state.enemies.includes(en)) continue;
+          }
+        }
         if (en.dist >= PATH_LEN) {
           state.enemies.splice(i, 1);
           state.lives = Math.max(0, state.lives - 1);
@@ -3055,33 +3236,21 @@
       for (const tw of state.towers) {
         const st = towerStats(tw);
         if (tw.pulse > 0) tw.pulse -= dt;
-        // Passive chill aura (Frost mild / Beacon support)
-        if (st.auraRadius > 0 && st.auraSlow > 0 && (tw.type === 'frost' || tw.type === 'beacon')) {
-          const refresh = tw.type === 'beacon' ? 0.55 : 0.35;
-          let slowed = 0;
+        // Passive chill aura (Frost mild — Scouts Immune)
+        if (st.auraRadius > 0 && st.auraSlow > 0 && tw.type === 'frost') {
+          const refresh = 0.35;
           for (const en of state.enemies) {
             const p = posOnPath(en.dist);
             if (Math.hypot(p.x - tw.x, p.y - tw.y) <= st.auraRadius) {
-              const was = en.slowMul || 1;
-              applySlow(en, st.auraSlow, refresh);
-              if (tw.type === 'beacon' && was > st.auraSlow + 0.01) slowed++;
-            }
-          }
-          // Soft pulse so support reads as active; sparkle when freshly chilling
-          if (tw.type === 'beacon') {
-            if ((tw.pulse || 0) <= 0) tw.pulse = 0.14;
-            if (slowed > 0 && state.juice !== false && Math.random() < 0.35) {
-              burst(tw.x, tw.y, '#fde68a', Math.min(8, 3 + slowed), {
-                lifeMul: 0.5, speedMin: 20, speedMax: 70, upBias: 30, gravity: 40, rMin: 1, rMax: 2.4,
-              });
+              applySlow(en, st.auraSlow, refresh, { fromFrost: true });
             }
           }
         }
-        if (st.supportOnly) continue; // Beacon: aura only, never shoots
+        if (st.supportOnly) continue; // Bank / Barrier: never shoot
         tw.cd -= dt;
         if (tw.cd <= 0) {
-          if (tw.type === 'zap') {
-            if (fireZap(tw, st)) {
+          if (tw.type === 'lightning') {
+            if (fireLightning(tw, st)) {
               tw.cd = st.fireRate;
               tw.pulse = 0.15;
             }
@@ -3103,6 +3272,7 @@
                   color: st.projectileColor,
                   target: tgt,
                   type: tw.type,
+                  category: st.category,
                 });
               }
               tw.cd = st.fireRate;
@@ -3121,10 +3291,13 @@
                 color: st.projectileColor,
                 target: tgt,
                 type: tw.type,
+                category: st.category,
                 slowMul: st.slowMul,
                 slowDur: st.slowDur,
                 splashRadius: st.splashRadius,
                 splashMul: st.splashMul,
+                burnTicks: st.burnTicks,
+                burnMul: st.burnMul,
               });
               tw.cd = st.fireRate;
               tw.pulse = 0.15;
@@ -3147,27 +3320,37 @@
           const en = pr.target;
           if (en && state.enemies.includes(en)) {
             const p = posOnPath(en.dist);
+            const cat = pr.category || (TOWER_DEFS[pr.type] && TOWER_DEFS[pr.type].category);
             const killed = applyDamage(en, pr.damage, pr.color, {
               burstN: 6,
+              towerType: pr.type,
+              category: cat,
             });
             if (pr.type === 'frost' && pr.slowMul && !killed) {
-              applySlow(en, pr.slowMul, pr.slowDur || 1.4);
-              burst(p.x, p.y, '#a5f3fc', 10);
+              applySlow(en, pr.slowMul, pr.slowDur || 1.4, { fromFrost: true });
+              if (en.kind !== 'fast') burst(p.x, p.y, '#a5f3fc', 10);
             }
-            if (pr.type === 'cannon') {
+            if (pr.type === 'fire' && (pr.burnTicks || 0) > 0 && state.enemies.includes(en)) {
+              const tick = Math.max(1, Math.round(pr.damage * (pr.burnMul || 0.28)));
+              applyBurn(en, tick, pr.burnTicks, pr.color);
+              burst(p.x, p.y, '#fb923c', 8);
+            }
+            if (pr.type === 'cannon' || pr.type === 'fire') {
               applyCannonSplash(
                 p.x, p.y, en, pr.damage,
                 pr.splashRadius || 45,
                 pr.splashMul || 0.5,
-                pr.color
+                pr.color,
+                pr.type
               );
             }
-          } else if (pr.type === 'cannon') {
+          } else if (pr.type === 'cannon' || pr.type === 'fire') {
             applyCannonSplash(
               pr.x, pr.y, null, pr.damage,
               pr.splashRadius || 45,
               pr.splashMul || 0.5,
-              pr.color
+              pr.color,
+              pr.type
             );
           } else {
             burst(pr.x, pr.y, pr.color, 4);
@@ -3376,13 +3559,13 @@
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Frost: shots slow · aura chills nearby', W / 2, 10);
-        } else if (state.selected === 'beacon' && def.auraRadius) {
-          ctx.fillStyle = 'rgba(253, 224, 71, 0.9)';
+          ctx.fillText('Frost: shot damage + slow · Scout Immune', W / 2, 10);
+        } else if (state.selected === 'fire') {
+          ctx.fillStyle = 'rgba(251, 146, 60, 0.95)';
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Beacon: deep slow aura — no shots', W / 2, 10);
+          ctx.fillText('Fire: splash + burn DoT · weak vs armor', W / 2, 10);
         } else if (state.selected === 'bank') {
           ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
           ctx.font = 'bold 11px system-ui';
@@ -3601,7 +3784,29 @@
           ctx.strokeStyle = '#a5f3fc';
           ctx.lineWidth = 1;
           ctx.stroke();
-        } else if (tw.type === 'zap') {
+        } else if (tw.type === 'crossbow') {
+          ctx.strokeStyle = def.color;
+          ctx.lineWidth = 2.4;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(1, 0, 8, -Math.PI * 0.65, Math.PI * 0.65);
+          ctx.stroke();
+          ctx.strokeStyle = '#fde68a';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(-8, 0);
+          ctx.lineTo(11, 0);
+          ctx.stroke();
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.moveTo(11, 0);
+          ctx.lineTo(7, -2.8);
+          ctx.lineTo(7, 2.8);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#92400e';
+          ctx.fillRect(-2, -3, 5, 6);
+        } else if (tw.type === 'lightning') {
           ctx.strokeStyle = '#e9d5ff';
           ctx.lineWidth = 2.2;
           ctx.lineCap = 'round';
@@ -3627,6 +3832,25 @@
           ctx.lineTo(-0.5, -7.5);
           ctx.closePath();
           ctx.fill();
+        } else if (tw.type === 'fire') {
+          ctx.fillStyle = 'rgba(249, 115, 22, 0.4)';
+          ctx.beginPath();
+          ctx.arc(0, 2, 9, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#fb923c';
+          ctx.beginPath();
+          ctx.moveTo(0, -11);
+          ctx.quadraticCurveTo(8, -2, 4, 8);
+          ctx.quadraticCurveTo(0, 4, -4, 8);
+          ctx.quadraticCurveTo(-8, -2, 0, -11);
+          ctx.fill();
+          ctx.fillStyle = '#fde68a';
+          ctx.beginPath();
+          ctx.moveTo(0, -4);
+          ctx.quadraticCurveTo(4, 0, 1.5, 6);
+          ctx.quadraticCurveTo(0, 3, -1.5, 6);
+          ctx.quadraticCurveTo(-4, 0, 0, -4);
+          ctx.fill();
         } else if (tw.type === 'sniper') {
           ctx.fillStyle = def.color;
           ctx.beginPath();
@@ -3651,24 +3875,6 @@
           ctx.moveTo(6, 8);
           ctx.lineTo(11, 14);
           ctx.stroke();
-        } else if (tw.type === 'beacon') {
-          ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
-          ctx.beginPath();
-          ctx.arc(0, 0, 12, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#fde68a';
-          ctx.beginPath();
-          ctx.moveTo(0, -11);
-          ctx.lineTo(5, 2);
-          ctx.lineTo(-5, 2);
-          ctx.closePath();
-          ctx.fill();
-          ctx.fillStyle = '#94a3b8';
-          ctx.fillRect(-2.5, 2, 5, 10);
-          ctx.fillStyle = '#fbbf24';
-          ctx.beginPath();
-          ctx.arc(0, -6, 3.2, 0, Math.PI * 2);
-          ctx.fill();
         } else if (tw.type === 'bank') {
           ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
           ctx.beginPath();
@@ -3735,15 +3941,14 @@
         ctx.setLineDash([]);
       }
 
-      // Aura rings in world space (Frost cyan / Beacon gold)
-      if (st.auraRadius > 0 && (tw.type === 'frost' || tw.type === 'beacon')) {
+      // Aura rings in world space (Frost cyan)
+      if (st.auraRadius > 0 && tw.type === 'frost') {
         const tSec = performance.now() / 1000;
         const pulse = 0.55 + Math.sin(tSec * 2.6 + (tw.x + tw.y) * 0.01) * 0.2;
-        const isBeacon = tw.type === 'beacon';
-        const alpha = isSel ? 0.16 : (isBeacon ? 0.1 : 0.08);
-        const fill = isBeacon ? `rgba(251, 191, 36, ${alpha * pulse})` : `rgba(103, 232, 249, ${alpha * pulse})`;
-        const strokeSel = isBeacon ? `rgba(253, 224, 71, ${0.55 + pulse * 0.25})` : `rgba(165, 243, 252, ${0.55 + pulse * 0.25})`;
-        const strokeIdle = isBeacon ? `rgba(251, 191, 36, ${0.32 + pulse * 0.15})` : `rgba(103, 232, 249, ${0.28 + pulse * 0.15})`;
+        const alpha = isSel ? 0.16 : 0.08;
+        const fill = `rgba(103, 232, 249, ${alpha * pulse})`;
+        const strokeSel = `rgba(165, 243, 252, ${0.55 + pulse * 0.25})`;
+        const strokeIdle = `rgba(103, 232, 249, ${0.28 + pulse * 0.15})`;
         ctx.beginPath();
         ctx.arc(tw.x, tw.y, st.auraRadius, 0, Math.PI * 2);
         ctx.fillStyle = fill;
@@ -3754,11 +3959,11 @@
         ctx.stroke();
         ctx.setLineDash([]);
         if (isSel) {
-          ctx.fillStyle = isBeacon ? 'rgba(253, 224, 71, 0.95)' : 'rgba(165, 243, 252, 0.9)';
+          ctx.fillStyle = 'rgba(165, 243, 252, 0.9)';
           ctx.font = 'bold 10px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
-          ctx.fillText(isBeacon ? 'SLOW AURA' : 'CHILL AURA', tw.x, tw.y - st.auraRadius - 4);
+          ctx.fillText('CHILL AURA', tw.x, tw.y - st.auraRadius - 4);
         }
       }
 
@@ -4017,7 +4222,7 @@
   function drawProjectiles() {
     for (const pr of state.projectiles) {
       ctx.beginPath();
-      const r = pr.type === 'cannon' ? 6 : pr.type === 'sniper' ? 4 : pr.type === 'zap' ? 3 : pr.type === 'frost' ? 4.5 : 3.5;
+      const r = pr.type === 'cannon' || pr.type === 'fire' ? 6 : pr.type === 'sniper' ? 4 : pr.type === 'lightning' ? 3 : pr.type === 'frost' ? 4.5 : pr.type === 'crossbow' ? 4 : 3.5;
       ctx.arc(pr.x, pr.y, r, 0, Math.PI * 2);
       ctx.fillStyle = pr.color;
       ctx.shadowColor = pr.color;
@@ -4154,7 +4359,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v51';
+  const BOOT = 'pg-boot-v52';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
