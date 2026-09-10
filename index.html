@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 50 -->
+<!-- path-guard-build: 51 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -623,7 +623,7 @@
     <div id="hud">
       <div class="stat" id="gold"><div class="label">Gold</div><div class="val">—</div></div>
       <div class="stat" id="lives"><div class="label">Lives</div><div class="val">10</div></div>
-      <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/20</div></div>
+      <div class="stat" id="wave"><div class="label">Wave</div><div class="val">0/40</div></div>
       <div class="stat" id="sel"><div class="label">Focus</div><div class="val">—</div></div>
     </div>
     <div id="best-line"></div>
@@ -634,9 +634,9 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
-      <p>Build on green tiles · hold 20 waves.</p>
+      <p>Build on green tiles · hold 40 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
-      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Shells resist · Wave 20 Titan</p>
+      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Shells resist · Wave 20 &amp; 40 Titans</p>
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         <span class="map-title">Map 1: Spiral <span class="diff easy">Easy</span></span>
         <span class="sub">Longest path · more shoot time · +35 start gold</span>
@@ -683,13 +683,13 @@
         <div class="faq-item"><strong style="color:#78716c">Shell</strong> — armored tank (damage resist). <span class="muted">Steel</span></div>
         <div class="faq-item"><strong style="color:#ea580c">Brute</strong> — high HP, slow. <span class="muted">Orange</span></div>
         <div class="faq-item"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. <span class="muted">Dark red</span></div>
-        <div class="faq-item"><strong style="color:#450a0a">Titan</strong> — Wave 20 boss · armor. <span class="muted">Near-black</span></div>
+        <div class="faq-item"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. <span class="muted">Near-black</span></div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
         <p>Pick a map, place towers on green <strong>+</strong> tiles (build grid). <strong>Barrier</strong> goes on the path itself (amber tiles). Tap a placed tower to upgrade or sell (sell asks confirm). <strong>Double-tap</strong> a tower to upgrade fast.</p>
         <p><strong>Next Wave</strong> starts the next round. <strong>Auto: On</strong> chains waves after a short pause — use Next for build breaks.</p>
-        <p>Later waves get denser and tougher (especially around 5 / 10 / 15 / 20). Gold comes from kills and <strong>Bank</strong> income on wave clear — no early-call, interest, or clear bonuses.</p>
+        <p>Later waves get denser and tougher (especially around 5 / 10 / 15 / 20 / 25 / 30 / 35 / 40). Gold comes from kills and <strong>Bank</strong> income on wave clear — no early-call, interest, or clear bonuses.</p>
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
@@ -777,7 +777,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 50</div>
+    <div id="build-ver">build 51</div>
   </div>
 </div>
 
@@ -790,7 +790,7 @@
 
   const START_GOLD = 80;
   const START_LIVES = 10;
-  const MAX_WAVES = 20;
+  const MAX_WAVES = 40;
   const MAX_TOWER_LEVEL = 5;
   const LEVEL_RING = ['#34d399', '#fbbf24', '#c084fc', '#f472b6', '#38bdf8'];
   const LS_MAP = 'pg-last-map';
@@ -1015,7 +1015,7 @@
   };
 
   // Dense waves (tougher count/mix) — slightly longer auto pause, no Challenge branding/bonuses
-  const DENSE_WAVES = new Set([5, 10, 15, 20]);
+  const DENSE_WAVES = new Set([5, 10, 15, 20, 25, 30, 35, 40]);
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
@@ -1028,7 +1028,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=50`;
+    img.src = `./sprites/${name}.png?v=51`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2096,7 +2096,18 @@
       15: 18,             // Raider pack
       16: 10,             // breather
       17: 16, 18: 18, 19: 20,
-      20: 24,             // Finale elite
+      20: 24,             // Mid milestone (1 Titan)
+      21: 14, 22: 16, 23: 18, 24: 20,
+      25: 26,             // dense
+      26: 12,             // breather
+      27: 18, 28: 20, 29: 22,
+      30: 28,             // denser
+      31: 14,             // breather
+      32: 20, 33: 22, 34: 24,
+      35: 28,             // denser
+      36: 14,             // breather
+      37: 24, 38: 26, 39: 28,
+      40: 30,             // Finale (2 Titans)
     };
     let n = table[w] || (10 + w);
     // Spiral stays easy: fewer early + lighter scout swarm
@@ -2109,7 +2120,7 @@
   }
 
   function enemyMixForWave(w) {
-    // Scripted mixes; Raiders never before 12 (hardenKind also gates). Titan only via wave-20 inject.
+    // Scripted mixes; Raiders never before 12 (hardenKind also gates). Titans only via wave 20/40 inject.
     if (w <= 2) return ['normal'];
     if (w === 3) return ['normal', 'normal', 'normal', 'fast'];
     if (w === 4) return ['normal', 'normal', 'fast', 'normal'];
@@ -2128,8 +2139,34 @@
     if (w === 17) return ['tank', 'raider', 'shell', 'tank', 'skitter'];
     if (w === 18) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider'];
     if (w === 19) return ['raider', 'shell', 'skitter', 'raider', 'tank', 'raider'];
-    // Finale fodder — Titans injected separately (1–2)
-    return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank'];
+    if (w === 20) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // mid milestone fodder
+    if (w === 21) return ['tank', 'shell', 'skitter', 'raider', 'tank', 'fast'];
+    if (w === 22) return ['raider', 'shell', 'tank', 'skitter', 'raider', 'tank'];
+    if (w === 23) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'tank'];
+    if (w === 24) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'raider', 'tank'];
+    if (w === 25) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // dense
+    if (w === 26) return ['fast', 'skitter', 'shell', 'tank', 'raider']; // breather
+    if (w === 27) return ['tank', 'raider', 'shell', 'skitter', 'raider', 'tank'];
+    if (w === 28) return ['raider', 'shell', 'tank', 'raider', 'skitter', 'raider'];
+    if (w === 29) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank'];
+    if (w === 30) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // denser
+    if (w === 31) return ['skitter', 'shell', 'tank', 'raider', 'fast']; // breather
+    if (w === 32) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'tank'];
+    if (w === 33) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider'];
+    if (w === 34) return ['raider', 'shell', 'tank', 'raider', 'skitter', 'raider', 'tank'];
+    if (w === 35) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // denser
+    if (w === 36) return ['shell', 'skitter', 'tank', 'raider', 'fast']; // breather
+    if (w === 37) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'raider', 'tank'];
+    if (w === 38) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank', 'raider'];
+    if (w === 39) return ['raider', 'shell', 'raider', 'tank', 'skitter', 'raider', 'shell', 'raider'];
+    // Wave 40 finale fodder — Titans injected separately
+    return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank', 'raider'];
+  }
+
+  function titanCountForWave(w) {
+    if (w === 40) return 2; // finale
+    if (w === 20) return 1; // mid milestone
+    return 0;
   }
 
   function wavePreviewCounts(w) {
@@ -2143,10 +2180,11 @@
       const k = mix[i % mix.length];
       counts[k] = (counts[k] || 0) + 1;
     }
-    if (w === 20) {
-      // Preview shows 2 Titans replacing late fodder
+    const titans = titanCountForWave(w);
+    if (titans > 0) {
+      // Preview shows Titans replacing late fodder
       const orderKill = ['normal', 'fast', 'skitter'];
-      let need = 2;
+      let need = titans;
       for (const k of orderKill) {
         while (need > 0 && (counts[k] || 0) > 0) { counts[k]--; need--; }
       }
@@ -2157,7 +2195,7 @@
         }
         if (need > 0) { counts.raider = Math.max(0, (counts.raider || 0) - 1); need--; }
       }
-      counts.titan = (counts.titan || 0) + 2;
+      counts.titan = (counts.titan || 0) + titans;
     }
     return counts;
   }
@@ -2208,9 +2246,9 @@
     for (let i = 0; i < n; i++) {
       q.push(hardenKind(mix[i % mix.length], chance, w));
     }
-    // Wave 20 only: Titans (boss). Always 2; guarantee they exist even on short queues.
-    if (w === 20) {
-      const titans = 2;
+    // Titans only on waves 20 (1) and 40 (2). Never allow titan elsewhere.
+    const titans = titanCountForWave(w);
+    if (titans > 0) {
       if (q.length < titans) {
         while (q.length < titans) q.push('raider');
       }
@@ -2220,7 +2258,7 @@
         const slot = Math.min(q.length - 1, Math.floor(q.length * (0.55 + i * 0.2)));
         q[slot] = 'titan';
       }
-      // If both slots collided, force a second titan elsewhere
+      // If slots collided, force remaining titans elsewhere
       const titanIdx = [];
       for (let i = 0; i < q.length; i++) if (q[i] === 'titan') titanIdx.push(i);
       if (titanIdx.length < titans) {
@@ -2231,7 +2269,7 @@
         for (let k = titans; k < titanIdx.length; k++) q[titanIdx[k]] = 'raider';
       }
     } else {
-      // Never allow titan off wave 20
+      // Never allow titan except waves 20 and 40
       for (let i = 0; i < q.length; i++) if (q[i] === 'titan') q[i] = 'raider';
     }
     // shuffle lightly (keep titans roughly late by re-placing after shuffle)
@@ -2265,10 +2303,14 @@
     state.nextWaveIn = 0;
     hideNextWaveUI();
     saveBestWave(state.wave);
-    if (state.wave === 20) {
-      el.hint.textContent = `Wave 20 — Titans incoming! ${wavePreviewLabel(state.wave)}`;
+    if (state.wave === 40) {
+      el.hint.textContent = `Wave 40 — Titans incoming! ${wavePreviewLabel(state.wave)}`;
       setWavePreview(wavePreviewLabel(state.wave), true);
       addFloat(W / 2, H * 0.22, 'TITANS INCOMING', '#fecaca', 2.4);
+    } else if (state.wave === 20) {
+      el.hint.textContent = `Wave 20 — A Titan arrives! ${wavePreviewLabel(state.wave)}`;
+      setWavePreview(wavePreviewLabel(state.wave), true);
+      addFloat(W / 2, H * 0.22, 'TITAN INCOMING', '#fecaca', 2.2);
     } else if (state.wave === 8) {
       el.hint.textContent = 'Wave 8 — Shells incoming! Steel armor shrugs ~22% damage.';
       setWavePreview(wavePreviewLabel(state.wave), false);
@@ -2324,7 +2366,7 @@
     hideNextWaveUI();
     el.overlay.classList.add('show');
     if (won) {
-      // Wave 20 skips enterWavePause — Bank income once
+      // Final wave skips enterWavePause — Bank income once
       grantWaveClearExtras();
       const rating = victoryRating(state.lives);
       saveBestWin(state.lives);
@@ -4112,7 +4154,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v50';
+  const BOOT = 'pg-boot-v51';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
