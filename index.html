@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 49 -->
+<!-- path-guard-build: 50 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -693,7 +693,7 @@
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Barrier</strong> = place on the path to full-stop enemies 3s (then cooldown). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x. FX toggle mutes particles.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Beacon</strong> = slow aura only (great on bends). <strong>Barrier</strong> = place on the path to full-stop enemies 3s (then cooldown). <strong>Bank</strong> = income each wave clear, no shots. <strong>Speed</strong> cycles 1x → 2x → 3x → 5x. FX toggle mutes particles.</p>
       </div>
     </div>
     <div id="overlay">
@@ -777,7 +777,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 49</div>
+    <div id="build-ver">build 50</div>
   </div>
 </div>
 
@@ -1028,7 +1028,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=49`;
+    img.src = `./sprites/${name}.png?v=50`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2610,11 +2610,12 @@
 
   el.btnSpeed.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    // Fun: cycle 1x → 2x → 3x → 1x
-    state.gameSpeed = state.gameSpeed >= 3 ? 1 : (state.gameSpeed >= 2 ? 3 : 2);
+    // Fun: cycle 1x → 2x → 3x → 5x → 1x
+    state.gameSpeed = state.gameSpeed >= 5 ? 1 : (state.gameSpeed >= 3 ? 5 : (state.gameSpeed >= 2 ? 3 : 2));
     el.hint.textContent = state.gameSpeed === 1
       ? 'Speed 1x'
-      : (state.gameSpeed === 2 ? 'Speed 2x' : 'Turbo 3x — hold the line!');
+      : (state.gameSpeed === 2 ? 'Speed 2x'
+        : (state.gameSpeed === 3 ? 'Turbo 3x — hold the line!' : 'Blitz 5x — hold the line!'));
     updateHUD();
   });
 
@@ -4085,7 +4086,7 @@
   function frame(now) {
     const raw = Math.min(0.05, (now - last) / 1000);
     last = now;
-    // Cap sim step so 3x never teleports projectiles/enemies past hits
+    // Cap sim step so 5x never teleports projectiles/enemies past hits
     let dt = 0;
     if (!state.paused) {
       const spd = state.gameOver ? 1 : (state.gameSpeed || 1);
@@ -4111,7 +4112,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v49';
+  const BOOT = 'pg-boot-v50';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
