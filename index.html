@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 53 -->
+<!-- path-guard-build: 54 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -172,11 +172,6 @@
   }
   .tower-btn .tname { display: block; font-size: 0.48rem; font-weight: 800; color: #e2e8f0; margin-top: 1px; line-height: 1.05; overflow: hidden; text-overflow: ellipsis; }
   .tower-btn .cost { display: block; font-size: 0.5rem; font-weight: 700; color: #fbbf24; margin-top: 0; overflow: hidden; text-overflow: ellipsis; }
-  .tower-btn .cat { display: inline-block; font-size: 0.42rem; font-weight: 800; letter-spacing: 0.02em; color: #94a3b8; background: #0f172a; border: 1px solid #334155; border-radius: 3px; padding: 0 3px; margin-top: 1px; line-height: 1.2; }
-  .tower-btn .cat.m { color: #86efac; border-color: #166534; }
-  .tower-btn .cat.e { color: #67e8f9; border-color: #0e7490; }
-  .tower-btn .cat.g { color: #fdba74; border-color: #9a3412; }
-  .tower-btn .cat.s { color: #fcd34d; border-color: #a16207; }
   .tower-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   #btn-frost.selected { border-color: #67e8f9; background: #164e63; }
   #btn-fire.selected { border-color: #f97316; background: #7c2d12; }
@@ -731,10 +726,10 @@
       </div>
       <div class="faq-sec">
         <h3>Counters</h3>
-        <div class="faq-item"><strong>Marksman (M)</strong> — soft DPS. Archer Immune vs Shell/Titan; Crossbow 0.25x vs armor.</div>
-        <div class="faq-item"><strong>Elemental (E)</strong> — Frost (dmg+slow, Scout Immune) · Fire (burn/splash, Skitter resist, weak armor) · Lightning (chain, Scout Immune, strong vs armor).</div>
-        <div class="faq-item"><strong>Gunnery (G)</strong> — Cannon splash vs Shell clusters · Sniper map-wide pierce vs Brute/Raider/Shell/Titan.</div>
-        <div class="faq-item"><strong>Support (S)</strong> — Barrier path halt · Bank income. No damage.</div>
+        <div class="faq-item"><strong>Marksman</strong> — soft DPS. Archer Immune vs Shell/Titan; Crossbow 0.25x vs armor.</div>
+        <div class="faq-item"><strong>Elemental</strong> — Frost (dmg+slow, Scout Immune) · Fire (burn/splash, Skitter resist, weak armor) · Lightning (chain, Scout Immune, strong vs armor).</div>
+        <div class="faq-item"><strong>Gunnery</strong> — Cannon splash vs Shell clusters · Sniper map-wide pierce vs Brute/Raider/Shell/Titan.</div>
+        <div class="faq-item"><strong>Support</strong> — Barrier path halt · Bank income. No damage.</div>
         <div class="faq-item">When a tower can't hurt a foe, a big message says so (example: Archer can't hurt Shell).</div>
       </div>
       <div class="faq-sec">
@@ -745,8 +740,8 @@
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Counters:</strong> Marksman (M) soft only · Elemental Frost/Fire/Lightning each have immunities · Gunnery (Cannon/Sniper) vs armor. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x. FX toggle mutes particles.</p>
-        <p class="muted" style="margin-top:6px"><strong>Counter table:</strong> M Archer Immune Shell/Titan · M Crossbow 0.25x armor · E Frost Scout Immune · E Lightning Scout Immune / strong Shell·Brute·Titan · E Fire weak Shell/Titan · G Cannon Shell splash · G Sniper armor pierce.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Counters:</strong> Marksman soft only · Elemental Frost/Fire/Lightning each have immunities · Gunnery (Cannon/Sniper) vs armor. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x. FX toggle mutes particles.</p>
+        <p class="muted" style="margin-top:6px"><strong>Counter table:</strong> Archer Immune Shell/Titan · Crossbow 0.25x armor · Frost Scout Immune · Lightning Scout Immune / strong Shell·Brute·Titan · Fire weak Shell/Titan · Cannon Shell splash · Sniper armor pierce.</p>
       </div>
     </div>
     <div id="overlay">
@@ -765,55 +760,46 @@
         🏹
         <span class="tname">Archer</span>
         <span class="cost">40g</span>
-        <span class="cat m">M</span>
       </button>
       <button type="button" class="tower-btn" id="btn-barrier" data-type="barrier" title="Barrier — path halt 3s + cooldown · no damage">
         🚧
         <span class="tname">Barrier</span>
         <span class="cost">60g</span>
-        <span class="cat s">S</span>
       </button>
       <button type="button" class="tower-btn" id="btn-crossbow" data-type="crossbow" title="Crossbow — Hits: soft · Weak: Shell/Titan 0.25x">
         🎯
         <span class="tname">Crossbow</span>
         <span class="cost">95g</span>
-        <span class="cat m">M</span>
       </button>
       <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost — Hits: soft + slow · Blocked: Scout Immune · Weak: Shell/Titan">
         ❄️
         <span class="tname">Frost</span>
         <span class="cost">115g</span>
-        <span class="cat e">E</span>
       </button>
       <button type="button" class="tower-btn" id="btn-bank" data-type="bank" title="Bank — gold each wave clear · no shots">
         🏦
         <span class="tname">Bank</span>
         <span class="cost">135g</span>
-        <span class="cat s">S</span>
       </button>
       <button type="button" class="tower-btn" id="btn-fire" data-type="fire" title="Fire — Hits: packs + burn · Weak: Shell/Titan · Skitter resists splash/DoT">
         🔥
         <span class="tname">Fire</span>
         <span class="cost">155g</span>
-        <span class="cat e">E</span>
       </button>
       <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon — Hits: Shell clusters (splash) · Skitter splash resist">
         💣
         <span class="tname">Cannon</span>
         <span class="cost">185g</span>
-        <span class="cat g">G</span>
       </button>
       <button type="button" class="tower-btn" id="btn-lightning" data-type="lightning" title="Lightning — Hits: Shell/Brute/Titan · Blocked: Scout Immune">
         ⚡
         <span class="tname">Lightning</span>
         <span class="cost">250g</span>
-        <span class="cat e">E</span>
       </button>
       <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper — Hits: Brute/Raider/Shell/Titan (armor pierce)">
         🔭
         <span class="tname">Sniper</span>
         <span class="cost">335g</span>
-        <span class="cat g">G</span>
       </button>
     </div>
     <div id="tower-stats" aria-live="polite"></div>
@@ -852,7 +838,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 53</div>
+    <div id="build-ver">build 54</div>
   </div>
 </div>
 
@@ -1017,7 +1003,7 @@
     },
   };
 
-  const CAT_TAG = { marksman: 'M', elemental: 'E', gunnery: 'G', support: 'S' };
+  const CAT_LABEL = { marksman: 'Marksman', elemental: 'Elemental', gunnery: 'Gunnery', support: 'Support' };
   const TOWER_ORDER = ['archer', 'barrier', 'crossbow', 'frost', 'bank', 'fire', 'cannon', 'lightning', 'sniper'];
   const TOWER_DEFS = {
     archer: {
@@ -1127,7 +1113,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=52`;
+    img.src = `./sprites/${name}.png?v=54`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1695,12 +1681,14 @@
         el.towerStats.classList.add('show');
       } else if (state.selected && TOWER_DEFS[state.selected]) {
         const def = TOWER_DEFS[state.selected];
+        const catWord = CAT_LABEL[def.category] || '';
         const ctr = towerCounterLines(def);
         const hitBit = ctr.hits ? `<span class="hits">Hits: ${ctr.hits}</span>` : '';
         const weakBit = (ctr.blocked && ctr.blocked !== '—')
           ? ` · <span class="weak">Blocked: ${ctr.blocked}</span>`
           : ' · <span class="hits">Blocked: none</span>';
-        el.towerStats.innerHTML = `<strong>${def.name}</strong> · ${def.cost}g · ${hitBit}${weakBit}`;
+        const catBit = catWord ? ` · ${catWord}` : '';
+        el.towerStats.innerHTML = `<strong>${def.name}</strong>${catBit} · ${def.cost}g · ${hitBit}${weakBit}`;
         el.towerStats.classList.add('show');
       } else {
         el.towerStats.classList.remove('show');
@@ -2728,13 +2716,17 @@
       clearTowerSelection();
       state.selected = state.selected === type ? null : type;
       const def = TOWER_DEFS[type];
-      el.hint.textContent = state.selected
-        ? (type === 'bank'
-            ? 'Selected Bank — +gold each wave clear, no shots. Blocked: none'
-            : (type === 'barrier'
-              ? 'Selected Barrier — place ON the path. Full stop 3s, then cooldown. Blocked: none'
-              : `Selected ${def.name} — Hits: ${def.hits || '—'} · BLOCKED: ${def.blocked || '—'}`))
-        : 'Tap tiles to build · double-tap a tower to upgrade';
+      const catWord = CAT_LABEL[def.category] || '';
+      if (!state.selected) {
+        el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
+      } else if (type === 'bank') {
+        el.hint.textContent = `${def.name} · ${catWord} — Hits: ${def.hits || '—'} · Blocked: none`;
+      } else if (type === 'barrier') {
+        el.hint.textContent = `${def.name} · ${catWord} — Hits: ${def.hits || '—'} · Blocked: none`;
+      } else {
+        const blocked = (def.blocked && def.blocked !== '—') ? def.blocked : 'none';
+        el.hint.textContent = `${def.name} · ${catWord} — Hits: ${def.hits || '—'} · Blocked: ${blocked}`;
+      }
       updateHUD();
     });
   });
@@ -2770,14 +2762,14 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const tag = CAT_TAG[def.category] || '?';
+    const catWord = CAT_LABEL[def.category] || '';
     if (def.incomeOnly) {
       const l5 = def.incomePerWave + 4;
-      return `<div class="faq-item"><strong>${def.name}</strong> [${tag}] · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots). <span class="muted">Support</span></div>`;
+      return `<div class="faq-item"><strong>${def.name}</strong> · ${catWord} · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots).</div>`;
     }
     if (def.haltOnly || def.pathOnly) {
       const cd = def.stunCooldown;
-      return `<div class="faq-item"><strong>${def.name}</strong> [${tag}] · ${def.cost}g — Path only. Halt ${def.stunDur}s, then ${cd}s ignore CD. <span class="muted">Hits: ${def.hits || '—'} · Blocked/Weak: ${def.blocked || '—'}</span></div>`;
+      return `<div class="faq-item"><strong>${def.name}</strong> · ${catWord} · ${def.cost}g — Path only. Halt ${def.stunDur}s, then ${cd}s ignore CD. <span class="muted">Hits: ${def.hits || '—'} · Blocked/Weak: ${def.blocked || '—'}</span></div>`;
     }
     const bits = [];
     if (def.damage) bits.push(`dmg ${def.damage}`);
@@ -2797,7 +2789,7 @@
       : type === 'crossbow' ? 'Mid marksman'
       : type === 'archer' ? 'Entry marksman'
       : 'Tower';
-    return `<div class="faq-item"><strong>${def.name}</strong> [${tag}] · ${def.cost}g — ${role}. Hits: ${def.hits || '—'}. Blocked/Weak: ${def.blocked || '—'}. <span class="muted">${bits.join(' · ')}</span></div>`;
+    return `<div class="faq-item"><strong>${def.name}</strong> · ${catWord} · ${def.cost}g — ${role}. Hits: ${def.hits || '—'}. Blocked/Weak: ${def.blocked || '—'}. <span class="muted">${bits.join(' · ')}</span></div>`;
   }
 
   function fillFaqTowers() {
@@ -4502,7 +4494,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v53';
+  const BOOT = 'pg-boot-v54';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
