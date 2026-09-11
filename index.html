@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 54 -->
+<!-- path-guard-build: 55 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -182,6 +182,144 @@
   #btn-barrier.selected { border-color: #f59e0b; background: #451a03; }
   #tower-stats .hits { color: #86efac; font-weight: 700; }
   #tower-stats .weak { color: #fecaca; font-weight: 900; text-decoration: underline; text-underline-offset: 2px; }
+
+  #tower-detail, #enemy-intro {
+    position: absolute;
+    inset: 0;
+    z-index: 28;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 10px 10px 14px;
+    background: rgba(15, 20, 25, 0.55);
+    pointer-events: none;
+  }
+  #tower-detail.show, #enemy-intro.show {
+    display: flex;
+    pointer-events: auto;
+  }
+  #tower-detail .card, #enemy-intro .card {
+    width: min(400px, 100%);
+    max-height: min(78dvh, 520px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #475569;
+    border-radius: 16px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+    text-align: left;
+  }
+  #tower-detail .card-head, #enemy-intro .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  #tower-detail h2, #enemy-intro h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #f8fafc;
+    line-height: 1.2;
+  }
+  #tower-detail .meta, #enemy-intro .meta {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  #tower-detail .role, #enemy-intro .blurb {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.35;
+    margin: 0 0 10px;
+  }
+  #tower-detail .sec-label, #enemy-intro .sec-label {
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+  }
+  #tower-detail .sec-label.bad, #enemy-intro .sec-label.bad { color: #fca5a5; }
+  #tower-detail .sec-label.ok { color: #86efac; }
+  #tower-detail .row, #enemy-intro .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  #tower-detail .chip, #enemy-intro .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #e2e8f0;
+  }
+  #tower-detail .chip.bad { border-color: #f87171; color: #fecaca; }
+  #tower-detail .chip.ok { border-color: #4ade80; color: #bbf7d0; }
+  #tower-detail .chip img, #enemy-intro .chip img, #enemy-intro .hero-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+  }
+  #enemy-intro .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 4px 0 10px;
+  }
+  #enemy-intro .hero-img {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 6px;
+  }
+  #enemy-intro .immune-list {
+    font-size: 0.88rem;
+    color: #fecaca;
+    font-weight: 800;
+    margin: 0 0 12px;
+    line-height: 1.35;
+  }
+  #tower-detail .close-btn, #enemy-intro .close-btn {
+    appearance: none;
+    border: 1px solid #64748b;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    cursor: pointer;
+    min-height: 42px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  #tower-detail .head-close {
+    appearance: none;
+    border: 1px solid #475569;
+    background: #0f172a;
+    color: #cbd5e1;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  #tower-detail .empty-note {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin: 0 0 8px;
+  }
   #counter-toast {
     position: absolute;
     left: 50%;
@@ -670,6 +808,37 @@
   <div id="canvas-wrap">
     <canvas id="c" width="400" height="560"></canvas>
     <div id="counter-toast" aria-live="polite"></div>
+
+    <div id="tower-detail" aria-hidden="true">
+      <div class="card" id="tower-detail-card" role="dialog" aria-labelledby="tower-detail-title">
+        <div class="card-head">
+          <div>
+            <h2 id="tower-detail-title">Tower</h2>
+            <div class="meta" id="tower-detail-meta"></div>
+          </div>
+          <button type="button" class="head-close" id="tower-detail-x">Close</button>
+        </div>
+        <p class="role" id="tower-detail-role"></p>
+        <div class="sec-label bad" id="tower-detail-immune-label">Can't hit</div>
+        <div class="row" id="tower-detail-immune"></div>
+        <div class="sec-label ok" id="tower-detail-can-label">Can hit</div>
+        <div class="row" id="tower-detail-can"></div>
+        <button type="button" class="close-btn" id="tower-detail-close">Got it</button>
+      </div>
+    </div>
+    <div id="enemy-intro" aria-hidden="true">
+      <div class="card" id="enemy-intro-card" role="dialog" aria-labelledby="enemy-intro-title">
+        <div class="hero">
+          <img class="hero-img" id="enemy-intro-img" alt="" width="96" height="96">
+          <h2 id="enemy-intro-title">Enemy</h2>
+        </div>
+        <p class="blurb" id="enemy-intro-blurb"></p>
+        <div class="sec-label bad">Immune to</div>
+        <p class="immune-list" id="enemy-intro-immune"></p>
+        <button type="button" class="close-btn" id="enemy-intro-close">Got it</button>
+      </div>
+    </div>
+
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
@@ -730,7 +899,7 @@
         <div class="faq-item"><strong>Elemental</strong> — Frost (dmg+slow, Scout Immune) · Fire (burn/splash, Skitter resist, weak armor) · Lightning (chain, Scout Immune, strong vs armor).</div>
         <div class="faq-item"><strong>Gunnery</strong> — Cannon splash vs Shell clusters · Sniper map-wide pierce vs Brute/Raider/Shell/Titan.</div>
         <div class="faq-item"><strong>Support</strong> — Barrier path halt · Bank income. No damage.</div>
-        <div class="faq-item">When a tower can't hurt a foe, a big message says so (example: Archer can't hurt Shell).</div>
+        <div class="faq-item">Towers skip enemies they are Immune to (no wasted shots). Tap a tower type for a big card showing who it can't hit. New enemies get a one-time intro card.</div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
@@ -838,7 +1007,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 54</div>
+    <div id="build-ver">build 55</div>
   </div>
 </div>
 
@@ -864,6 +1033,7 @@
   const LS_ACH = 'pg-achievements'; // { maps:{}, hardWin, titanKill }
   const LS_UX_TIP = 'pg-ux-tip-v42';
   const LS_UTIL_MORE = 'pg-util-more';
+  const LS_ENEMY_INTRO = 'pg-enemy-intro-v1'; // seen enemy kinds (once per device)
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -1113,7 +1283,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=54`;
+    img.src = `./sprites/${name}.png?v=55`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1173,6 +1343,9 @@
     utilMoreOpen: false,
     counterToastLast: Object.create(null),
     counterToastHide: 0,
+    enemyIntroQueue: [],
+    enemyIntroOpen: false,
+    towerDetailType: null,
   };
 
   const el = {
@@ -1182,6 +1355,22 @@
     sel: document.querySelector('#sel .val'),
     hint: document.getElementById('hint'),
     counterToast: document.getElementById('counter-toast'),
+    towerDetail: document.getElementById('tower-detail'),
+    towerDetailTitle: document.getElementById('tower-detail-title'),
+    towerDetailMeta: document.getElementById('tower-detail-meta'),
+    towerDetailRole: document.getElementById('tower-detail-role'),
+    towerDetailImmune: document.getElementById('tower-detail-immune'),
+    towerDetailCan: document.getElementById('tower-detail-can'),
+    towerDetailImmuneLabel: document.getElementById('tower-detail-immune-label'),
+    towerDetailCanLabel: document.getElementById('tower-detail-can-label'),
+    towerDetailClose: document.getElementById('tower-detail-close'),
+    towerDetailX: document.getElementById('tower-detail-x'),
+    enemyIntro: document.getElementById('enemy-intro'),
+    enemyIntroTitle: document.getElementById('enemy-intro-title'),
+    enemyIntroImg: document.getElementById('enemy-intro-img'),
+    enemyIntroBlurb: document.getElementById('enemy-intro-blurb'),
+    enemyIntroImmune: document.getElementById('enemy-intro-immune'),
+    enemyIntroClose: document.getElementById('enemy-intro-close'),
     bestLine: document.getElementById('best-line'),
     btnNextWave: document.getElementById('btn-next-wave'),
     btnContinuous: document.getElementById('btn-continuous'),
@@ -1567,6 +1756,7 @@
   function clearTowerSelection() {
     state.selectedTower = null;
     state.sellConfirming = false;
+    // Keep buildable-bar detail open unless type also cleared by caller
   }
 
   function towerStatLine(tw) {
@@ -1612,6 +1802,7 @@
     el.hint.textContent = up == null
       ? `${st.name} maxed — Sell or pick another`
       : `${st.name} selected — Upgrade, double-tap, or Sell`;
+    if (tw && tw.type) openTowerDetail(tw.type, tw);
   }
 
   function posOnPath(dist) {
@@ -2207,6 +2398,7 @@
 
     if (state.selectedTower) {
       clearTowerSelection();
+      closeTowerDetail();
       el.hint.textContent = 'Tap tiles to build, tap towers to upgrade';
       updateHUD();
     }
@@ -2228,6 +2420,7 @@
     addGold(-cost);
     tw.level = (tw.level || 1) + 1;
     tw.pulse = 0.45;
+    if (state.towerDetailType === tw.type) openTowerDetail(tw.type, tw);
     burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 18);
     if (state.juice !== false) {
       state.rings.push({
@@ -2252,6 +2445,7 @@
     const idx = state.towers.indexOf(tw);
     if (idx >= 0) state.towers.splice(idx, 1);
     clearTowerSelection();
+    closeTowerDetail();
     el.hint.textContent = `Sold for ${value} gold`;
     updateHUD();
   }
@@ -2471,6 +2665,7 @@
     state.waveLivesStart = state.lives;
     state.spawnQueue = buildSpawnQueue(state.wave);
     state.spawnLeft = state.spawnQueue.length;
+    enqueueEnemyIntros([...new Set(state.spawnQueue)]);
     state.spawnCD = 0.35;
     state.betweenWaves = false;
     state.awaitingNextWave = false;
@@ -2500,6 +2695,7 @@
   }
 
   function spawnEnemy(kind) {
+    enqueueEnemyIntros([kind]);
     const et = ENEMY_TYPES[kind] || ENEMY_TYPES.normal;
     const hp = et.hp;
     state.enemies.push({
@@ -2714,18 +2910,17 @@
       if (btn.disabled || state.gameOver || !state.mapPicked) return;
       const type = btn.dataset.type;
       clearTowerSelection();
-      state.selected = state.selected === type ? null : type;
+      const deselect = state.selected === type;
+      state.selected = deselect ? null : type;
       const def = TOWER_DEFS[type];
       const catWord = CAT_LABEL[def.category] || '';
       if (!state.selected) {
         el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
-      } else if (type === 'bank') {
-        el.hint.textContent = `${def.name} · ${catWord} — Hits: ${def.hits || '—'} · Blocked: none`;
-      } else if (type === 'barrier') {
-        el.hint.textContent = `${def.name} · ${catWord} — Hits: ${def.hits || '—'} · Blocked: none`;
+        closeTowerDetail();
       } else {
         const blocked = (def.blocked && def.blocked !== '—') ? def.blocked : 'none';
-        el.hint.textContent = `${def.name} · ${catWord} — Hits: ${def.hits || '—'} · Blocked: ${blocked}`;
+        el.hint.textContent = `${def.name} · ${catWord} — ${def.cost}g · Blocked: ${blocked}`;
+        openTowerDetail(type, null);
       }
       updateHUD();
     });
@@ -2813,6 +3008,37 @@
     }
   }
 
+  function wireDetailOverlays() {
+    const closeTd = (e) => {
+      if (e) e.preventDefault();
+      closeTowerDetail();
+    };
+    if (el.towerDetailClose) el.towerDetailClose.addEventListener('pointerdown', closeTd);
+    if (el.towerDetailX) el.towerDetailX.addEventListener('pointerdown', closeTd);
+    if (el.towerDetail) {
+      el.towerDetail.addEventListener('pointerdown', (e) => {
+        if (e.target === el.towerDetail) {
+          e.preventDefault();
+          closeTowerDetail();
+        }
+      });
+    }
+    if (el.enemyIntroClose) {
+      el.enemyIntroClose.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        closeEnemyIntro();
+      });
+    }
+    if (el.enemyIntro) {
+      el.enemyIntro.addEventListener('pointerdown', (e) => {
+        if (e.target === el.enemyIntro) {
+          e.preventDefault();
+          closeEnemyIntro();
+        }
+      });
+    }
+  }
+
   function wireFaqButtons() {
     const openers = [el.btnFaq, el.faqMapBtn].filter(Boolean);
     openers.forEach((btn) => {
@@ -2831,6 +3057,7 @@
     }
   }
   wireFaqButtons();
+  wireDetailOverlays();
 
   el.btnSpeed.addEventListener('pointerdown', (e) => {
     e.preventDefault();
@@ -2893,6 +3120,13 @@
     state.changingMap = true;
     state.selected = null;
     clearTowerSelection();
+    closeTowerDetail();
+    state.enemyIntroQueue = [];
+    state.enemyIntroOpen = false;
+    if (el.enemyIntro) {
+      el.enemyIntro.classList.remove('show');
+      el.enemyIntro.setAttribute('aria-hidden', 'true');
+    }
     state.towers = [];
     state.enemies = [];
     state.projectiles = [];
@@ -3042,6 +3276,7 @@
     let best = null;
     let bestScore = -Infinity;
     for (const en of state.enemies) {
+      if (towerSkipsImmuneTarget(tower, en)) continue;
       const p = posOnPath(en.dist);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
       if (d > st.range) continue;
@@ -3054,7 +3289,213 @@
     return best;
   }
 
-  // Category counters: mul before armor. Immune → 0 dmg + float. ignoreArmor for gunnery/lightning answers.
+  // Skip Immune targets in aim (Frost≠Scout, Archer≠Shell/Titan, Lightning≠Scout). Soft resist still OK.
+  function towerSkipsImmuneTarget(tower, en) {
+    if (!tower || !en) return false;
+    const def = TOWER_DEFS[tower.type];
+    if (!def || def.supportOnly) return false;
+    const info = categoryDamageInfo(tower.type, def.category, en);
+    return !!(info.immune || info.mul <= 0);
+  }
+
+  function enemyKindsVsTower(towerType) {
+    const def = TOWER_DEFS[towerType];
+    const immune = [];
+    const canHit = [];
+    const resisted = [];
+    if (!def || def.supportOnly) return { immune, canHit, resisted, support: true };
+    for (const kind of Object.keys(ENEMY_TYPES)) {
+      const info = categoryDamageInfo(towerType, def.category, { kind });
+      if (info.immune || info.mul <= 0) immune.push(kind);
+      else if (info.resisted) resisted.push(kind);
+      else canHit.push(kind);
+    }
+    return { immune, canHit, resisted, support: false };
+  }
+
+  function towersImmuneToKind(kind) {
+    const names = [];
+    for (const type of TOWER_ORDER) {
+      const def = TOWER_DEFS[type];
+      if (!def || def.supportOnly) continue;
+      const info = categoryDamageInfo(type, def.category, { kind });
+      if (info.immune || info.mul <= 0) names.push(def.name);
+    }
+    return names;
+  }
+
+  function towerRoleLine(type) {
+    if (type === 'cannon') return 'AoE punch vs armor clusters';
+    if (type === 'sniper') return 'Map-wide pick on tough targets';
+    if (type === 'lightning') return 'Chains armor — skips Scouts';
+    if (type === 'frost') return 'Damage + slow shots and chill aura';
+    if (type === 'fire') return 'Burn and splash on soft packs';
+    if (type === 'crossbow') return 'Mid marksman — soft packs';
+    if (type === 'archer') return 'Cheap entry marksman — soft only';
+    if (type === 'bank') return 'Pays gold each wave clear — no shots';
+    if (type === 'barrier') return 'Path halt for a few seconds — no damage';
+    return 'Tower';
+  }
+
+  const ENEMY_INTRO_BLURB = {
+    normal: 'Basic foot soldier. Soft and steady — early towers chew through them.',
+    fast: 'Fast and slippery. Frost and Lightning cannot hurt Scouts.',
+    skitter: 'Quick pest. Takes half damage from splash and Fire burn.',
+    shell: 'Steel armor. Archer shots bounce off; bring Gunnery or Lightning.',
+    tank: 'High HP, slow march. Lightning and Sniper punch through.',
+    raider: 'Fast and tough. Sniper shines; keep pressure on.',
+    titan: 'Boss armor. Wave 20 mid-fight and Wave 40 finale. Gunnery and Lightning.',
+  };
+
+  function spriteUrlForEnemy(kind) {
+    const spr = ENEMY_SPRITE[kind] || 'grunt';
+    return `./sprites/${spr}.png?v=55`;
+  }
+
+  function enemyChipHtml(kind, mode) {
+    const et = ENEMY_TYPES[kind];
+    const name = (et && et.name) || kind;
+    const src = spriteUrlForEnemy(kind);
+    const cls = mode === 'bad' ? 'chip bad' : 'chip ok';
+    const mark = mode === 'bad' ? ' ✕' : ' ✓';
+    return `<div class="${cls}"><img src="${src}" alt="" width="36" height="36"><span>${name}${mark}</span></div>`;
+  }
+
+  function closeTowerDetail() {
+    state.towerDetailType = null;
+    if (el.towerDetail) {
+      el.towerDetail.classList.remove('show');
+      el.towerDetail.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function openTowerDetail(towerType, placedTw) {
+    const def = TOWER_DEFS[towerType];
+    if (!def || !el.towerDetail) return;
+    state.towerDetailType = towerType;
+    const catWord = CAT_LABEL[def.category] || '';
+    const vs = enemyKindsVsTower(towerType);
+    if (el.towerDetailTitle) {
+      el.towerDetailTitle.textContent = placedTw
+        ? `${def.name} L${placedTw.level || 1}`
+        : def.name;
+    }
+    if (el.towerDetailMeta) {
+      el.towerDetailMeta.textContent = placedTw
+        ? `${catWord} · placed`
+        : `${catWord} · ${def.cost}g`;
+    }
+    if (el.towerDetailRole) el.towerDetailRole.textContent = towerRoleLine(towerType);
+    if (el.towerDetailImmune) {
+      if (vs.support) {
+        el.towerDetailImmune.innerHTML = '';
+        if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = 'none';
+      } else if (!vs.immune.length) {
+        el.towerDetailImmune.innerHTML = '<p class="empty-note">No full immunities — can shoot every kind (some may resist).</p>';
+        if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = '';
+      } else {
+        el.towerDetailImmune.innerHTML = vs.immune.map((k) => enemyChipHtml(k, 'bad')).join('');
+        if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = '';
+      }
+    }
+    if (el.towerDetailCan) {
+      if (vs.support) {
+        el.towerDetailCan.innerHTML = `<p class="empty-note">${def.hits || 'Support — no damage shots.'}</p>`;
+        if (el.towerDetailCanLabel) el.towerDetailCanLabel.textContent = 'Role';
+      } else {
+        const hitKinds = vs.canHit.concat(vs.resisted);
+        el.towerDetailCan.innerHTML = hitKinds.length
+          ? hitKinds.map((k) => enemyChipHtml(k, 'ok')).join('')
+          : '<p class="empty-note">—</p>';
+        if (el.towerDetailCanLabel) el.towerDetailCanLabel.textContent = 'Can hit';
+      }
+    }
+    el.towerDetail.classList.add('show');
+    el.towerDetail.setAttribute('aria-hidden', 'false');
+  }
+
+  function loadSeenEnemyIntros() {
+    try {
+      const raw = localStorage.getItem(LS_ENEMY_INTRO);
+      if (!raw) return {};
+      const obj = JSON.parse(raw);
+      return obj && typeof obj === 'object' ? obj : {};
+    } catch (_) { return {}; }
+  }
+
+  function saveSeenEnemyIntro(kind) {
+    try {
+      const seen = loadSeenEnemyIntros();
+      seen[kind] = 1;
+      localStorage.setItem(LS_ENEMY_INTRO, JSON.stringify(seen));
+    } catch (_) {}
+  }
+
+  function enqueueEnemyIntros(kinds) {
+    const seen = loadSeenEnemyIntros();
+    if (!state.enemyIntroQueue) state.enemyIntroQueue = [];
+    for (const k of kinds) {
+      if (!k || !ENEMY_TYPES[k]) continue;
+      if (seen[k]) continue;
+      if (state.enemyIntroQueue.includes(k)) continue;
+      // already showing this one
+      if (state.enemyIntroOpen && state.enemyIntroQueue[0] === k) continue;
+      state.enemyIntroQueue.push(k);
+    }
+    maybeShowNextEnemyIntro();
+  }
+
+  function closeEnemyIntro() {
+    const kind = state.enemyIntroQueue && state.enemyIntroQueue[0];
+    if (kind) {
+      saveSeenEnemyIntro(kind);
+      state.enemyIntroQueue.shift();
+    }
+    state.enemyIntroOpen = false;
+    if (el.enemyIntro) {
+      el.enemyIntro.classList.remove('show');
+      el.enemyIntro.setAttribute('aria-hidden', 'true');
+    }
+    maybeShowNextEnemyIntro();
+  }
+
+  function maybeShowNextEnemyIntro() {
+    if (state.enemyIntroOpen) return;
+    if (!state.enemyIntroQueue || !state.enemyIntroQueue.length) return;
+    if (!el.enemyIntro) return;
+    // Don't stack over map/faq/win overlays
+    if (el.mapOverlay && el.mapOverlay.classList.contains('show')) return;
+    if (el.faqOverlay && el.faqOverlay.classList.contains('show')) return;
+    if (el.overlay && el.overlay.classList.contains('show')) return;
+    const kind = state.enemyIntroQueue[0];
+    const et = ENEMY_TYPES[kind];
+    const name = (et && et.name) || kind;
+    const immuneNames = towersImmuneToKind(kind);
+    if (el.enemyIntroTitle) el.enemyIntroTitle.textContent = name;
+    if (el.enemyIntroImg) {
+      el.enemyIntroImg.src = spriteUrlForEnemy(kind);
+      el.enemyIntroImg.alt = name;
+    }
+    if (el.enemyIntroBlurb) {
+      el.enemyIntroBlurb.textContent = ENEMY_INTRO_BLURB[kind] || `${name} enters the path.`;
+    }
+    if (el.enemyIntroImmune) {
+      if (!immuneNames.length) {
+        el.enemyIntroImmune.textContent = 'No full tower immunities.';
+      } else if (immuneNames.length === 1) {
+        el.enemyIntroImmune.textContent = `Immune to ${immuneNames[0]} shots`;
+      } else if (immuneNames.length === 2) {
+        el.enemyIntroImmune.textContent = `Immune to ${immuneNames[0]} and ${immuneNames[1]}`;
+      } else {
+        el.enemyIntroImmune.textContent = `Immune to ${immuneNames.slice(0, -1).join(', ')}, and ${immuneNames[immuneNames.length - 1]}`;
+      }
+    }
+    state.enemyIntroOpen = true;
+    el.enemyIntro.classList.add('show');
+    el.enemyIntro.setAttribute('aria-hidden', 'false');
+  }
+
+  // Category counters: mul before armor. Immune → 0 dmg (towers skip aim). ignoreArmor for gunnery/lightning answers.
   function categoryDamageInfo(towerType, category, en, opts) {
     const o = opts || {};
     const kind = en.kind;
@@ -3108,7 +3549,7 @@
     if (o.towerType || o.category) {
       const info = categoryDamageInfo(o.towerType, o.category, en, o);
       if (info.immune || info.mul <= 0) {
-        showCounterFeedback(o.towerType, en, 'immune');
+        // Skip toast spam — targeting already avoids Immune foes
         return false;
       }
       raw = amount * info.mul;
@@ -3124,8 +3565,7 @@
     const resist = ignoreArmor ? 0 : Math.max(0, Math.min(0.75, en.armor || 0));
     let dealt = Math.round(raw * (1 - resist));
     if (dealt <= 0) {
-      if (o.towerType) showCounterFeedback(o.towerType, en, 'immune');
-      else {
+      if (!o.towerType) {
         addFloat(p.x, p.y - 20, 'no effect', '#fca5a5', 1.7, { scale: 1.35 });
         en.shieldFlash = 0.28;
       }
@@ -3159,9 +3599,8 @@
   function applySlow(en, mul, dur, opts) {
     if (!en || !state.enemies.includes(en)) return;
     const o = opts || {};
-    // Scout Immune to Frost slow/aura
+    // Scout Immune to Frost slow/aura — silent skip (no toast spam)
     if (o.fromFrost && en.kind === 'fast') {
-      showCounterFeedback('frost', en, 'slow-immune');
       return;
     }
     en.slowMul = Math.min(en.slowMul || 1, mul);
@@ -3185,6 +3624,7 @@
     const mode = state.targetMode || 'first';
     const list = [];
     for (const en of state.enemies) {
+      if (towerSkipsImmuneTarget(tower, en)) continue;
       const p = posOnPath(en.dist);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
       if (d > st.range) continue;
@@ -3246,8 +3686,8 @@
   function update(dt) {
     if (state.gameOver) {
       // animate fx only
-    } else if (state.paused || !state.mapPicked) {
-      // frozen
+    } else if (state.paused || !state.mapPicked || state.enemyIntroOpen) {
+      // frozen (enemy intro card open)
     } else if (state.started) {
       if (state.spawnLeft > 0) {
         state.spawnCD -= dt;
@@ -4494,7 +4934,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v54';
+  const BOOT = 'pg-boot-v55';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
