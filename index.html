@@ -663,18 +663,12 @@
   #tower-stats .muted { color: #94a3b8; font-weight: 600; }
   #tower-stats .next { color: #c4b5fd; font-weight: 700; }
 
-  /* Compact util chip row: Speed Pause Maps FAQ More */
+  /* Compact util chip row: Speed Pause Maps FAQ FX */
   #util-btns {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 3px;
   }
-  #util-more {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 3px;
-  }
-  #util-more.show { display: grid; }
   .util-btn {
     appearance: none;
     border: 1px solid #334155;
@@ -699,11 +693,6 @@
     border-color: #38bdf8;
     color: #7dd3fc;
     background: #0c4a6e;
-  }
-  #btn-more.active {
-    border-color: #64748b;
-    color: #e2e8f0;
-    background: #334155;
   }
 
   #wave-btns {
@@ -746,8 +735,14 @@
   #tower-btns.hidden { display: none; }
   #tower-actions {
     display: none;
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: 1.3fr 1fr 0.9fr;
     gap: 4px;
+  }
+  #btn-aim {
+    border-color: #38bdf8;
+    background: #0c4a6e;
+    color: #e0f2fe;
+    font-size: 0.7rem;
   }
   #tower-actions.show { display: grid; }
   #sell-confirm {
@@ -1212,7 +1207,7 @@
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> (More menu) cycles First / Strong / Close targeting. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x. FX toggle mutes particles.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower (with Upgrade/Sell) cycles that tower’s First / Strong / Close targeting. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x. <strong>FX</strong> on the util row mutes particles.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1233,6 +1228,7 @@
         ⬆ Upgrade
         <span class="cost" id="upgrade-cost">—</span>
       </button>
+      <button type="button" class="action-btn" id="btn-aim" title="Cycle this tower's aim">Aim: First</button>
       <button type="button" class="action-btn" id="btn-sell">
         Sell
         <span class="cost" id="sell-value">—</span>
@@ -1250,11 +1246,7 @@
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
       <button type="button" class="util-btn" id="btn-change-map" disabled>Maps</button>
       <button type="button" class="util-btn" id="btn-faq" title="FAQ">FAQ</button>
-      <button type="button" class="util-btn" id="btn-more" title="Aim &amp; FX">More ▾</button>
-    </div>
-    <div id="util-more">
-      <button type="button" class="util-btn" id="btn-target">Aim: First</button>
-      <button type="button" class="util-btn" id="btn-juice">FX On</button>
+      <button type="button" class="util-btn" id="btn-juice" title="Toggle particles &amp; shake">FX On</button>
     </div>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
@@ -1288,7 +1280,6 @@
   const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs } }
   const LS_ACH = 'pg-achievements'; // { maps:{}, hardWin, titanKill }
   const LS_UX_TIP = 'pg-ux-tip-v42';
-  const LS_UTIL_MORE = 'pg-util-more';
   const LS_ENEMY_INTRO = 'pg-enemy-intro-v1'; // seen enemy kinds (once per device)
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
@@ -1571,7 +1562,7 @@
   const state = {
     mapId: 'spiral',
     mapPicked: false,
-    targetMode: 'first', // first | strongest | closest
+    defaultTargetMode: 'first', // default aim for newly placed towers (LS_TARGET)
     hardMode: false,
     killStreak: 0,
     killStreakTimer: 0,
@@ -1607,7 +1598,6 @@
     waveLivesStart: START_LIVES,
     juice: true,
     runStartedAt: 0,
-    utilMoreOpen: false,
     counterToastLast: Object.create(null),
     counterToastHide: 0,
     enemyIntroQueue: [],
@@ -1653,10 +1643,8 @@
     faqClose: document.getElementById('faq-close'),
     faqTowers: document.getElementById('faq-towers'),
     controls: document.getElementById('controls'),
-    btnTarget: document.getElementById('btn-target'),
     btnJuice: document.getElementById('btn-juice'),
-    btnMore: document.getElementById('btn-more'),
-    utilMore: document.getElementById('util-more'),
+    btnAim: document.getElementById('btn-aim'),
     towerStats: document.getElementById('tower-stats'),
     onboardTip: document.getElementById('onboard-tip'),
     onboardDismiss: document.getElementById('onboard-dismiss'),
@@ -1736,7 +1724,7 @@
   function loadPersistedPrefs() {
     try {
       const tm = localStorage.getItem(LS_TARGET);
-      if (tm && ['first','strongest','closest'].includes(tm)) state.targetMode = tm;
+      if (tm && ['first','strongest','closest'].includes(tm)) state.defaultTargetMode = tm;
     } catch (_) {}
     try {
       const hm = localStorage.getItem(LS_HARD);
@@ -1761,19 +1749,14 @@
         el.btnJuice.classList.toggle('active', state.juice !== false);
       }
     } catch (_) {}
-    try {
-      const um = localStorage.getItem(LS_UTIL_MORE);
-      state.utilMoreOpen = um === '1' || um === 'true';
-    } catch (_) {}
-    syncUtilMore();
   }
 
   function saveJuice(on) {
     try { localStorage.setItem(LS_JUICE, on ? '1' : '0'); } catch (_) {}
   }
 
-  function saveTargetMode() {
-    try { localStorage.setItem(LS_TARGET, state.targetMode || 'first'); } catch (_) {}
+  function saveDefaultTargetMode() {
+    try { localStorage.setItem(LS_TARGET, state.defaultTargetMode || 'first'); } catch (_) {}
   }
 
   function saveHardMode(on) {
@@ -2112,7 +2095,6 @@
     if (!Number.isFinite(state.gold)) state.gold = 0;
     el.gold.textContent = Math.floor(state.gold);
     el.lives.textContent = state.lives;
-    if (el.btnTarget) el.btnTarget.textContent = `Aim: ${targetModeLabel(state.targetMode || 'first')}`;
     el.wave.textContent = `${state.wave}/${state.maxWaves}`;
     const waveStat = document.getElementById('wave');
     if (waveStat) {
@@ -2197,6 +2179,11 @@
 
       el.btnSell.disabled = false;
       el.sellConfirmValue.textContent = `+${value}g`;
+      if (el.btnAim) {
+        const aim = tw.targetMode || state.defaultTargetMode || 'first';
+        el.btnAim.textContent = `Aim: ${targetModeLabel(aim)}`;
+        el.btnAim.disabled = false;
+      }
     }
     el.btnSpeed.textContent = `Speed ${state.gameSpeed}x`;
     el.btnSpeed.classList.toggle('active', state.gameSpeed > 1);
@@ -2211,24 +2198,8 @@
       el.btnChangeMap.disabled = !state.mapPicked;
     }
     if (el.controls) el.controls.classList.toggle('pre-map', !state.mapPicked);
-    syncUtilMore();
     refreshBestLine();
     updateWaveButtonLabels();
-  }
-
-  function syncUtilMore() {
-    const open = !!state.utilMoreOpen;
-    if (el.utilMore) el.utilMore.classList.toggle('show', open);
-    if (el.btnMore) {
-      el.btnMore.classList.toggle('active', open);
-      el.btnMore.textContent = open ? 'Less ▴' : 'More ▾';
-    }
-  }
-
-  function setUtilMore(open) {
-    state.utilMoreOpen = !!open;
-    try { localStorage.setItem(LS_UTIL_MORE, state.utilMoreOpen ? '1' : '0'); } catch (_) {}
-    syncUtilMore();
   }
 
   function updateWaveButtonLabels() {
@@ -2367,12 +2338,15 @@
     return TARGET_LABELS[mode] || 'First';
   }
 
-  function cycleTargetMode() {
-    const i = TARGET_MODES.indexOf(state.targetMode);
-    state.targetMode = TARGET_MODES[(i < 0 ? 0 : i + 1) % TARGET_MODES.length];
-    saveTargetMode();
-    if (el.btnTarget) el.btnTarget.textContent = `Aim: ${targetModeLabel(state.targetMode)}`;
-    el.hint.textContent = `Aim: towers prioritize ${targetModeLabel(state.targetMode)}`;
+  function cycleSelectedTowerAim() {
+    const tw = state.selectedTower;
+    if (!tw) return;
+    const cur = tw.targetMode || state.defaultTargetMode || 'first';
+    const i = TARGET_MODES.indexOf(cur);
+    tw.targetMode = TARGET_MODES[(i < 0 ? 0 : i + 1) % TARGET_MODES.length];
+    state.defaultTargetMode = tw.targetMode;
+    saveDefaultTargetMode();
+    el.hint.textContent = `${TOWER_DEFS[tw.type].name}: Aim ${targetModeLabel(tw.targetMode)}`;
     updateHUD();
   }
 
@@ -2682,6 +2656,7 @@
         y: center.y,
         type: state.selected,
         level: 1,
+        targetMode: state.defaultTargetMode || 'first',
         cd: 0,
         pulse: 0.4,
       };
@@ -3534,18 +3509,11 @@
     });
   }
 
-  if (el.btnTarget) {
-    el.btnTarget.addEventListener('pointerdown', (e) => {
+  if (el.btnAim) {
+    el.btnAim.addEventListener('pointerdown', (e) => {
       e.preventDefault();
-      if (!state.mapPicked || state.gameOver) return;
-      cycleTargetMode();
-    });
-  }
-
-  if (el.btnMore) {
-    el.btnMore.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      setUtilMore(!state.utilMoreOpen);
+      if (!state.mapPicked || state.gameOver || !state.selectedTower) return;
+      cycleSelectedTowerAim();
     });
   }
   if (el.onboardDismiss) {
@@ -3717,7 +3685,7 @@
 
   function findTarget(tower) {
     const st = towerStats(tower);
-    const mode = state.targetMode || 'first';
+    const mode = tower.targetMode || state.defaultTargetMode || 'first';
     let best = null;
     let bestScore = -Infinity;
     for (const en of state.enemies) {
@@ -4208,7 +4176,7 @@
 
   function findTargetsInRange(tower, maxN) {
     const st = towerStats(tower);
-    const mode = state.targetMode || 'first';
+    const mode = tower.targetMode || state.defaultTargetMode || 'first';
     const list = [];
     for (const en of state.enemies) {
       if (towerSkipsImmuneTarget(tower, en)) continue;

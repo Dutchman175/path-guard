@@ -10,6 +10,6 @@ Tower defense — pick a path, place towers, hold the line for 40 waves.
 
 Gold from kills + **Bank** income only (no interest, early-call, perfect-clear, or challenge bonuses). Waves around 5 / 10 / 15 / 20 / 25 / 30 / 35 / 40 stay denser/tougher as normal hard waves. **Double-tap** a tower to upgrade. Sell confirms. Mute FX anytime. Speed cycles 1x → 2x → 3x → 5x. Start with **10 lives**.
 
-**UX (build 64):** Tower menu tip is **inline** — tap a tower in a category → keep Back + selected button; other towers in the row become the info panel (name, role, cost, ?, ×). No floating tip; no `#tower-stats` while picking from the bar (stats stay for placed upgrade/sell). Fire = constant flame stream. Sprite cache `?v=64`.
+**UX (build 64):** Inline tower-menu info (Back + selected; other slots → name/role/cost/?/×). No floating tip; no `#tower-stats` while picking from the bar. **Per-tower Aim** on Upgrade/Sell row (First/Strong/Close). **FX** on util row (Speed · Pause · Maps · FAQ · FX) — More submenu removed. Fire = constant flame. Sprite `?v=64`.
 
 **Achievements:** first clear each map, Hard Mode win, Titan kill — checklist always on win/lose overlays. Titan death gets a fanfare float.
