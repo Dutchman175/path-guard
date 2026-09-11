@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 58 -->
+<!-- path-guard-build: 59 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -180,6 +180,28 @@
   #btn-crossbow.selected { border-color: #f59e0b; background: #78350f; }
   #btn-bank.selected { border-color: #f59e0b; background: #78350f; }
   #btn-barrier.selected { border-color: #f59e0b; background: #451a03; }
+  .tower-btn.cat-btn {
+    width: 76px;
+    min-width: 76px;
+    font-size: 1.05rem;
+  }
+  .tower-btn.cat-btn .tname { font-size: 0.52rem; }
+  .tower-btn.back-btn {
+    width: 48px;
+    min-width: 48px;
+    border-color: #64748b;
+    background: #334155;
+  }
+  .tower-btn.back-btn .tname { font-size: 0.5rem; color: #cbd5e1; }
+  .tower-btn.cat-btn.dim { opacity: 0.5; }
+  .tower-btn .ticon {
+    display: block;
+    margin: 0 auto;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    pointer-events: none;
+  }
   #tower-stats .hits { color: #86efac; font-weight: 700; }
   #tower-stats .weak { color: #fecaca; font-weight: 900; text-decoration: underline; text-underline-offset: 2px; }
 
@@ -1014,7 +1036,7 @@
         <div class="faq-item"><strong>Elemental</strong> — Frost (dmg+slow, Scout Immune) · Fire (burn/splash, Skitter resist, weak armor) · Lightning (chain, Scout Immune, strong vs armor).</div>
         <div class="faq-item"><strong>Gunnery</strong> — Cannon splash vs Shell clusters · Sniper map-wide pierce vs Brute/Raider/Shell/Titan.</div>
         <div class="faq-item"><strong>Support</strong> — Barrier path halt · Bank income. No damage.</div>
-        <div class="faq-item">Towers skip enemies they are Immune to (no wasted shots). Tap a tower type for a big card with full combat stats and who it can't hit. New enemies get a one-time intro card.</div>
+        <div class="faq-item">Towers live under <strong>Marksman / Support / Elemental / Gunnery</strong> on the build bar (tap a category, then a tower; ← Back returns). Towers skip enemies they are Immune to (no wasted shots). Tap a tower type for a big card with full combat stats and who it can't hit. New enemies get a one-time intro card.</div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
@@ -1039,53 +1061,7 @@
   </div>
 
   <div id="controls">
-    <div id="tower-btns">
-      <button type="button" class="tower-btn" id="btn-archer" data-type="archer" title="Archer — Hits: soft · Blocked: Shell/Titan Immune">
-        🏹
-        <span class="tname">Archer</span>
-        <span class="cost">40g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-barrier" data-type="barrier" title="Barrier — path halt 3s + cooldown · no damage">
-        🚧
-        <span class="tname">Barrier</span>
-        <span class="cost">60g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-crossbow" data-type="crossbow" title="Crossbow — Hits: soft · Weak: Shell/Titan 0.25x">
-        🎯
-        <span class="tname">Crossbow</span>
-        <span class="cost">95g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-frost" data-type="frost" title="Frost — Hits: soft + slow · Blocked: Scout Immune · Weak: Shell/Titan">
-        ❄️
-        <span class="tname">Frost</span>
-        <span class="cost">115g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-bank" data-type="bank" title="Bank — gold each wave clear · no shots">
-        🏦
-        <span class="tname">Bank</span>
-        <span class="cost">135g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-fire" data-type="fire" title="Fire — Hits: packs + burn · Weak: Shell/Titan · Skitter resists splash/DoT">
-        🔥
-        <span class="tname">Fire</span>
-        <span class="cost">155g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-cannon" data-type="cannon" title="Cannon — Hits: Shell clusters (splash) · Skitter splash resist">
-        💣
-        <span class="tname">Cannon</span>
-        <span class="cost">185g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-lightning" data-type="lightning" title="Lightning — Hits: Shell/Brute/Titan · Blocked: Scout Immune">
-        ⚡
-        <span class="tname">Lightning</span>
-        <span class="cost">250g</span>
-      </button>
-      <button type="button" class="tower-btn" id="btn-sniper" data-type="sniper" title="Sniper — Hits: Brute/Raider/Shell/Titan (armor pierce)">
-        🔭
-        <span class="tname">Sniper</span>
-        <span class="cost">335g</span>
-      </button>
-    </div>
+    <div id="tower-btns"></div>
     <div id="tower-stats" aria-live="polite"></div>
     <div id="tower-actions">
       <button type="button" class="action-btn" id="btn-upgrade">
@@ -1122,7 +1098,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 58</div>
+    <div id="build-ver">build 59</div>
   </div>
 </div>
 
@@ -1289,6 +1265,16 @@
   };
 
   const CAT_LABEL = { marksman: 'Marksman', elemental: 'Elemental', gunnery: 'Gunnery', support: 'Support' };
+  const TOWER_CATEGORIES = [
+    { id: 'marksman', label: 'Marksman', icon: '🏹' },
+    { id: 'support', label: 'Support', icon: '🚧' },
+    { id: 'elemental', label: 'Elemental', icon: '⚡' },
+    { id: 'gunnery', label: 'Gunnery', icon: '💣' },
+  ];
+  const TOWER_EMOJI = {
+    archer: '🏹', barrier: '🚧', crossbow: '⚔', frost: '❄️', bank: '🏦',
+    fire: '🔥', cannon: '💣', lightning: '⚡', sniper: '🔭',
+  };
   const TOWER_ORDER = ['archer', 'barrier', 'crossbow', 'frost', 'bank', 'fire', 'cannon', 'lightning', 'sniper'];
   const TOWER_DEFS = {
     archer: {
@@ -1374,9 +1360,9 @@
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
     // Color = threat (green easy → dark red hardest). Shell = steel armor (dmg resist).
-    // Size: Scout ≈ Grunt < Skitter < Shell < Brute < Raider < Titan.
+    // Size: Skitter < Grunt < Shell ≤ Scout ≈ Brute < Raider < Titan (Scout noticeably larger than Grunt).
     normal:  { name: 'Grunt',   r: 12, hp: 60,  speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
-    fast:    { name: 'Scout',   r: 12, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
+    fast:    { name: 'Scout',   r: 16, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
     skitter: { name: 'Skitter', r: 11, hp: 55,  speed: 100, reward: 12, color: '#4ade80', stroke: '#14532d', splashResist: 0.5 },
     shell:   { name: 'Shell',   r: 15, hp: 210, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917', armor: 0.22 },
     tank:    { name: 'Brute',   r: 16, hp: 170, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
@@ -1398,7 +1384,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=58`;
+    img.src = `./sprites/${name}.png?v=59`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1461,6 +1447,8 @@
     enemyIntroQueue: [],
     enemyIntroOpen: false,
     towerDetailType: null,
+    towerMenuMode: 'categories', // categories | towers
+    towerMenuCategory: null,
   };
 
   const el = {
@@ -1954,18 +1942,38 @@
     } else {
       el.sel.textContent = '—';
     }
+    const showActions = !!state.selectedTower && !state.gameOver;
+    const showConfirm = showActions && state.sellConfirming;
+    const barWasHidden = el.towerBtns.classList.contains('hidden');
+    el.towerBtns.classList.toggle('hidden', showActions);
+    // Returning to build mode → category root (prefer over last category)
+    if (barWasHidden && !showActions) {
+      state.towerMenuMode = 'categories';
+      state.towerMenuCategory = null;
+      renderTowerBar();
+    }
+
     Object.keys(TOWER_DEFS).forEach((type) => {
       const btn = document.querySelector(`.tower-btn[data-type="${type}"]`);
       if (!btn) return;
       btn.disabled = state.gold < TOWER_DEFS[type].cost || state.gameOver || !state.mapPicked;
     });
-    document.querySelectorAll('.tower-btn').forEach(b => {
+    document.querySelectorAll('.tower-btn').forEach((b) => {
+      if (b.classList.contains('cat-btn') || b.classList.contains('back-btn')) {
+        b.classList.remove('selected');
+        return;
+      }
       b.classList.toggle('selected', b.dataset.type === state.selected);
     });
-
-    const showActions = !!state.selectedTower && !state.gameOver;
-    const showConfirm = showActions && state.sellConfirming;
-    el.towerBtns.classList.toggle('hidden', showActions);
+    // Refresh category dim when gold changes (categories view only)
+    if (!showActions && (state.towerMenuMode || 'categories') === 'categories') {
+      document.querySelectorAll('.tower-btn.cat-btn').forEach((btn) => {
+        const cat = btn.dataset.category;
+        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat);
+        const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
+        btn.classList.toggle('dim', !!(allUnaffordable && state.mapPicked && !state.gameOver));
+      });
+    }
     el.towerActions.classList.toggle('show', showActions && !showConfirm);
     el.sellConfirm.classList.toggle('show', showConfirm);
     if (el.towerStats) {
@@ -3017,27 +3025,99 @@
     tryPlace(x, y);
   });
 
-  document.querySelectorAll('.tower-btn').forEach(btn => {
-    btn.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      if (btn.disabled || state.gameOver || !state.mapPicked) return;
-      const type = btn.dataset.type;
-      clearTowerSelection();
-      const deselect = state.selected === type;
-      state.selected = deselect ? null : type;
-      const def = TOWER_DEFS[type];
-      const catWord = CAT_LABEL[def.category] || '';
-      if (!state.selected) {
-        el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
-        closeTowerDetail();
-      } else {
-        const blocked = (def.blocked && def.blocked !== '—') ? def.blocked : 'none';
-        el.hint.textContent = `${def.name} · ${catWord} — ${def.cost}g · Blocked: ${blocked}`;
-        openTowerDetail(type, null);
+  function towerBtnTitle(type) {
+    const def = TOWER_DEFS[type];
+    if (!def) return '';
+    return `${def.name} — Hits: ${def.hits || '—'} · Blocked: ${def.blocked || '—'}`;
+  }
+
+  function onTowerTypePointer(e) {
+    e.preventDefault();
+    const btn = e.currentTarget;
+    if (btn.disabled || state.gameOver || !state.mapPicked) return;
+    const type = btn.dataset.type;
+    if (!type || !TOWER_DEFS[type]) return;
+    clearTowerSelection();
+    const deselect = state.selected === type;
+    state.selected = deselect ? null : type;
+    const def = TOWER_DEFS[type];
+    const catWord = CAT_LABEL[def.category] || '';
+    if (!state.selected) {
+      el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
+      closeTowerDetail();
+    } else {
+      const blocked = (def.blocked && def.blocked !== '—') ? def.blocked : 'none';
+      el.hint.textContent = `${def.name} · ${catWord} — ${def.cost}g · Blocked: ${blocked}`;
+      openTowerDetail(type, null);
+    }
+    updateHUD();
+  }
+
+  function renderTowerBar() {
+    const box = el.towerBtns;
+    if (!box) return;
+    const mode = state.towerMenuMode || 'categories';
+    box.innerHTML = '';
+
+    if (mode !== 'towers') {
+      for (const cat of TOWER_CATEGORIES) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tower-btn cat-btn';
+        btn.dataset.category = cat.id;
+        btn.title = `${cat.label} towers`;
+        btn.innerHTML = `${cat.icon}<span class="tname">${cat.label}</span>`;
+        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat.id);
+        const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
+        if (allUnaffordable && state.mapPicked && !state.gameOver) btn.classList.add('dim');
+        btn.addEventListener('pointerdown', (ev) => {
+          ev.preventDefault();
+          if (state.gameOver || !state.mapPicked) return;
+          state.towerMenuMode = 'towers';
+          state.towerMenuCategory = cat.id;
+          renderTowerBar();
+          updateHUD();
+        });
+        box.appendChild(btn);
       }
+      return;
+    }
+
+    const back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'tower-btn back-btn';
+    back.title = 'Back to categories';
+    back.innerHTML = `←<span class="tname">Back</span>`;
+    back.addEventListener('pointerdown', (ev) => {
+      ev.preventDefault();
+      state.towerMenuMode = 'categories';
+      state.towerMenuCategory = null;
+      renderTowerBar();
       updateHUD();
     });
-  });
+    box.appendChild(back);
+
+    const cat = state.towerMenuCategory;
+    const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat);
+    for (const type of types) {
+      const def = TOWER_DEFS[type];
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tower-btn';
+      btn.id = `btn-${type}`;
+      btn.dataset.type = type;
+      btn.title = towerBtnTitle(type);
+      let iconHtml;
+      if (type === 'crossbow') {
+        iconHtml = `<img class="ticon" src="./sprites/crossbow.png?v=59" alt="" width="22" height="22">`;
+      } else {
+        iconHtml = TOWER_EMOJI[type] || '◆';
+      }
+      btn.innerHTML = `${iconHtml}<span class="tname">${def.name}</span><span class="cost">${def.cost}g</span>`;
+      btn.addEventListener('pointerdown', onTowerTypePointer);
+      box.appendChild(btn);
+    }
+  }
 
   el.btnUpgrade.addEventListener('pointerdown', (e) => {
     e.preventDefault();
@@ -3103,7 +3183,7 @@
   function fillFaqTowers() {
     if (!el.faqTowers) return;
     const ordered = TOWER_ORDER.filter((t) => TOWER_DEFS[t]);
-    el.faqTowers.innerHTML = '<h3>Towers</h3>' + ordered.map(towerFaqBlurb).join('');
+    el.faqTowers.innerHTML = '<h3>Towers</h3><div class="faq-item muted">Build bar: Marksman / Support / Elemental / Gunnery — tap a category, then a tower (← Back).</div>' + ordered.map(towerFaqBlurb).join('');
   }
 
   function openFaq() {
@@ -3464,7 +3544,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=58`;
+    return `./sprites/${spr}.png?v=59`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -4501,27 +4581,56 @@
           ctx.lineWidth = 1;
           ctx.stroke();
         } else if (tw.type === 'crossbow') {
-          ctx.strokeStyle = def.color;
-          ctx.lineWidth = 2.4;
+          // Side-view crossbow: stock + horizontal prod + bolt (not a recurve bow)
           ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          // Stock / tiller
+          ctx.fillStyle = '#78350f';
+          ctx.fillRect(-11, -2.4, 13, 4.8);
+          ctx.fillStyle = '#92400e';
+          ctx.fillRect(-11, -1.6, 4.5, 3.2);
+          // Prod (bow limb across the front — horizontal tips)
+          ctx.strokeStyle = '#b45309';
+          ctx.lineWidth = 2.7;
           ctx.beginPath();
-          ctx.arc(1, 0, 8, -Math.PI * 0.65, Math.PI * 0.65);
+          ctx.moveTo(3, -10);
+          ctx.quadraticCurveTo(0.5, 0, 3, 10);
           ctx.stroke();
-          ctx.strokeStyle = '#fde68a';
-          ctx.lineWidth = 2.2;
           ctx.beginPath();
-          ctx.moveTo(-8, 0);
+          ctx.moveTo(3, -10);
+          ctx.quadraticCurveTo(7.5, 0, 3, 10);
+          ctx.stroke();
+          // String
+          ctx.strokeStyle = '#fef3c7';
+          ctx.lineWidth = 1.35;
+          ctx.beginPath();
+          ctx.moveTo(3.2, -9.2);
+          ctx.lineTo(-1.5, 0);
+          ctx.lineTo(3.2, 9.2);
+          ctx.stroke();
+          // Bolt / quarrel
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 2.1;
+          ctx.beginPath();
+          ctx.moveTo(-7, 0);
           ctx.lineTo(11, 0);
           ctx.stroke();
-          ctx.fillStyle = '#fbbf24';
+          ctx.fillStyle = '#fcd34d';
           ctx.beginPath();
-          ctx.moveTo(11, 0);
-          ctx.lineTo(7, -2.8);
-          ctx.lineTo(7, 2.8);
+          ctx.moveTo(12.5, 0);
+          ctx.lineTo(8.2, -2.7);
+          ctx.lineTo(8.2, 2.7);
           ctx.closePath();
           ctx.fill();
-          ctx.fillStyle = '#92400e';
-          ctx.fillRect(-2, -3, 5, 6);
+          // Trigger / grip under stock
+          ctx.fillStyle = def.color;
+          ctx.fillRect(-5, 2.2, 4.5, 5);
+          ctx.strokeStyle = '#fde68a';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(-3, 7);
+          ctx.lineTo(-3, 9.5);
+          ctx.stroke();
         } else if (tw.type === 'lightning') {
           ctx.strokeStyle = '#e9d5ff';
           ctx.lineWidth = 2.2;
@@ -5095,6 +5204,7 @@
   loadPersistedPrefs();
   showMapSelect();
   updateWaveButtons();
+  renderTowerBar();
   updateHUD();
   requestAnimationFrame(frame);
 })();
@@ -5102,7 +5212,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v58';
+  const BOOT = 'pg-boot-v59';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
