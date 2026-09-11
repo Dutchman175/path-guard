@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 57 -->
+<!-- path-guard-build: 58 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -259,7 +259,7 @@
     border: 1px solid #475569;
     border-radius: 12px;
     padding: 10px 12px;
-    min-height: 44px;
+    min-height: 64px;
     font-size: 1.05rem;
     font-weight: 800;
     color: #f8fafc;
@@ -267,13 +267,23 @@
   }
   #tower-detail .chip.bad { border-color: #f87171; color: #fecaca; }
   #tower-detail .chip.ok { border-color: #4ade80; color: #bbf7d0; }
-  #tower-detail .chip .swatch, #enemy-intro .chip .swatch {
-    width: 28px;
-    height: 28px;
+  #tower-detail .chip .icon-ring, #enemy-intro .chip .icon-ring {
+    width: 58px;
+    height: 58px;
     border-radius: 50%;
     flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.35);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255,255,255,0.45);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+  #tower-detail .chip .icon-ring img, #enemy-intro .chip .icon-ring img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    image-rendering: pixelated;
   }
   #tower-detail .chip .chip-name {
     flex: 1;
@@ -287,13 +297,23 @@
     margin: 4px 0 12px;
     text-align: center;
   }
-  #enemy-intro .hero-swatch {
-    width: 88px;
-    height: 88px;
+  #enemy-intro .hero-frame {
+    width: 104px;
+    height: 104px;
     border-radius: 50%;
     margin-bottom: 10px;
-    border: 3px solid rgba(255,255,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255,255,255,0.45);
     box-shadow: 0 6px 20px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+  #enemy-intro .hero-frame img, #enemy-intro .hero-img {
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    image-rendering: pixelated;
   }
   #enemy-intro h2 {
     font-size: 1.55rem;
@@ -922,7 +942,9 @@
     <div id="enemy-intro" aria-hidden="true">
       <div class="card" id="enemy-intro-card" role="dialog" aria-labelledby="enemy-intro-title">
         <div class="hero">
-          <div class="hero-swatch" id="enemy-intro-swatch" aria-hidden="true"></div>
+          <div class="hero-frame" id="enemy-intro-frame" aria-hidden="true">
+            <img class="hero-img" id="enemy-intro-img" alt="" width="88" height="88">
+          </div>
           <h2 id="enemy-intro-title">Enemy</h2>
         </div>
         <p class="blurb" id="enemy-intro-blurb"></p>
@@ -1100,7 +1122,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 57</div>
+    <div id="build-ver">build 58</div>
   </div>
 </div>
 
@@ -1376,7 +1398,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=57`;
+    img.src = `./sprites/${name}.png?v=58`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1459,7 +1481,8 @@
     towerDetailX: document.getElementById('tower-detail-x'),
     enemyIntro: document.getElementById('enemy-intro'),
     enemyIntroTitle: document.getElementById('enemy-intro-title'),
-    enemyIntroSwatch: document.getElementById('enemy-intro-swatch'),
+    enemyIntroFrame: document.getElementById('enemy-intro-frame'),
+    enemyIntroImg: document.getElementById('enemy-intro-img'),
     enemyIntroBlurb: document.getElementById('enemy-intro-blurb'),
     enemyIntroImmune: document.getElementById('enemy-intro-immune'),
     enemyIntroClose: document.getElementById('enemy-intro-close'),
@@ -1894,7 +1917,6 @@
     el.hint.textContent = up == null
       ? `${st.name} maxed — Sell or pick another`
       : `${st.name} selected — Upgrade, double-tap, or Sell`;
-    if (tw && tw.type) openTowerDetail(tw.type, tw);
   }
 
   function posOnPath(dist) {
@@ -2512,7 +2534,6 @@
     addGold(-cost);
     tw.level = (tw.level || 1) + 1;
     tw.pulse = 0.45;
-    if (state.towerDetailType === tw.type) openTowerDetail(tw.type, tw);
     burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 18);
     if (state.juice !== false) {
       state.rings.push({
@@ -3443,15 +3464,16 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=57`;
+    return `./sprites/${spr}.png?v=58`;
   }
 
   function enemyChipHtml(kind, mode) {
     const et = ENEMY_TYPES[kind];
     const name = (et && et.name) || kind;
     const color = (et && et.color) || '#94a3b8';
+    const src = spriteUrlForEnemy(kind);
     const cls = mode === 'bad' ? 'chip bad' : 'chip ok';
-    return `<div class="${cls}"><span class="swatch" style="background:${color}" aria-hidden="true"></span><span class="chip-name">${name}</span></div>`;
+    return `<div class="${cls}"><span class="icon-ring" style="background:${color}" aria-hidden="true"><img src="${src}" alt="" width="52" height="52"></span><span class="chip-name">${name}</span></div>`;
   }
 
   function closeTowerDetail() {
@@ -3616,8 +3638,12 @@
     const name = (et && et.name) || kind;
     const immuneTowers = towersImmuneToKind(kind);
     if (el.enemyIntroTitle) el.enemyIntroTitle.textContent = name;
-    if (el.enemyIntroSwatch) {
-      el.enemyIntroSwatch.style.background = (et && et.color) || '#94a3b8';
+    if (el.enemyIntroFrame) {
+      el.enemyIntroFrame.style.background = (et && et.color) || '#94a3b8';
+    }
+    if (el.enemyIntroImg) {
+      el.enemyIntroImg.src = spriteUrlForEnemy(kind);
+      el.enemyIntroImg.alt = name;
     }
     if (el.enemyIntroBlurb) {
       el.enemyIntroBlurb.textContent = ENEMY_INTRO_BLURB[kind] || `${name} enters the path.`;
@@ -5076,7 +5102,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v57';
+  const BOOT = 'pg-boot-v58';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
