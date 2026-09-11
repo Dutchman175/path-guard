@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 63 -->
+<!-- path-guard-build: 67 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -670,10 +670,10 @@
   #tower-stats .muted { color: #94a3b8; font-weight: 600; }
   #tower-stats .next { color: #c4b5fd; font-weight: 700; }
 
-  /* Compact util chip row: Speed Pause Maps FAQ */
+  /* Build 67: util row — 4 buttons share 100% row width equally */
   #util-btns {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    width: 100%;
     gap: 3px;
   }
   .util-btn {
@@ -688,6 +688,7 @@
     cursor: pointer;
     min-height: 34px;
     min-width: 0;
+    flex: 1 1 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -1256,13 +1257,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=67" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1329,7 +1330,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 66</div>
+    <div id="build-ver">build 67</div>
   </div>
 </div>
 
@@ -1614,7 +1615,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=66`;
+    img.src = `./sprites/${name}.png?v=67`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3119,7 +3120,6 @@
   }
 
   function pickMap(mapId) {
-    const wasChange = state.changingMap;
     state.changingMap = false;
     state.hardMode = !!(el.hardMode && el.hardMode.checked);
     saveHardMode(state.hardMode);
@@ -3157,9 +3157,7 @@
     el.mapOverlay.classList.remove('show');
     el.overlay.classList.remove('show');
     const hardTag = state.hardMode ? ' · HARD' : '';
-    el.hint.textContent = wasChange
-      ? `Map changed${hardTag} — place towers, then Next Wave`
-      : `${MAPS[mapId].name}${hardTag} — place 2–3 towers on green +, then Next Wave`;
+    el.hint.textContent = `${MAPS[mapId].name}${hardTag}`;
     setWavePreview('', false);
     maybeShowOnboardTip();
     updateWaveButtons();
@@ -3222,7 +3220,7 @@
     // Keep hard mode + targeting; skip map picker
     el.overlay.classList.remove('show');
     pickMap(mapId);
-    el.hint.textContent = `Replay ${MAPS[mapId].name}${state.hardMode ? ' · HARD' : ''} — build, then Next Wave`;
+    el.hint.textContent = `${MAPS[mapId].name}${state.hardMode ? ' · HARD' : ''}`;
   }
 
   // Input
@@ -3273,7 +3271,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=66" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=67" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3444,7 +3442,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=66" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=67" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'lightning' ? 'Chain targets'
@@ -3826,7 +3824,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=66`;
+    return `./sprites/${spr}.png?v=67`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -5654,7 +5652,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v66';
+  const BOOT = 'pg-boot-v67';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
