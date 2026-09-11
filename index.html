@@ -132,10 +132,10 @@
     gap: 3px;
   }
   #controls.pre-map { display: none; }
-  /* Build 64: inline info in tower row (replaces other tower buttons) */
+  /* Build 65: multi-row inline info in tower row */
   #tower-btns .tower-menu-info {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 6px;
     flex: 1 1 0;
     min-width: 0;
@@ -149,29 +149,36 @@
   #tower-btns .tower-menu-info .tip-main {
     flex: 1;
     min-width: 0;
-    line-height: 1.15;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
+    line-height: 1.2;
     text-align: left;
+    white-space: normal;
   }
   #tower-btns .tower-menu-info .tip-name {
+    display: block;
     font-size: 0.72rem;
     font-weight: 800;
     color: #e2e8f0;
   }
-  #tower-btns .tower-menu-info .tip-cost {
-    font-size: 0.68rem;
-    font-weight: 800;
-    color: #fbbf24;
-    margin-left: 4px;
-  }
-  #tower-btns .tower-menu-info .tip-role {
+  #tower-btns .tower-menu-info .tip-line {
     display: block;
     font-size: 0.58rem;
     font-weight: 600;
     color: #94a3b8;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 1px;
+  }
+  #tower-btns .tower-menu-info .tip-line.tip-cost {
+    color: #fbbf24;
+    font-weight: 800;
+  }
+  #tower-btns .tower-menu-info .tip-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    flex: 0 0 auto;
   }
   #tower-btns .tower-menu-info .tip-info,
   #tower-btns .tower-menu-info .tip-x {
@@ -663,7 +670,7 @@
   #tower-stats .muted { color: #94a3b8; font-weight: 600; }
   #tower-stats .next { color: #c4b5fd; font-weight: 700; }
 
-  /* Compact util chip row: Speed Pause Maps FAQ FX */
+  /* Compact util chip row: Speed Pause Maps FAQ */
   #util-btns {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -1181,13 +1188,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#eab308">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#78716c">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="muted">Steel</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#ea580c">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. Sniper strong. <span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#eab308">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#78716c">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="muted">Steel</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#ea580c">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. Sniper strong. <span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>Counters</h3>
@@ -1207,7 +1214,7 @@
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower (with Upgrade/Sell) cycles that tower’s First / Strong / Close targeting. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x. <strong>FX</strong> on the util row mutes particles.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower (with Upgrade/Sell) cycles that tower’s First / Strong / Close targeting. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1246,7 +1253,6 @@
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
       <button type="button" class="util-btn" id="btn-change-map" disabled>Maps</button>
       <button type="button" class="util-btn" id="btn-faq" title="FAQ">FAQ</button>
-      <button type="button" class="util-btn" id="btn-juice" title="Toggle particles &amp; shake">FX On</button>
     </div>
     <div id="wave-btns">
       <button type="button" class="wave-btn" id="btn-next-wave">Next Wave</button>
@@ -1255,7 +1261,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 64</div>
+    <div id="build-ver">build 65</div>
   </div>
 </div>
 
@@ -1276,7 +1282,6 @@
   const LS_BEST_WIN = 'pg-best-win'; // lives remaining on best win
   const LS_TARGET = 'pg-target-mode';
   const LS_HARD = 'pg-hard-mode';
-  const LS_JUICE = 'pg-juice';
   const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs } }
   const LS_ACH = 'pg-achievements'; // { maps:{}, hardWin, titanKill }
   const LS_UX_TIP = 'pg-ux-tip-v42';
@@ -1541,7 +1546,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=64`;
+    img.src = `./sprites/${name}.png?v=65`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1596,7 +1601,7 @@
     gameSpeed: 1,
     paused: false,
     waveLivesStart: START_LIVES,
-    juice: true,
+    juice: true, // always on (FX toggle removed in build 65)
     runStartedAt: 0,
     counterToastLast: Object.create(null),
     counterToastHide: 0,
@@ -1643,7 +1648,6 @@
     faqClose: document.getElementById('faq-close'),
     faqTowers: document.getElementById('faq-towers'),
     controls: document.getElementById('controls'),
-    btnJuice: document.getElementById('btn-juice'),
     btnAim: document.getElementById('btn-aim'),
     towerStats: document.getElementById('tower-stats'),
     onboardTip: document.getElementById('onboard-tip'),
@@ -1736,23 +1740,8 @@
         if (el.hardMode) el.hardMode.checked = false;
       }
     } catch (_) {}
-    try {
-      const j = localStorage.getItem(LS_JUICE);
-      if (j === '0' || j === 'false') state.juice = false;
-      else if (j === '1' || j === 'true') state.juice = true;
-      // leave default true if unset
-    } catch (_) {}
-    // Reflect FX button immediately (HUD may run before listeners)
-    try {
-      if (el.btnJuice) {
-        el.btnJuice.textContent = state.juice === false ? 'FX Off' : 'FX On';
-        el.btnJuice.classList.toggle('active', state.juice !== false);
-      }
-    } catch (_) {}
-  }
-
-  function saveJuice(on) {
-    try { localStorage.setItem(LS_JUICE, on ? '1' : '0'); } catch (_) {}
+    // Build 65: particles/shake always on (no FX toggle)
+    state.juice = true;
   }
 
   function saveDefaultTargetMode() {
@@ -2161,7 +2150,7 @@
         el.towerStats.innerHTML = `<strong>${st.name} L${tw.level}</strong> · ${curStats}${hitBit}${weakBit} · ${nextBit}`;
         el.towerStats.classList.add('show');
       } else {
-        // Build 64: bar type select uses inline .tower-menu-info only — no #tower-stats below
+        // Build 65: bar type select uses inline .tower-menu-info only — no #tower-stats below
         el.towerStats.classList.remove('show');
         el.towerStats.innerHTML = '';
       }
@@ -2189,10 +2178,6 @@
     el.btnSpeed.classList.toggle('active', state.gameSpeed > 1);
     el.btnPause.textContent = state.paused ? 'Resume' : 'Pause';
     el.btnPause.classList.toggle('active', state.paused);
-    if (el.btnJuice) {
-      el.btnJuice.textContent = state.juice === false ? 'FX Off' : 'FX On';
-      el.btnJuice.classList.toggle('active', state.juice !== false);
-    }
     if (el.btnChangeMap) {
       // Enabled whenever a map is in play; disabled only on map-select overlay.
       el.btnChangeMap.disabled = !state.mapPicked;
@@ -2451,7 +2436,7 @@
   }
 
   function titanDeathFanfare(x, y) {
-    // Floats always (readable even with FX muted); particles/rings respect mute
+    // Floats always; particles/rings follow juice (always on since build 65)
     addFloat(x, y - 40, 'TITAN DOWN!', '#fecaca', 2.8);
     addFloat(x, y - 62, 'BOSS FELLED', '#fde68a', 2.4);
     shakeScreen();
@@ -3201,7 +3186,7 @@
       closeTowerTip();
       closeTowerDetail();
     } else {
-      // Build 64: details live in inline .tower-menu-info — keep hint short
+      // Build 65: details live in inline .tower-menu-info — keep hint short
       el.hint.textContent = 'Tap a build tile to place · tap tower or × to cancel';
       showTowerTip(type);
     }
@@ -3220,7 +3205,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=64" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=65" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3230,19 +3215,49 @@
     return btn;
   }
 
+  function towerMenuInfoStatLines(towerType) {
+    const def = TOWER_DEFS[towerType];
+    if (!def) return [];
+    const st = towerStats({ type: towerType, level: 1 });
+    const lines = [`Cost: ${def.cost} gold`];
+    if (st.haltOnly || (st.pathOnly && st.stunDur > 0)) {
+      const halt = st.stunDur % 1 ? st.stunDur.toFixed(1) : String(Math.round(st.stunDur));
+      const cd = st.stunCooldown % 1 ? st.stunCooldown.toFixed(1) : String(Math.round(st.stunCooldown));
+      lines.push(`Halt: ${halt}s`);
+      lines.push(`Cooldown: ${cd}s`);
+    } else if (st.incomeOnly || (st.incomePerWave > 0 && st.supportOnly)) {
+      lines.push(`Income: +${st.incomePerWave}gold/wave`);
+    } else if (towerType === 'fire') {
+      const dps = st.flameDps || (st.damage / Math.max(0.05, st.fireRate));
+      const dpsStr = Math.abs(dps - Math.round(dps)) < 0.05 ? String(Math.round(dps)) : dps.toFixed(1);
+      lines.push(`DPS: ${dpsStr}`);
+      lines.push(`Flame length: ${Math.round(st.range)}`);
+    } else {
+      lines.push(`Dmg: ${st.damage}`);
+      const sps = 1 / Math.max(0.05, st.fireRate);
+      lines.push(`Shots/sec: ${sps.toFixed(2)}`);
+    }
+    return lines;
+  }
+
   function appendInlineTowerInfo(box, towerType) {
     const def = TOWER_DEFS[towerType];
     if (!def) return;
     const info = document.createElement('div');
     info.className = 'tower-menu-info';
     info.setAttribute('role', 'status');
+    const statHtml = towerMenuInfoStatLines(towerType)
+      .map((line, i) => `<span class="tip-line${i === 0 ? ' tip-cost' : ''}">${line}</span>`)
+      .join('');
     info.innerHTML = `
       <div class="tip-main">
-        <span class="tip-name">${def.name}</span><span class="tip-cost">${def.cost}g</span>
-        <span class="tip-role">${towerRoleLine(towerType)}</span>
+        <span class="tip-name">${def.name}</span>
+        ${statHtml}
       </div>
-      <button type="button" class="tip-info" title="Full tower info">?</button>
-      <button type="button" class="tip-x" title="Dismiss">×</button>`;
+      <div class="tip-actions">
+        <button type="button" class="tip-info" title="Full tower info">?</button>
+        <button type="button" class="tip-x" title="Dismiss">×</button>
+      </div>`;
     const infoBtn = info.querySelector('.tip-info');
     const xBtn = info.querySelector('.tip-x');
     infoBtn.addEventListener('pointerdown', (e) => {
@@ -3496,18 +3511,6 @@
     el.hint.textContent = state.paused ? 'Paused' : (state.started ? 'Resumed' : 'Ready');
     updateHUD();
   });
-
-  if (el.btnJuice) {
-    el.btnJuice.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      state.juice = !(state.juice !== false);
-      saveJuice(!!state.juice);
-      el.hint.textContent = state.juice
-        ? 'FX on — juice restored'
-        : 'FX muted — particles & screen shake off';
-      updateHUD();
-    });
-  }
 
   if (el.btnAim) {
     el.btnAim.addEventListener('pointerdown', (e) => {
@@ -3764,7 +3767,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=64`;
+    return `./sprites/${spr}.png?v=65`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -5592,7 +5595,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v64';
+  const BOOT = 'pg-boot-v65';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
