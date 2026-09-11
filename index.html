@@ -836,10 +836,11 @@
     text-align: center; font-size: 10px; color: #94a3b8; min-height: 12px; margin-top: 0;
   }
   #wave-preview.hot { color: #fecaca; font-weight: 700; }
+  /* Build 66: FAQ overhaul — opaque overlay + tower cards for phone */
   #faq-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 20, 25, 0.96);
+    background: rgba(8, 12, 18, 0.985);
     display: none;
     flex-direction: column;
     align-items: stretch;
@@ -890,13 +891,19 @@
   #faq-overlay .faq-sec p, #faq-overlay .faq-item {
     color: #cbd5e1;
     font-size: 0.78rem;
-    line-height: 1.4;
+    line-height: 1.45;
     margin: 0 0 6px;
+    max-width: 100%;
+  }
+  #faq-overlay .faq-sec p {
+    display: block;
+    width: 100%;
   }
   #faq-overlay .faq-item {
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    width: 100%;
   }
   #faq-overlay .faq-item .faq-enemy-icon {
     width: 44px;
@@ -909,6 +916,67 @@
   #faq-overlay .faq-item .faq-enemy-text { flex: 1; min-width: 0; }
   #faq-overlay .faq-item strong { color: #f8fafc; }
   #faq-overlay .faq-item .muted { color: #94a3b8; font-weight: 600; }
+  #faq-overlay .faq-color-swatch {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    margin: 0 4px 0 2px;
+    vertical-align: middle;
+    border: 1px solid rgba(248, 250, 252, 0.35);
+  }
+  #faq-overlay .faq-tower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+  #faq-overlay .faq-tower-card {
+    padding: 8px 9px;
+    border: 1px solid #475569;
+    border-radius: 9px;
+    background: rgba(30, 41, 59, 0.72);
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    min-width: 0;
+  }
+  #faq-overlay .faq-tower-card-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+  #faq-overlay .faq-tower-icon {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  #faq-overlay .faq-tower-card strong {
+    color: #f8fafc;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+  #faq-overlay .faq-tower-cost {
+    color: #fbbf24;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  #faq-overlay .faq-tower-role {
+    color: #e2e8f0;
+    margin-bottom: 2px;
+  }
+  #faq-overlay .faq-tower-cant {
+    color: #f87171;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  #faq-overlay .faq-tower-stats {
+    color: #94a3b8;
+    font-weight: 600;
+  }
   #faq-map-btn {
     appearance: none;
     border: 1px solid #334155;
@@ -1188,33 +1256,33 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#eab308">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#78716c">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="muted">Steel</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#ea580c">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. Sniper strong. <span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=65" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=66" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
-        <h3>Counters</h3>
-        <div class="faq-item">Soft packs (Grunt / Scout) → use Marksman or Fire.</div>
-        <div class="faq-item">Armored (Shell / Titan) → use Cannon, Sniper, or Lightning. Archer can't hurt Shell or Titan; Crossbow is weak on armor.</div>
-        <div class="faq-item">Scout → don't use Frost or Lightning (they can't hurt Scouts).</div>
-        <div class="faq-item">Brute / Raider → use Sniper or Lightning.</div>
-        <div class="faq-item">Skitter → avoid relying on Fire flame/DoT alone (50% resist).</div>
+        <h3>What to build vs enemies</h3>
+        <div class="faq-item">Soft packs (Grunt / Scout): use Marksman or Fire.</div>
+        <div class="faq-item">Armored (Shell / Titan): use Cannon, Sniper, or Lightning. Archer can't hurt Shell or Titan; Crossbow is weak on armor.</div>
+        <div class="faq-item">Scout: don't use Frost or Lightning — they can't hurt Scouts.</div>
+        <div class="faq-item">Brute / Raider: use Sniper or Lightning.</div>
+        <div class="faq-item">Skitter: don't rely on Fire flame alone (50% resist).</div>
         <div class="faq-item">Support: Barrier stops the path for a few seconds; Bank pays gold each wave clear.</div>
-        <div class="faq-item">Build bar order is <strong>Marksman / Elemental / Gunnery / Support</strong> (tap a category, then a tower; ← Back returns). Towers skip enemies they can't hurt. Tap a tower type for full stats and who it can't hit. New enemies get a one-time intro card.</div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
         <p>Pick a map, place towers on green <strong>+</strong> tiles (build grid). <strong>Barrier</strong> goes on the path itself (amber tiles). Tap a placed tower to upgrade or sell (sell asks confirm). <strong>Double-tap</strong> a tower to upgrade fast.</p>
-        <p><strong>Next Wave</strong> starts the next round. <strong>Auto: On</strong> chains waves after a short pause — use Next for build breaks.</p>
-        <p>Later waves get denser and tougher (especially around 5 / 10 / 15 / 20 / 25 / 30 / 35 / 40). Gold comes from kills and <strong>Bank</strong> income on wave clear — no early-call, interest, or clear bonuses.</p>
+        <p><strong>Next Wave</strong> starts the next round.</p>
+        <p><strong>Auto: On</strong> automatically starts the next wave.</p>
+        <p>Later waves get denser and tougher (especially around 5 / 10 / 15 / 20 / 25 / 30 / 35 / 40). Gold comes from kills and <strong>Bank</strong> income on wave clear.</p>
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower (with Upgrade/Sell) cycles that tower’s First / Strong / Close targeting. <strong>Barrier</strong> = path halt 3s + CD. <strong>Bank</strong> = income each wave clear. <strong>Speed</strong> 1x→2x→3x→5x.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1261,7 +1329,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 65</div>
+    <div id="build-ver">build 66</div>
   </div>
 </div>
 
@@ -1546,7 +1614,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=65`;
+    img.src = `./sprites/${name}.png?v=66`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3205,7 +3273,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=65" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=66" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3376,32 +3444,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const catWord = CAT_LABEL[def.category] || '';
-    if (def.incomeOnly) {
-      const l5 = def.incomePerWave + 4;
-      return `<div class="faq-item"><strong>${def.name}</strong> · ${catWord} · ${def.cost}g — Income +${def.incomePerWave}–${l5}g/wave (no shots).</div>`;
-    }
-    if (def.haltOnly || def.pathOnly) {
-      const cd = def.stunCooldown;
-      return `<div class="faq-item"><strong>${def.name}</strong> · ${catWord} · ${def.cost}g — Path only. Halt ${def.stunDur}s, then ${cd}s ignore CD.</div>`;
-    }
-    const bits = [];
-    if (type === 'fire') {
-      const dps = def.fireRate > 0 ? (def.damage / def.fireRate) : def.damage;
-      bits.push(`DPS ~${dps.toFixed(1)}`);
-      bits.push(`flame ${def.range}`);
-      bits.push(`width ${def.flameWidth || 20}`);
-    } else {
-      if (def.damage) bits.push(`dmg ${def.damage}`);
-      if (def.fireRate) bits.push(`rate ${def.fireRate}s`);
-      if (def.range >= 500) bits.push('map-wide');
-      else if (def.range) bits.push(`range ${def.range}`);
-      if (def.splashRadius) bits.push('splash');
-      if (def.multi) bits.push(`multi ×${def.multi}`);
-      if (def.slowMul) bits.push('slow shots');
-      if (def.auraRadius) bits.push('chill aura');
-      if (def.burnTicks) bits.push(`burn ×${def.burnTicks}`);
-    }
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=66" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'lightning' ? 'Chain targets'
@@ -3409,22 +3452,38 @@
       : type === 'fire' ? 'Constant flame stream'
       : type === 'crossbow' ? 'Mid marksman'
       : type === 'archer' ? 'Entry marksman'
+      : type === 'bank' ? 'Gold each wave clear'
+      : type === 'barrier' ? 'Path halt'
       : 'Tower';
-    const vs = enemyKindsVsTower(type);
-    let immuneBit = '';
-    if (vs.immune && vs.immune.length) {
-      const names = vs.immune.map((k) => (ENEMY_TYPES[k] && ENEMY_TYPES[k].name) || k).join(', ');
-      immuneBit = ` <span class="muted">Can't hurt: ${names}</span>`;
+    let stats = '';
+    if (def.incomeOnly) {
+      const l5 = def.incomePerWave + 4;
+      stats = `+${def.incomePerWave}–${l5}g/wave`;
+    } else if (def.haltOnly || def.pathOnly) {
+      stats = `Halt ${def.stunDur}s`;
+    } else if (type === 'fire') {
+      const dps = def.fireRate > 0 ? (def.damage / def.fireRate) : def.damage;
+      stats = `Fire DPS ~${dps.toFixed(1)}`;
     } else {
-      immuneBit = ' <span class="muted">No immunities</span>';
+      const sps = def.fireRate > 0 ? (1 / def.fireRate) : 0;
+      const spsStr = sps >= 10 ? sps.toFixed(0) : sps.toFixed(1);
+      stats = `${def.damage} dmg · ${spsStr}/s`;
     }
-    return `<div class="faq-item"><strong>${def.name}</strong> · ${catWord} · ${def.cost}g — ${role}.${immuneBit} <span class="muted">${bits.join(' · ')}</span></div>`;
+    let cant = '';
+    if (!(def.incomeOnly || def.haltOnly || def.pathOnly)) {
+      const vs = enemyKindsVsTower(type);
+      if (vs.immune && vs.immune.length) {
+        const names = vs.immune.map((k) => (ENEMY_TYPES[k] && ENEMY_TYPES[k].name) || k).join(', ');
+        cant = `<div class="faq-tower-cant">Can't hurt: ${names}</div>`;
+      }
+    }
+    return `<div class="faq-tower-card"><div class="faq-tower-card-head">${icon}<strong>${def.name}</strong></div><div class="faq-tower-cost">${def.cost}g</div><div class="faq-tower-role">${role}</div>${cant}<div class="faq-tower-stats">${stats}</div></div>`;
   }
 
   function fillFaqTowers() {
     if (!el.faqTowers) return;
     const ordered = TOWER_ORDER.filter((t) => TOWER_DEFS[t]);
-    el.faqTowers.innerHTML = '<h3>Towers</h3><div class="faq-item muted">Build bar: Marksman / Elemental / Gunnery / Support — tap a category, then a tower (← Back).</div>' + ordered.map(towerFaqBlurb).join('');
+    el.faqTowers.innerHTML = '<h3>Towers</h3><div class="faq-tower-grid">' + ordered.map(towerFaqBlurb).join('') + '</div>';
   }
 
   function openFaq() {
@@ -3767,7 +3826,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=65`;
+    return `./sprites/${spr}.png?v=66`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -5595,7 +5654,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v65';
+  const BOOT = 'pg-boot-v66';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
