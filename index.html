@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 56 -->
+<!-- path-guard-build: 57 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -246,48 +246,116 @@
   #tower-detail .sec-label.ok { color: #86efac; }
   #tower-detail .row, #enemy-intro .row {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    flex-wrap: nowrap;
     gap: 8px;
     margin-bottom: 10px;
   }
   #tower-detail .chip, #enemy-intro .chip {
     display: flex;
     align-items: center;
-    gap: 6px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 6px 8px;
-    font-size: 0.78rem;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid #475569;
+    border-radius: 12px;
+    padding: 10px 12px;
+    min-height: 44px;
+    font-size: 1.05rem;
     font-weight: 800;
-    color: #e2e8f0;
+    color: #f8fafc;
+    width: 100%;
   }
   #tower-detail .chip.bad { border-color: #f87171; color: #fecaca; }
   #tower-detail .chip.ok { border-color: #4ade80; color: #bbf7d0; }
-  #tower-detail .chip img, #enemy-intro .chip img, #enemy-intro .hero-img {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
-    image-rendering: pixelated;
+  #tower-detail .chip .swatch, #enemy-intro .chip .swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.35);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
+  }
+  #tower-detail .chip .chip-name {
+    flex: 1;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
   }
   #enemy-intro .hero {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 4px 0 10px;
+    margin: 4px 0 12px;
+    text-align: center;
   }
-  #enemy-intro .hero-img {
-    width: 96px;
-    height: 96px;
-    margin-bottom: 6px;
+  #enemy-intro .hero-swatch {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 3px solid rgba(255,255,255,0.4);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(0,0,0,0.25);
+  }
+  #enemy-intro h2 {
+    font-size: 1.55rem;
+    font-weight: 900;
+  }
+  #enemy-intro .blurb {
+    font-size: 1rem;
+    color: #e2e8f0;
+    line-height: 1.4;
+    margin: 0 0 14px;
+    text-align: center;
+  }
+  #enemy-intro .sec-label {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
   }
   #enemy-intro .immune-list {
-    font-size: 0.88rem;
-    color: #fecaca;
-    font-weight: 800;
-    margin: 0 0 12px;
-    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+  #enemy-intro .immune-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: #f8fafc;
+    border: 2px solid transparent;
+    text-align: center;
+    line-height: 1.2;
+  }
+  #enemy-intro .immune-pill.cat-marksman {
+    background: rgba(34, 197, 94, 0.22);
+    border-color: #4ade80;
+    color: #bbf7d0;
+  }
+  #enemy-intro .immune-pill.cat-elemental {
+    background: rgba(56, 189, 248, 0.22);
+    border-color: #38bdf8;
+    color: #bae6fd;
+  }
+  #enemy-intro .immune-pill.cat-gunnery {
+    background: rgba(251, 146, 60, 0.22);
+    border-color: #fb923c;
+    color: #fed7aa;
+  }
+  #enemy-intro .immune-pill.cat-support {
+    background: rgba(168, 85, 247, 0.22);
+    border-color: #c084fc;
+    color: #e9d5ff;
+  }
+  #enemy-intro .immune-none {
+    font-size: 1rem;
+    color: #94a3b8;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
   }
   #tower-detail .close-btn, #enemy-intro .close-btn {
     appearance: none;
@@ -854,12 +922,12 @@
     <div id="enemy-intro" aria-hidden="true">
       <div class="card" id="enemy-intro-card" role="dialog" aria-labelledby="enemy-intro-title">
         <div class="hero">
-          <img class="hero-img" id="enemy-intro-img" alt="" width="96" height="96">
+          <div class="hero-swatch" id="enemy-intro-swatch" aria-hidden="true"></div>
           <h2 id="enemy-intro-title">Enemy</h2>
         </div>
         <p class="blurb" id="enemy-intro-blurb"></p>
         <div class="sec-label bad">Immune to</div>
-        <p class="immune-list" id="enemy-intro-immune"></p>
+        <div class="immune-list" id="enemy-intro-immune"></div>
         <button type="button" class="close-btn" id="enemy-intro-close">Got it</button>
       </div>
     </div>
@@ -1032,7 +1100,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 56</div>
+    <div id="build-ver">build 57</div>
   </div>
 </div>
 
@@ -1308,7 +1376,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=56`;
+    img.src = `./sprites/${name}.png?v=57`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1391,7 +1459,7 @@
     towerDetailX: document.getElementById('tower-detail-x'),
     enemyIntro: document.getElementById('enemy-intro'),
     enemyIntroTitle: document.getElementById('enemy-intro-title'),
-    enemyIntroImg: document.getElementById('enemy-intro-img'),
+    enemyIntroSwatch: document.getElementById('enemy-intro-swatch'),
     enemyIntroBlurb: document.getElementById('enemy-intro-blurb'),
     enemyIntroImmune: document.getElementById('enemy-intro-immune'),
     enemyIntroClose: document.getElementById('enemy-intro-close'),
@@ -3338,14 +3406,16 @@
   }
 
   function towersImmuneToKind(kind) {
-    const names = [];
+    const list = [];
     for (const type of TOWER_ORDER) {
       const def = TOWER_DEFS[type];
       if (!def || def.supportOnly) continue;
       const info = categoryDamageInfo(type, def.category, { kind });
-      if (info.immune || info.mul <= 0) names.push(def.name);
+      if (info.immune || info.mul <= 0) {
+        list.push({ name: def.name, category: def.category || 'support', type });
+      }
     }
-    return names;
+    return list;
   }
 
   function towerRoleLine(type) {
@@ -3362,27 +3432,26 @@
   }
 
   const ENEMY_INTRO_BLURB = {
-    normal: 'Basic foot soldier. Soft and steady — early towers chew through them.',
-    fast: 'Fast and slippery. Frost and Lightning cannot hurt Scouts.',
-    skitter: 'Quick pest. Takes half damage from splash and Fire burn.',
-    shell: 'Steel armor. Archer shots bounce off; bring Gunnery or Lightning.',
-    tank: 'High HP, slow march. Lightning and Sniper punch through.',
-    raider: 'Fast and tough. Sniper shines; keep pressure on.',
-    titan: 'Boss armor. Wave 20 mid-fight and Wave 40 finale. Gunnery and Lightning.',
+    normal: 'Soft early fodder — basic towers chew them up.',
+    fast: 'Fast and slippery; Frost and Lightning cannot hurt them.',
+    skitter: 'Quick pest; half damage from splash and Fire burn.',
+    shell: 'Steel armor — Archer immune; use Gunnery or Lightning.',
+    tank: 'High HP, slow march — punch with Lightning or Sniper.',
+    raider: 'Fast and tough — Sniper and sustained fire shine.',
+    titan: 'Boss armor on waves 20 and 40 — Gunnery and Lightning.',
   };
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=56`;
+    return `./sprites/${spr}.png?v=57`;
   }
 
   function enemyChipHtml(kind, mode) {
     const et = ENEMY_TYPES[kind];
     const name = (et && et.name) || kind;
-    const src = spriteUrlForEnemy(kind);
+    const color = (et && et.color) || '#94a3b8';
     const cls = mode === 'bad' ? 'chip bad' : 'chip ok';
-    const mark = mode === 'bad' ? ' ✕' : ' ✓';
-    return `<div class="${cls}"><img src="${src}" alt="" width="36" height="36"><span>${name}${mark}</span></div>`;
+    return `<div class="${cls}"><span class="swatch" style="background:${color}" aria-hidden="true"></span><span class="chip-name">${name}</span></div>`;
   }
 
   function closeTowerDetail() {
@@ -3545,24 +3614,22 @@
     const kind = state.enemyIntroQueue[0];
     const et = ENEMY_TYPES[kind];
     const name = (et && et.name) || kind;
-    const immuneNames = towersImmuneToKind(kind);
+    const immuneTowers = towersImmuneToKind(kind);
     if (el.enemyIntroTitle) el.enemyIntroTitle.textContent = name;
-    if (el.enemyIntroImg) {
-      el.enemyIntroImg.src = spriteUrlForEnemy(kind);
-      el.enemyIntroImg.alt = name;
+    if (el.enemyIntroSwatch) {
+      el.enemyIntroSwatch.style.background = (et && et.color) || '#94a3b8';
     }
     if (el.enemyIntroBlurb) {
       el.enemyIntroBlurb.textContent = ENEMY_INTRO_BLURB[kind] || `${name} enters the path.`;
     }
     if (el.enemyIntroImmune) {
-      if (!immuneNames.length) {
-        el.enemyIntroImmune.textContent = 'No full tower immunities.';
-      } else if (immuneNames.length === 1) {
-        el.enemyIntroImmune.textContent = `Immune to ${immuneNames[0]} shots`;
-      } else if (immuneNames.length === 2) {
-        el.enemyIntroImmune.textContent = `Immune to ${immuneNames[0]} and ${immuneNames[1]}`;
+      if (!immuneTowers.length) {
+        el.enemyIntroImmune.innerHTML = '<p class="immune-none">No full tower immunities.</p>';
       } else {
-        el.enemyIntroImmune.textContent = `Immune to ${immuneNames.slice(0, -1).join(', ')}, and ${immuneNames[immuneNames.length - 1]}`;
+        el.enemyIntroImmune.innerHTML = immuneTowers.map((t) => {
+          const cat = t.category || 'support';
+          return `<div class="immune-pill cat-${cat}">${t.name}</div>`;
+        }).join('');
       }
     }
     state.enemyIntroOpen = true;
@@ -5009,7 +5076,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v56';
+  const BOOT = 'pg-boot-v57';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
