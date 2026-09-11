@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 55 -->
+<!-- path-guard-build: 56 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
@@ -319,6 +319,32 @@
     font-size: 0.8rem;
     color: #94a3b8;
     margin: 0 0 8px;
+  }
+  #tower-detail-stats {
+    display: grid;
+    gap: 4px;
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid #334155;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: #e2e8f0;
+  }
+  #tower-detail-stats .stat-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+  #tower-detail-stats .stat-k {
+    color: #94a3b8;
+    font-weight: 800;
+    min-width: 7.5em;
+  }
+  #tower-detail-stats .stat-v {
+    color: #f1f5f9;
+    font-weight: 700;
   }
   #counter-toast {
     position: absolute;
@@ -819,10 +845,9 @@
           <button type="button" class="head-close" id="tower-detail-x">Close</button>
         </div>
         <p class="role" id="tower-detail-role"></p>
+        <div id="tower-detail-stats" aria-label="Tower combat stats"></div>
         <div class="sec-label bad" id="tower-detail-immune-label">Can't hit</div>
         <div class="row" id="tower-detail-immune"></div>
-        <div class="sec-label ok" id="tower-detail-can-label">Can hit</div>
-        <div class="row" id="tower-detail-can"></div>
         <button type="button" class="close-btn" id="tower-detail-close">Got it</button>
       </div>
     </div>
@@ -899,7 +924,7 @@
         <div class="faq-item"><strong>Elemental</strong> — Frost (dmg+slow, Scout Immune) · Fire (burn/splash, Skitter resist, weak armor) · Lightning (chain, Scout Immune, strong vs armor).</div>
         <div class="faq-item"><strong>Gunnery</strong> — Cannon splash vs Shell clusters · Sniper map-wide pierce vs Brute/Raider/Shell/Titan.</div>
         <div class="faq-item"><strong>Support</strong> — Barrier path halt · Bank income. No damage.</div>
-        <div class="faq-item">Towers skip enemies they are Immune to (no wasted shots). Tap a tower type for a big card showing who it can't hit. New enemies get a one-time intro card.</div>
+        <div class="faq-item">Towers skip enemies they are Immune to (no wasted shots). Tap a tower type for a big card with full combat stats and who it can't hit. New enemies get a one-time intro card.</div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
@@ -1007,7 +1032,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 55</div>
+    <div id="build-ver">build 56</div>
   </div>
 </div>
 
@@ -1283,7 +1308,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=55`;
+    img.src = `./sprites/${name}.png?v=56`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1359,10 +1384,9 @@
     towerDetailTitle: document.getElementById('tower-detail-title'),
     towerDetailMeta: document.getElementById('tower-detail-meta'),
     towerDetailRole: document.getElementById('tower-detail-role'),
+    towerDetailStats: document.getElementById('tower-detail-stats'),
     towerDetailImmune: document.getElementById('tower-detail-immune'),
-    towerDetailCan: document.getElementById('tower-detail-can'),
     towerDetailImmuneLabel: document.getElementById('tower-detail-immune-label'),
-    towerDetailCanLabel: document.getElementById('tower-detail-can-label'),
     towerDetailClose: document.getElementById('tower-detail-close'),
     towerDetailX: document.getElementById('tower-detail-x'),
     enemyIntro: document.getElementById('enemy-intro'),
@@ -3349,7 +3373,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=55`;
+    return `./sprites/${spr}.png?v=56`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -3369,6 +3393,68 @@
     }
   }
 
+  function towerDetailStatLine(label, value) {
+    return `<div class="stat-line"><span class="stat-k">${label}</span><span class="stat-v">${value}</span></div>`;
+  }
+
+  function towerDetailStatsHtml(towerType, placedTw) {
+    const def = TOWER_DEFS[towerType];
+    if (!def) return '';
+    const tw = placedTw || { type: towerType, level: 1 };
+    const st = towerStats(tw);
+    const catWord = CAT_LABEL[def.category] || def.category || '—';
+    const lines = [];
+    lines.push(towerDetailStatLine('Category', catWord));
+    lines.push(towerDetailStatLine('Gold cost', `${def.cost}g`));
+    if (placedTw) {
+      const lv = placedTw.level || 1;
+      lines.push(towerDetailStatLine('Level', String(lv)));
+      const up = upgradeCostFor(placedTw);
+      lines.push(towerDetailStatLine('Upgrade', up == null ? 'MAX' : `${up}g`));
+    }
+    if (st.haltOnly || (st.pathOnly && st.stunDur > 0)) {
+      lines.push(towerDetailStatLine('Halt', `${st.stunDur.toFixed(1)}s`));
+      lines.push(towerDetailStatLine('Cooldown', `${st.stunCooldown.toFixed(1)}s`));
+      lines.push(towerDetailStatLine('Catch radius', String(Math.round(st.hitRadius || 0))));
+      lines.push(towerDetailStatLine('Placement', 'Path only'));
+      return lines.join('');
+    }
+    if (st.incomeOnly || (st.incomePerWave > 0 && st.supportOnly)) {
+      lines.push(towerDetailStatLine('Income', `+${st.incomePerWave}g per wave clear`));
+      return lines.join('');
+    }
+    lines.push(towerDetailStatLine('Damage', String(st.damage)));
+    const interval = st.fireRate;
+    const sps = interval > 0 ? (1 / interval) : 0;
+    lines.push(towerDetailStatLine('Fire rate', `Shot every ${interval.toFixed(2)}s · ~${sps.toFixed(2)} shots/sec`));
+    const rangeLabel = st.range >= 500 ? 'Map-wide' : String(Math.round(st.range));
+    lines.push(towerDetailStatLine('Range', rangeLabel));
+    if (st.splashRadius) {
+      const pct = Math.round((st.splashMul || 0) * 100);
+      lines.push(towerDetailStatLine('Splash', `Radius ${Math.round(st.splashRadius)} · ~${pct}% damage`));
+    }
+    if (st.multi) {
+      const label = towerType === 'lightning' ? 'Chain' : 'Multi';
+      lines.push(towerDetailStatLine(label, `${st.multi} targets · ${Math.round((st.multiFalloff || 0.7) * 100)}% falloff`));
+    }
+    if (st.slowMul) {
+      const slowPct = Math.round((1 - st.slowMul) * 100);
+      lines.push(towerDetailStatLine('Slow', `${slowPct}% for ${st.slowDur.toFixed(1)}s`));
+    }
+    if (st.auraRadius && st.auraSlow) {
+      const chill = Math.round((1 - st.auraSlow) * 100);
+      lines.push(towerDetailStatLine('Chill aura', `Radius ${Math.round(st.auraRadius)} · ~${chill}% slow`));
+    }
+    if (st.burnTicks) {
+      const burnPct = Math.round((st.burnMul || 0) * 100);
+      lines.push(towerDetailStatLine('Burn', `${st.burnTicks} ticks · ~${burnPct}% of hit each`));
+    }
+    if (towerType === 'sniper' || towerType === 'lightning') {
+      lines.push(towerDetailStatLine('Armor', 'Pierce (ignores enemy armor)'));
+    }
+    return lines.join('');
+  }
+
   function openTowerDetail(towerType, placedTw) {
     const def = TOWER_DEFS[towerType];
     if (!def || !el.towerDetail) return;
@@ -3386,28 +3472,17 @@
         : `${catWord} · ${def.cost}g`;
     }
     if (el.towerDetailRole) el.towerDetailRole.textContent = towerRoleLine(towerType);
+    if (el.towerDetailStats) el.towerDetailStats.innerHTML = towerDetailStatsHtml(towerType, placedTw);
     if (el.towerDetailImmune) {
       if (vs.support) {
         el.towerDetailImmune.innerHTML = '';
         if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = 'none';
       } else if (!vs.immune.length) {
-        el.towerDetailImmune.innerHTML = '<p class="empty-note">No full immunities — can shoot every kind (some may resist).</p>';
+        el.towerDetailImmune.innerHTML = '<p class="empty-note">Hits everything (no immunities).</p>';
         if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = '';
       } else {
         el.towerDetailImmune.innerHTML = vs.immune.map((k) => enemyChipHtml(k, 'bad')).join('');
         if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = '';
-      }
-    }
-    if (el.towerDetailCan) {
-      if (vs.support) {
-        el.towerDetailCan.innerHTML = `<p class="empty-note">${def.hits || 'Support — no damage shots.'}</p>`;
-        if (el.towerDetailCanLabel) el.towerDetailCanLabel.textContent = 'Role';
-      } else {
-        const hitKinds = vs.canHit.concat(vs.resisted);
-        el.towerDetailCan.innerHTML = hitKinds.length
-          ? hitKinds.map((k) => enemyChipHtml(k, 'ok')).join('')
-          : '<p class="empty-note">—</p>';
-        if (el.towerDetailCanLabel) el.towerDetailCanLabel.textContent = 'Can hit';
       }
     }
     el.towerDetail.classList.add('show');
@@ -4934,7 +5009,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v55';
+  const BOOT = 'pg-boot-v56';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
