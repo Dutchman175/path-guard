@@ -132,37 +132,38 @@
     gap: 3px;
   }
   #controls.pre-map { display: none; }
-  /* Build 62: compact tip when a bar tower type is selected */
-  #tower-tip {
-    display: none;
+  /* Build 64: inline info in tower row (replaces other tower buttons) */
+  #tower-btns .tower-menu-info {
+    display: flex;
     align-items: center;
     gap: 6px;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 76px;
     padding: 5px 6px;
     border-radius: 8px;
     background: #1e293b;
     border: 1px solid #334155;
-    min-height: 0;
+    box-sizing: border-box;
   }
-  #tower-tip.show {
-    display: flex;
-  }
-  #tower-tip .tip-main {
+  #tower-btns .tower-menu-info .tip-main {
     flex: 1;
     min-width: 0;
     line-height: 1.15;
+    text-align: left;
   }
-  #tower-tip .tip-name {
+  #tower-btns .tower-menu-info .tip-name {
     font-size: 0.72rem;
     font-weight: 800;
     color: #e2e8f0;
   }
-  #tower-tip .tip-cost {
+  #tower-btns .tower-menu-info .tip-cost {
     font-size: 0.68rem;
     font-weight: 800;
     color: #fbbf24;
     margin-left: 4px;
   }
-  #tower-tip .tip-role {
+  #tower-btns .tower-menu-info .tip-role {
     display: block;
     font-size: 0.58rem;
     font-weight: 600;
@@ -172,8 +173,8 @@
     text-overflow: ellipsis;
     margin-top: 1px;
   }
-  #tower-tip .tip-info,
-  #tower-tip .tip-x {
+  #tower-btns .tower-menu-info .tip-info,
+  #tower-btns .tower-menu-info .tip-x {
     appearance: none;
     flex: 0 0 auto;
     border: 1px solid #475569;
@@ -185,7 +186,7 @@
     line-height: 1;
     padding: 0;
   }
-  #tower-tip .tip-info {
+  #tower-btns .tower-menu-info .tip-info {
     width: 28px;
     height: 28px;
     font-size: 0.85rem;
@@ -193,14 +194,23 @@
     color: #7dd3fc;
     background: #0c4a6e;
   }
-  #tower-tip .tip-x {
+  #tower-btns .tower-menu-info .tip-x {
     width: 26px;
     height: 26px;
     font-size: 0.75rem;
     color: #cbd5e1;
   }
-  #tower-tip .tip-info:active,
-  #tower-tip .tip-x:active { transform: scale(0.96); }
+  #tower-btns .tower-menu-info .tip-info:active,
+  #tower-btns .tower-menu-info .tip-x:active { transform: scale(0.96); }
+  #tower-btns.mode-towers.mode-tower-info {
+    overflow-x: hidden;
+  }
+  #tower-btns.mode-towers.mode-tower-info .tower-btn.in-cat {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 72px;
+    max-width: 96px;
+  }
   /* Single compact scrollable tower strip — frees a full row of height */
   #tower-btns {
     display: flex;
@@ -627,6 +637,10 @@
     #tower-btns.mode-towers .tower-btn.in-cat .ticon { width: 44px; height: 44px; }
     #tower-btns.mode-towers .tower-btn.back-btn {
       flex: 0 0 auto; width: 56px; min-width: 56px; max-width: 64px; min-height: 72px; font-size: 1.3rem;
+    }
+    #tower-btns .tower-menu-info { min-height: 72px; }
+    #tower-btns.mode-towers.mode-tower-info .tower-btn.in-cat {
+      min-width: 64px; max-width: 88px; min-height: 72px;
     }
   }
   #tower-stats {
@@ -1172,13 +1186,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#eab308">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#78716c">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="muted">Steel</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#ea580c">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. Sniper strong. <span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=63" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#22c55e">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#eab308">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#4ade80">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#78716c">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="muted">Steel</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#ea580c">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#7f1d1d">Raider</strong> — fast + tough. Sniper strong. <span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=64" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#450a0a">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>Counters</h3>
@@ -1212,14 +1226,6 @@
   </div>
 
   <div id="controls">
-    <div id="tower-tip" aria-hidden="true">
-      <div class="tip-main">
-        <span class="tip-name" id="tower-tip-name">Tower</span><span class="tip-cost" id="tower-tip-cost"></span>
-        <span class="tip-role" id="tower-tip-role"></span>
-      </div>
-      <button type="button" class="tip-info" id="tower-tip-info" title="Full tower info">?</button>
-      <button type="button" class="tip-x" id="tower-tip-x" title="Dismiss">×</button>
-    </div>
     <div id="tower-btns"></div>
     <div id="tower-stats" aria-live="polite"></div>
     <div id="tower-actions">
@@ -1257,7 +1263,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 63</div>
+    <div id="build-ver">build 64</div>
   </div>
 </div>
 
@@ -1544,7 +1550,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=63`;
+    img.src = `./sprites/${name}.png?v=64`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1608,7 +1614,7 @@
     enemyIntroOpen: false,
     towerDetailType: null,
     towerTipType: null,
-    towerMenuMode: 'categories', // categories | towers
+    towerMenuMode: 'categories', // categories | towers (info inline when selected)
     towerMenuCategory: null,
   };
 
@@ -1619,12 +1625,6 @@
     sel: document.querySelector('#sel .val'),
     hint: document.getElementById('hint'),
     counterToast: document.getElementById('counter-toast'),
-    towerTip: document.getElementById('tower-tip'),
-    towerTipName: document.getElementById('tower-tip-name'),
-    towerTipCost: document.getElementById('tower-tip-cost'),
-    towerTipRole: document.getElementById('tower-tip-role'),
-    towerTipInfo: document.getElementById('tower-tip-info'),
-    towerTipX: document.getElementById('tower-tip-x'),
     towerDetail: document.getElementById('tower-detail'),
     towerDetailTitle: document.getElementById('tower-detail-title'),
     towerDetailMeta: document.getElementById('tower-detail-meta'),
@@ -2178,18 +2178,8 @@
           : '';
         el.towerStats.innerHTML = `<strong>${st.name} L${tw.level}</strong> · ${curStats}${hitBit}${weakBit} · ${nextBit}`;
         el.towerStats.classList.add('show');
-      } else if (state.selected && TOWER_DEFS[state.selected]) {
-        const def = TOWER_DEFS[state.selected];
-        const catWord = CAT_LABEL[def.category] || '';
-        const ctr = towerCounterLines(def);
-        const hitBit = ctr.hits ? `<span class="hits">Hits: ${ctr.hits}</span>` : '';
-        const weakBit = (ctr.blocked && ctr.blocked !== '—')
-          ? ` · <span class="weak">Blocked: ${ctr.blocked}</span>`
-          : ' · <span class="hits">Blocked: none</span>';
-        const catBit = catWord ? ` · ${catWord}` : '';
-        el.towerStats.innerHTML = `<strong>${def.name}</strong>${catBit} · ${def.cost}g · ${hitBit}${weakBit}`;
-        el.towerStats.classList.add('show');
       } else {
+        // Build 64: bar type select uses inline .tower-menu-info only — no #tower-stats below
         el.towerStats.classList.remove('show');
         el.towerStats.innerHTML = '';
       }
@@ -3231,14 +3221,13 @@
     const deselect = state.selected === type;
     state.selected = deselect ? null : type;
     const def = TOWER_DEFS[type];
-    const catWord = CAT_LABEL[def.category] || '';
     if (!state.selected) {
       el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
       closeTowerTip();
       closeTowerDetail();
     } else {
-      const blocked = (def.blocked && def.blocked !== '—') ? def.blocked : 'none';
-      el.hint.textContent = `${def.name} · ${catWord} — ${def.cost}g · Blocked: ${blocked}`;
+      // Build 64: details live in inline .tower-menu-info — keep hint short
+      el.hint.textContent = 'Tap a build tile to place · tap tower or × to cancel';
       showTowerTip(type);
     }
     updateHUD();
@@ -3246,30 +3235,91 @@
 
   const TOWER_BAR_SPRITES = ['archer', 'crossbow', 'frost', 'fire', 'lightning', 'cannon', 'sniper', 'bank', 'barrier'];
 
+  function appendTowerTypeBtn(box, type) {
+    const def = TOWER_DEFS[type];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tower-btn in-cat';
+    btn.id = `btn-${type}`;
+    btn.dataset.type = type;
+    btn.title = towerBtnTitle(type);
+    let iconHtml;
+    if (TOWER_BAR_SPRITES.includes(type)) {
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=64" alt="" width="48" height="48">`;
+    } else {
+      iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
+    }
+    btn.innerHTML = `${iconHtml}<span class="tname">${def.name}</span><span class="cost">${def.cost}g</span>`;
+    btn.addEventListener('pointerdown', onTowerTypePointer);
+    box.appendChild(btn);
+    return btn;
+  }
+
+  function appendInlineTowerInfo(box, towerType) {
+    const def = TOWER_DEFS[towerType];
+    if (!def) return;
+    const info = document.createElement('div');
+    info.className = 'tower-menu-info';
+    info.setAttribute('role', 'status');
+    info.innerHTML = `
+      <div class="tip-main">
+        <span class="tip-name">${def.name}</span><span class="tip-cost">${def.cost}g</span>
+        <span class="tip-role">${towerRoleLine(towerType)}</span>
+      </div>
+      <button type="button" class="tip-info" title="Full tower info">?</button>
+      <button type="button" class="tip-x" title="Dismiss">×</button>`;
+    const infoBtn = info.querySelector('.tip-info');
+    const xBtn = info.querySelector('.tip-x');
+    infoBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openTowerDetail(towerType, null);
+    });
+    xBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      state.selected = null;
+      state.towerTipType = null;
+      closeTowerDetail();
+      el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
+      renderTowerBar();
+      updateHUD();
+    });
+    box.appendChild(info);
+  }
+
   function renderTowerBar() {
     const box = el.towerBtns;
     if (!box) return;
     const mode = state.towerMenuMode || 'categories';
+    const cat = state.towerMenuCategory;
+    const selectedInCat = !!(
+      mode === 'towers'
+      && state.selected
+      && TOWER_DEFS[state.selected]
+      && TOWER_DEFS[state.selected].category === cat
+    );
     box.innerHTML = '';
     box.classList.toggle('mode-towers', mode === 'towers');
     box.classList.toggle('mode-categories', mode !== 'towers');
+    box.classList.toggle('mode-tower-info', selectedInCat);
 
     if (mode !== 'towers') {
-      for (const cat of TOWER_CATEGORIES) {
+      for (const c of TOWER_CATEGORIES) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'tower-btn cat-btn';
-        btn.dataset.category = cat.id;
-        btn.title = `${cat.label} towers`;
-        btn.innerHTML = `${cat.icon}<span class="tname">${cat.label}</span>`;
-        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat.id);
+        btn.dataset.category = c.id;
+        btn.title = `${c.label} towers`;
+        btn.innerHTML = `${c.icon}<span class="tname">${c.label}</span>`;
+        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === c.id);
         const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
         if (allUnaffordable && state.mapPicked && !state.gameOver) btn.classList.add('dim');
         btn.addEventListener('pointerdown', (ev) => {
           ev.preventDefault();
           if (state.gameOver || !state.mapPicked) return;
           state.towerMenuMode = 'towers';
-          state.towerMenuCategory = cat.id;
+          state.towerMenuCategory = c.id;
           renderTowerBar();
           updateHUD();
         });
@@ -3285,32 +3335,23 @@
     back.innerHTML = `←<span class="tname">Back</span>`;
     back.addEventListener('pointerdown', (ev) => {
       ev.preventDefault();
+      state.selected = null;
+      state.towerTipType = null;
+      closeTowerDetail();
       state.towerMenuMode = 'categories';
       state.towerMenuCategory = null;
+      el.hint.textContent = 'Tap tiles to build · double-tap a tower to upgrade';
       renderTowerBar();
       updateHUD();
     });
     box.appendChild(back);
 
-    const cat = state.towerMenuCategory;
     const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat);
-    for (const type of types) {
-      const def = TOWER_DEFS[type];
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'tower-btn in-cat';
-      btn.id = `btn-${type}`;
-      btn.dataset.type = type;
-      btn.title = towerBtnTitle(type);
-      let iconHtml;
-      if (TOWER_BAR_SPRITES.includes(type)) {
-        iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=63" alt="" width="48" height="48">`;
-      } else {
-        iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
-      }
-      btn.innerHTML = `${iconHtml}<span class="tname">${def.name}</span><span class="cost">${def.cost}g</span>`;
-      btn.addEventListener('pointerdown', onTowerTypePointer);
-      box.appendChild(btn);
+    if (selectedInCat) {
+      appendTowerTypeBtn(box, state.selected);
+      appendInlineTowerInfo(box, state.selected);
+    } else {
+      for (const type of types) appendTowerTypeBtn(box, type);
     }
   }
 
@@ -3412,21 +3453,6 @@
   }
 
   function wireDetailOverlays() {
-    if (el.towerTipInfo) {
-      el.towerTipInfo.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const t = state.towerTipType || state.selected;
-        if (t) openTowerDetail(t, null);
-      });
-    }
-    if (el.towerTipX) {
-      el.towerTipX.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        closeTowerTip();
-      });
-    }
     const closeTd = (e) => {
       if (e) e.preventDefault();
       closeTowerDetail();
@@ -3770,7 +3796,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=63`;
+    return `./sprites/${spr}.png?v=64`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -3783,22 +3809,16 @@
   }
 
   function closeTowerTip() {
+    // Build 64: info lives inside #tower-btns via renderTowerBar — no floating tip
     state.towerTipType = null;
-    if (el.towerTip) {
-      el.towerTip.classList.remove('show');
-      el.towerTip.setAttribute('aria-hidden', 'true');
-    }
+    if ((state.towerMenuMode || 'categories') === 'towers') renderTowerBar();
   }
 
   function showTowerTip(towerType) {
     const def = TOWER_DEFS[towerType];
-    if (!def || !el.towerTip) return;
+    if (!def) return;
     state.towerTipType = towerType;
-    if (el.towerTipName) el.towerTipName.textContent = def.name;
-    if (el.towerTipCost) el.towerTipCost.textContent = `${def.cost}g`;
-    if (el.towerTipRole) el.towerTipRole.textContent = towerRoleLine(towerType);
-    el.towerTip.classList.add('show');
-    el.towerTip.setAttribute('aria-hidden', 'false');
+    if ((state.towerMenuMode || 'categories') === 'towers') renderTowerBar();
   }
 
   function closeTowerDetail() {
@@ -5604,7 +5624,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v63';
+  const BOOT = 'pg-boot-v64';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
