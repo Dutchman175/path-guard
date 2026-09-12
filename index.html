@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 88 -->
+<!-- path-guard-build: 89 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1263,7 +1263,7 @@
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
       <p>Build on green tiles · hold 40 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
-      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Shells resist · Wave 20 &amp; 40 Titans</p>
+      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Tanks need Gunnery · Wave 20 &amp; 40 Titans</p>
       <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         <span class="map-title">Map 1: Spiral <span class="diff easy">Easy</span></span>
@@ -1306,19 +1306,18 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. <strong>Immune to all Elemental</strong> (Frost, Fire, Lightning). <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Shell</strong> — tough steel. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=88" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2). Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — tough steel. Immune to Marksman and Elemental (use Gunnery). First after Brute. <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=89" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2). Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
-        <div class="faq-item">Soft packs (Grunt / Scout): use Marksman or Fire.</div>
-        <div class="faq-item">Shell / Titan: Immune to Marksman and Elemental. Use Cannon, Sniper, or Bazooka.</div>
-        <div class="faq-item">Scout: don't use Elemental towers (Frost, Fire, Lightning) — they can't hurt Scouts.</div>
+        <div class="faq-item">Soft packs (Grunt / Scout / Skitter): any damage tower works.</div>
+        <div class="faq-item">Tank / Titan: Immune to Marksman and Elemental. Use Cannon, Sniper, or Bazooka.</div>
         <div class="faq-item">Brute / Raider: take full damage from every tower. Sniper and Bazooka still shine on high HP.</div>
         <div class="faq-item">Damage is binary: a tower either deals full damage or is Immune — no partial resists, no bonus damage.</div>
         <div class="faq-item">Support: Barrier halts enemies on its path tile (more at once as it levels); Bank pays gold each wave clear.</div>
@@ -1379,7 +1378,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 88</div>
+    <div id="build-ver">build 89</div>
   </div>
 </div>
 
@@ -1561,7 +1560,7 @@
       color: '#34d399', projectileSpeed: 420, projectileColor: '#a7f3d0',
       upgradeCosts: [32, 55, 90, 130],
       hits: 'Grunt, Scout, Skitter, Brute, Raider',
-      blocked: 'Shell/Titan Immune',
+      blocked: 'Tank/Titan Immune',
     },
     barrier: {
       name: 'Barrier', category: 'support', cost: 60, range: 0, fireRate: 99, damage: 0,
@@ -1579,7 +1578,7 @@
       color: '#f59e0b', projectileSpeed: 400, projectileColor: '#fcd34d',
       upgradeCosts: [65, 105, 155, 220],
       hits: 'Soft packs',
-      blocked: 'Shell/Titan Immune',
+      blocked: 'Tank/Titan Immune',
     },
     frost: {
       name: 'Frost', category: 'elemental', cost: 115, range: 100, fireRate: 0.9, damage: 12,
@@ -1587,7 +1586,7 @@
       upgradeCosts: [75, 125, 185, 255],
       slowMul: 0.5, slowDur: 1.6,
       hits: 'Soft + slow shots',
-      blocked: 'Scout + Shell/Titan Immune',
+      blocked: 'Tank/Titan Immune',
     },
     bank: {
       name: 'Bank', category: 'support', cost: 130, range: 0, fireRate: 99, damage: 0,
@@ -1608,7 +1607,7 @@
       flameWidth: 20,
       burnTicks: 2, burnMul: 0.12,
       hits: 'Constant flame stream — enemies take damage walking through it',
-      blocked: 'Scout + Shell/Titan Immune',
+      blocked: 'Tank/Titan Immune',
     },
     cannon: {
       name: 'Cannon', category: 'gunnery', cost: 185, range: 80, fireRate: 1.55, damage: 60,
@@ -1624,7 +1623,7 @@
       upgradeCosts: [165, 250, 350, 480],
       multi: 1, multiFalloff: 0.55,
       hits: 'Chains multiple enemies',
-      blocked: 'Scout + Shell/Titan Immune',
+      blocked: 'Tank/Titan Immune',
     },
     sniper: {
       name: 'Sniper', category: 'gunnery', cost: 335, range: 720, fireRate: 3.1, damage: 58,
@@ -1646,11 +1645,11 @@
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
     // Color = threat (green easy → dark red hardest). Damage is full or Immune only.
-    // Size: Skitter < Grunt < Shell ≤ Scout ≈ Brute < Raider < Titan (Scout noticeably larger than Grunt).
+    // Size: Skitter < Grunt < Tank ≤ Scout ≈ Brute < Raider < Titan (Scout noticeably larger than Grunt).
     normal:  { name: 'Grunt',   r: 12, hp: 6,   speed: 70,  reward: 10, color: '#22c55e', stroke: '#14532d' },
     fast:    { name: 'Scout',   r: 16, hp: 32,  speed: 125, reward: 9,  color: '#eab308', stroke: '#854d0e' },
     skitter: { name: 'Skitter', r: 11, hp: 55,  speed: 100, reward: 12, color: '#4ade80', stroke: '#14532d' },
-    shell:   { name: 'Shell',   r: 15, hp: 210, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917' },
+    shell:   { name: 'Tank',    r: 15, hp: 210, speed: 34,  reward: 18, color: '#78716c', stroke: '#1c1917' },
     tank:    { name: 'Brute',   r: 16, hp: 170, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
     raider:  { name: 'Raider',  r: 19, hp: 190, speed: 120, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
     titan:   { name: 'Titan',   r: 28, hp: 520, speed: 24,  reward: 55, color: '#450a0a', stroke: '#fecaca' },
@@ -1670,7 +1669,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=88`;
+    img.src = `./sprites/${name}.png?v=89`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2521,8 +2520,6 @@
     const tName = (TOWER_DEFS[towerType] && TOWER_DEFS[towerType].name) || 'Tower';
     const eName = enemyDisplayName(en);
     if (mode === 'resisted') return `${tName} weak vs ${eName}`;
-    if (towerType === 'frost' && en && en.kind === 'fast') return 'Scout blocks Frost';
-    if (towerType === 'lightning' && en && en.kind === 'fast') return 'Scout blocks Lightning';
     if (towerType === 'archer') return `Archer can't hurt ${eName}`;
     return `${tName} can't hurt ${eName}`;
   }
@@ -2875,10 +2872,10 @@
       5: 14,              // Scout swarm
       6: 6,               // breather
       7: 8, 8: 10, 9: 12,
-      10: 16,             // Brute push
+      10: 16,             // Brute intro + push
       11: 8,              // breather
       12: 12, 13: 14, 14: 16,
-      15: 18,             // Raider pack
+      15: 18,             // Tank pack
       16: 10,             // breather
       17: 16, 18: 18, 19: 20,
       20: 24,             // Mid milestone (1 Titan)
@@ -2905,46 +2902,46 @@
   }
 
   function enemyMixForWave(w) {
-    // Scripted mixes; Raiders never before 12 (hardenKind also gates). Titans only via wave 20/40 inject.
-    if (w === 1) return ['normal']; // Wave 1: Grunt only (no Scout/fast)
+    // First seen: Grunt 1 · Scout 4 · Skitter 7 · Brute 10 · Tank 14 · Raider 18 · Titan 20/40
+    if (w === 1) return ['normal'];
     if (w === 2) return ['normal'];
-    if (w === 3) return ['normal', 'normal', 'normal', 'fast'];
-    if (w === 4) return ['normal', 'normal', 'fast', 'normal'];
-    if (w === 5) return ['fast', 'fast', 'fast', 'fast', 'fast', 'normal', 'fast', 'fast']; // scout swarm
-    if (w === 6) return ['normal', 'normal', 'fast', 'normal']; // breather
-    if (w === 7) return ['normal', 'fast', 'normal', 'fast', 'normal'];
-    if (w === 8) return ['fast', 'normal', 'shell', 'fast', 'normal']; // Shell intro
-    if (w === 9) return ['fast', 'skitter', 'shell', 'fast', 'tank']; // Skitter intro (splash resist)
-    if (w === 10) return ['tank', 'tank', 'tank', 'shell', 'tank', 'fast', 'tank']; // brute push
-    if (w === 11) return ['normal', 'skitter', 'shell', 'fast']; // breather
-    if (w === 12) return ['fast', 'tank', 'shell', 'skitter', 'raider', 'tank'];
-    if (w === 13) return ['fast', 'shell', 'raider', 'tank', 'skitter', 'fast'];
-    if (w === 14) return ['tank', 'shell', 'tank', 'raider', 'skitter', 'tank'];
-    if (w === 15) return ['raider', 'tank', 'raider', 'shell', 'raider', 'fast', 'tank']; // raider pack
-    if (w === 16) return ['fast', 'skitter', 'shell', 'fast', 'normal']; // breather
-    if (w === 17) return ['tank', 'raider', 'shell', 'tank', 'skitter'];
-    if (w === 18) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider'];
-    if (w === 19) return ['raider', 'shell', 'skitter', 'raider', 'tank', 'raider'];
-    if (w === 20) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // mid milestone fodder
-    if (w === 21) return ['tank', 'shell', 'skitter', 'raider', 'tank', 'fast'];
-    if (w === 22) return ['raider', 'shell', 'tank', 'skitter', 'raider', 'tank'];
-    if (w === 23) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'tank'];
-    if (w === 24) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'raider', 'tank'];
-    if (w === 25) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // dense
+    if (w === 3) return ['normal'];
+    if (w === 4) return ['normal', 'normal', 'fast']; // Scout intro
+    if (w === 5) return ['fast', 'fast', 'fast', 'normal', 'fast', 'fast']; // scout swarm
+    if (w === 6) return ['normal', 'fast', 'normal', 'fast']; // breather
+    if (w === 7) return ['fast', 'skitter', 'normal', 'fast']; // Skitter intro
+    if (w === 8) return ['normal', 'fast', 'skitter', 'fast', 'normal'];
+    if (w === 9) return ['fast', 'skitter', 'fast', 'skitter', 'normal'];
+    if (w === 10) return ['tank', 'tank', 'fast', 'tank', 'skitter', 'tank']; // Brute intro + push
+    if (w === 11) return ['fast', 'skitter', 'tank', 'normal']; // breather
+    if (w === 12) return ['tank', 'fast', 'skitter', 'tank', 'fast'];
+    if (w === 13) return ['skitter', 'tank', 'fast', 'tank', 'skitter'];
+    if (w === 14) return ['shell', 'tank', 'fast', 'shell', 'skitter']; // Tank intro (ex-Shell)
+    if (w === 15) return ['shell', 'tank', 'shell', 'skitter', 'tank', 'fast']; // Tank pack
+    if (w === 16) return ['fast', 'skitter', 'tank', 'normal']; // breather
+    if (w === 17) return ['tank', 'shell', 'skitter', 'tank', 'fast'];
+    if (w === 18) return ['raider', 'tank', 'shell', 'raider', 'skitter']; // Raider intro
+    if (w === 19) return ['raider', 'shell', 'tank', 'raider', 'skitter', 'raider'];
+    if (w === 20) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'tank']; // mid milestone fodder
+    if (w === 21) return ['tank', 'shell', 'skitter', 'raider', 'fast'];
+    if (w === 22) return ['raider', 'shell', 'tank', 'skitter', 'raider'];
+    if (w === 23) return ['tank', 'raider', 'shell', 'raider', 'skitter'];
+    if (w === 24) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'raider'];
+    if (w === 25) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'tank']; // dense
     if (w === 26) return ['fast', 'skitter', 'shell', 'tank', 'raider']; // breather
-    if (w === 27) return ['tank', 'raider', 'shell', 'skitter', 'raider', 'tank'];
+    if (w === 27) return ['tank', 'raider', 'shell', 'skitter', 'raider'];
     if (w === 28) return ['raider', 'shell', 'tank', 'raider', 'skitter', 'raider'];
-    if (w === 29) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank'];
-    if (w === 30) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // denser
+    if (w === 29) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider'];
+    if (w === 30) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'tank']; // denser
     if (w === 31) return ['skitter', 'shell', 'tank', 'raider', 'fast']; // breather
-    if (w === 32) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'tank'];
+    if (w === 32) return ['raider', 'tank', 'shell', 'raider', 'skitter'];
     if (w === 33) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider'];
-    if (w === 34) return ['raider', 'shell', 'tank', 'raider', 'skitter', 'raider', 'tank'];
-    if (w === 35) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank']; // denser
+    if (w === 34) return ['raider', 'shell', 'tank', 'raider', 'skitter', 'raider'];
+    if (w === 35) return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'tank']; // denser
     if (w === 36) return ['shell', 'skitter', 'tank', 'raider', 'fast']; // breather
-    if (w === 37) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'raider', 'tank'];
-    if (w === 38) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank', 'raider'];
-    if (w === 39) return ['raider', 'shell', 'raider', 'tank', 'skitter', 'raider', 'shell', 'raider'];
+    if (w === 37) return ['raider', 'tank', 'shell', 'raider', 'skitter', 'raider'];
+    if (w === 38) return ['tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank'];
+    if (w === 39) return ['raider', 'shell', 'raider', 'tank', 'skitter', 'raider', 'shell'];
     // Wave 40 finale fodder — Titans injected separately
     return ['raider', 'tank', 'raider', 'shell', 'raider', 'skitter', 'raider', 'tank', 'raider'];
   }
@@ -2987,11 +2984,11 @@
   }
 
   function formatEnemyCounts(counts) {
-    const order = ['normal', 'fast', 'skitter', 'shell', 'tank', 'raider', 'titan'];
+    const order = ['normal', 'fast', 'skitter', 'tank', 'shell', 'raider', 'titan'];
     const parts = [];
     for (const k of order) {
       if (!counts[k]) continue;
-      const tag = (k === 'shell' || k === 'titan') ? ' (immune soft)' : '';
+      const tag = (k === 'shell' || k === 'titan') ? ' (gunnery only)' : '';
       parts.push(`${counts[k]} ${ENEMY_TYPES[k].name}${counts[k] > 1 ? 's' : ''}${tag}`);
     }
     return parts.join(', ') || 'enemies';
@@ -3012,12 +3009,17 @@
     if (kind === 'titan') return kind; // never harden bosses
     if (w <= 1) return kind; // Wave 1 stays Grunt-only
     if (chance <= 0 || Math.random() >= chance) return kind;
-    if (kind === 'normal') return 'fast';
-    if (kind === 'fast') return w >= 9 ? 'skitter' : (w >= 8 ? 'shell' : 'tank');
-    if (kind === 'skitter') return w >= 8 ? 'shell' : 'fast';
-    if (kind === 'shell') return 'tank';
-    // Raiders only from wave 12+ (even via map hardenChance)
-    if (kind === 'tank' && w >= 12) return 'raider';
+    // Unlock gates: Scout 4 · Skitter 7 · Brute 10 · Tank 14 · Raider 18
+    if (kind === 'normal') return w >= 4 ? 'fast' : kind;
+    if (kind === 'fast') {
+      if (w >= 14) return 'shell'; // Tank
+      if (w >= 10) return 'tank'; // Brute
+      if (w >= 7) return 'skitter';
+      return kind;
+    }
+    if (kind === 'skitter') return w >= 14 ? 'shell' : (w >= 10 ? 'tank' : kind);
+    if (kind === 'tank') return w >= 18 ? 'raider' : kind; // Brute → Raider
+    if (kind === 'shell') return w >= 18 ? 'raider' : kind; // Tank → Raider late
     return kind;
   }
 
@@ -3104,11 +3106,20 @@
       el.hint.textContent = `Wave 20 — A Titan arrives! ${wavePreviewLabel(state.wave)}`;
       setWavePreview(wavePreviewLabel(state.wave), true);
       addFloat(W / 2, H * 0.22, 'TITAN INCOMING', '#fecaca', 2.2);
-    } else if (state.wave === 8) {
-      el.hint.textContent = 'Wave 8 — Shells incoming! Immune to Marksman and Elemental — use Gunnery.';
+    } else if (state.wave === 4) {
+      el.hint.textContent = 'Wave 4 — Scouts incoming! Fast, no immunities.';
       setWavePreview(wavePreviewLabel(state.wave), false);
-    } else if (state.wave === 9) {
-      el.hint.textContent = 'Wave 9 — Skitters! They take 50% less splash (Cannon AoE).';
+    } else if (state.wave === 7) {
+      el.hint.textContent = 'Wave 7 — Skitters incoming! Quick pests, no immunities.';
+      setWavePreview(wavePreviewLabel(state.wave), false);
+    } else if (state.wave === 10) {
+      el.hint.textContent = 'Wave 10 — Brutes incoming! High HP, no immunities.';
+      setWavePreview(wavePreviewLabel(state.wave), false);
+    } else if (state.wave === 14) {
+      el.hint.textContent = 'Wave 14 — Tanks incoming! Immune to Marksman and Elemental — use Gunnery.';
+      setWavePreview(wavePreviewLabel(state.wave), false);
+    } else if (state.wave === 18) {
+      el.hint.textContent = 'Wave 18 — Raiders incoming! Fast and tough.';
       setWavePreview(wavePreviewLabel(state.wave), false);
     } else {
       const hot = DENSE_WAVES.has(state.wave);
@@ -3185,7 +3196,7 @@
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Marksman vs soft · Gunnery vs Shell · double-tap to upgrade.`;
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Marksman vs soft · Gunnery vs Tank · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -3366,7 +3377,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=88" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=89" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3536,7 +3547,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=88" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=89" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -3898,9 +3909,9 @@
     if (type === 'cannon') return 'AoE splash punch';
     if (type === 'sniper') return 'Map-wide pick on tough targets';
     if (type === 'bazooka') return 'Huge single-target rocket';
-    if (type === 'lightning') return 'Chains multiple enemies — skips Scout/Shell/Titan';
+    if (type === 'lightning') return 'Chains multiple enemies — skips Tank/Titan';
     if (type === 'frost') return 'Damage + slow shots';
-    if (type === 'fire') return 'Constant flame stream — skips Scout/Shell/Titan';
+    if (type === 'fire') return 'Constant flame stream — skips Tank/Titan';
     if (type === 'crossbow') return 'Mid marksman — soft only';
     if (type === 'archer') return 'Cheap entry marksman — soft only';
     if (type === 'bank') return 'Pays gold each wave clear — no shots';
@@ -3910,17 +3921,17 @@
 
   const ENEMY_INTRO_BLURB = {
     normal: 'Weakest fodder — an L1 Archer arrow drops one.',
-    fast: 'Fast and slippery; all Elemental towers (Frost, Fire, Lightning) cannot hurt them.',
+    fast: 'Fast, low HP — second weakest. No immunities.',
     skitter: 'Quick pest — takes full damage from every tower.',
-    shell: 'Immune to Marksman and Elemental. Use Gunnery (Cannon, Sniper, Bazooka).',
-    tank: 'High HP, slow march — takes full damage from every tower.',
+    shell: 'Tank: Immune to Marksman and Elemental. Use Gunnery (Cannon, Sniper, Bazooka).',
+    tank: 'Brute: high HP, slow march — takes full damage from every tower.',
     raider: 'Fast and tough — takes full damage from every tower.',
     titan: 'Boss on waves 20 and 40. Immune to Marksman and Elemental — use Gunnery.',
   };
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=88`;
+    return `./sprites/${spr}.png?v=89`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -4145,15 +4156,11 @@
     if (!towerType) return info;
     const cat = category || (TOWER_DEFS[towerType] && TOWER_DEFS[towerType].category) || null;
 
-    // Shell / Titan: Immune to Marksman and all Elemental (Frost, Fire, Lightning)
+    // Tank (shell) / Titan: Immune to Marksman and all Elemental (Frost, Fire, Lightning)
     if (kind === 'shell' || kind === 'titan') {
       if (cat === 'marksman' || cat === 'elemental') {
         info.mul = 0; info.immune = true; return info;
       }
-    }
-    // Scout: Immune to the whole Elemental category
-    if (kind === 'fast' && cat === 'elemental') {
-      info.mul = 0; info.immune = true; return info;
     }
     return info;
   }
@@ -4205,11 +4212,6 @@
 
   function applySlow(en, mul, dur, opts) {
     if (!en || !state.enemies.includes(en)) return;
-    const o = opts || {};
-    // Scout Immune to Frost slow — silent skip (no toast spam)
-    if (o.fromFrost && en.kind === 'fast') {
-      return;
-    }
     en.slowMul = Math.min(en.slowMul || 1, mul);
     en.slowTimer = Math.max(en.slowTimer || 0, dur);
   }
@@ -4782,13 +4784,13 @@
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Frost: ice shots slow · Scout + Shell/Titan Immune', W / 2, 10);
+          ctx.fillText('Frost: ice shots slow · Tank/Titan Immune', W / 2, 10);
         } else if (state.selected === 'fire') {
           ctx.fillStyle = 'rgba(251, 146, 60, 0.95)';
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Fire: flame stream · Scout + Shell/Titan Immune', W / 2, 10);
+          ctx.fillText('Fire: flame stream · Tank/Titan Immune', W / 2, 10);
         } else if (state.selected === 'bank') {
           ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
           ctx.font = 'bold 11px system-ui';
@@ -5249,7 +5251,7 @@
         ctx.drawImage(SPRITES[sprName], p.x - sz / 2, p.y - sz / 2, sz, sz);
         ctx.globalAlpha = 1;
         if (en.kind === 'shell') {
-          // Steel shield rim so Shell reads distinct from soft blobs
+          // Steel shield rim so Tank reads distinct from soft blobs
           ctx.beginPath();
           ctx.arc(p.x, p.y, sz * 0.46, 0, Math.PI * 2);
           ctx.strokeStyle = 'rgba(214, 211, 209, 0.85)';
