@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f1419">
+<meta name="theme-color" content="#0f1419" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0f1419" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,13 +15,17 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 69 -->
+<!-- path-guard-build: 70 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html {
+    color-scheme: dark;
+    background: #0f1419;
+  }
   html, body {
     height: 100%;
     height: 100dvh;
-    background: linear-gradient(180deg, #15202b 0%, #0f1419 100%);
+    background: #0f1419;
     color: #e8eef4;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     display: flex;
@@ -28,28 +35,32 @@
     touch-action: manipulation;
     overscroll-behavior: none;
   }
+  body {
+    /* Safe-area on body so translucent iOS status bar sits over dark chrome, not a white strip */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
+  }
   #app {
     width: 100%;
     max-width: 430px;
-    height: 100%;
-    height: 100dvh;
-    min-height: 100%;
-    min-height: 100dvh;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    align-self: stretch;
     display: flex;
     flex-direction: column;
     background: linear-gradient(180deg, #15202b 0%, #0f1419 100%);
     position: relative;
     overflow: hidden;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
   }
   @media (display-mode: standalone), (display-mode: fullscreen) {
-    body { background: linear-gradient(180deg, #15202b 0%, #0f1419 100%); }
+    body { background: #0f1419; }
     #app { border-radius: 0; }
     canvas { border-radius: 0; border-left: none; border-right: none; }
   }
 
-  /* Build 69: tablet-friendly wider app + 2-col map pick */
+  /* Build 70: dark iOS status bar / theme-color; Build 69 tablet layout kept */
   #map-list {
     display: flex;
     flex-direction: column;
@@ -1367,7 +1378,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 69</div>
+    <div id="build-ver">build 70</div>
   </div>
 </div>
 
@@ -5686,7 +5697,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v69';
+  const BOOT = 'pg-boot-v70';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
