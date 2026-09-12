@@ -60,7 +60,7 @@
     canvas { border-radius: 0; border-left: none; border-right: none; }
   }
 
-  /* Build 73: Crossbow flat dmg+fireRate (Archer pattern); Build 72 Archer no multi, flat dmg+fireRate; Build 71 Lightning targets = level */
+  /* Build 74: Bazooka gunnery (huge single-target rocket); Build 73 Crossbow flat; Build 72 Archer flat; Build 71 Lightning = level */
   #map-list {
     display: flex;
     flex-direction: column;
@@ -310,6 +310,7 @@
   #btn-fire.selected { border-color: #f97316; background: #7c2d12; }
   #btn-lightning.selected { border-color: #c084fc; background: #3b0764; }
   #btn-sniper.selected { border-color: #2dd4bf; background: #134e4a; }
+  #btn-bazooka.selected { border-color: #f97316; background: #7c2d12; }
   #btn-crossbow.selected { border-color: #f59e0b; background: #78350f; }
   #btn-bank.selected { border-color: #f59e0b; background: #78350f; }
   #btn-barrier.selected { border-color: #f59e0b; background: #451a03; }
@@ -1305,20 +1306,20 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=68" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery/Lightning. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — baseline fodder. Soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. <strong>Immune to Frost</strong> (dmg+slow) and <strong>Lightning</strong>. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick · 50% splash/Fire DoT resist. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Shell</strong> — armored. Marksman weak/Immune · Gunnery/Lightning answer. <span class="faq-color-swatch" style="background:#78716c"></span><span class="muted">Steel</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. Lightning/Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=74" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2) · armor. Bring Gunnery (Cannon/Sniper/Bazooka)/Lightning. <span class="faq-color-swatch" style="background:#450a0a"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
         <div class="faq-item">Soft packs (Grunt / Scout): use Marksman or Fire.</div>
-        <div class="faq-item">Armored (Shell / Titan): use Cannon, Sniper, or Lightning. Archer can't hurt Shell or Titan; Crossbow is weak on armor.</div>
+        <div class="faq-item">Armored (Shell / Titan): use Cannon, Sniper, Bazooka, or Lightning. Archer can't hurt Shell or Titan; Crossbow is weak on armor.</div>
         <div class="faq-item">Scout: don't use Frost or Lightning — they can't hurt Scouts.</div>
-        <div class="faq-item">Brute / Raider: use Sniper or Lightning.</div>
+        <div class="faq-item">Brute / Raider: use Sniper, Bazooka, or Lightning. Bazooka is the armor-elite nuke (huge dmg, very slow).</div>
         <div class="faq-item">Skitter: don't rely on Fire flame alone (50% resist).</div>
         <div class="faq-item">Support: Barrier stops the path for a few seconds; Bank pays gold each wave clear.</div>
       </div>
@@ -1378,7 +1379,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 73</div>
+    <div id="build-ver">build 74</div>
   </div>
 </div>
 
@@ -1551,9 +1552,9 @@
   ];
   const TOWER_EMOJI = {
     archer: '🏹', barrier: '🚧', crossbow: '⚔', frost: '❄️', bank: '🏦',
-    fire: '🔥', cannon: '💣', lightning: '⚡', sniper: '🔭',
+    fire: '🔥', cannon: '💣', lightning: '⚡', sniper: '🔭', bazooka: '🚀',
   };
-  const TOWER_ORDER = ['archer', 'barrier', 'crossbow', 'frost', 'bank', 'fire', 'cannon', 'lightning', 'sniper'];
+  const TOWER_ORDER = ['archer', 'barrier', 'crossbow', 'frost', 'bank', 'fire', 'cannon', 'lightning', 'sniper', 'bazooka'];
   const TOWER_DEFS = {
     archer: {
       name: 'Archer', category: 'marksman', cost: 40, range: 98, fireRate: 0.50, damage: 6,
@@ -1634,6 +1635,14 @@
       hits: 'Brute, Raider, Shell, Titan (1.05x pierce)',
       blocked: '— (expensive vs soft)',
     },
+    bazooka: {
+      name: 'Bazooka', category: 'gunnery', cost: 420, range: 160, fireRate: 11.0, damage: 210,
+      color: '#f97316', projectileSpeed: 165, projectileColor: '#fb923c',
+      upgradeCosts: [260, 380, 520, 700],
+      splashRadius: 28, splashMul: 0.35,
+      hits: 'Shell, Brute, Titan, Raider (1.08x pierce · small splash)',
+      blocked: '— (expensive vs soft packs)',
+    },
   };
 
   // Fixed stats per type — never scale by wave or map
@@ -1654,7 +1663,7 @@
 
 
   // Style A sprite sheets (PNG). Fallback to canvas doodles if load fails.
-  const SPRITE_NAMES = ['archer', 'crossbow', 'cannon', 'frost', 'fire', 'lightning', 'sniper', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
+  const SPRITE_NAMES = ['archer', 'crossbow', 'cannon', 'frost', 'fire', 'lightning', 'sniper', 'bazooka', 'bank', 'barrier', 'grunt', 'scout', 'brute', 'raider', 'shell', 'titan', 'skitter'];
   const SPRITES = {};
   const SPRITE_OK = {};
   const ENEMY_SPRITE = { normal: 'grunt', fast: 'scout', shell: 'shell', tank: 'brute', raider: 'raider', titan: 'titan', skitter: 'skitter' };
@@ -1663,7 +1672,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=68`;
+    img.src = `./sprites/${name}.png?v=74`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2018,21 +2027,26 @@
     const dmgMul = 1 + (lv - 1) * 0.38;
     const rateMul = 1 - (lv - 1) * 0.08;
     const rangeMul = 1 + (lv - 1) * 0.07;
-    // Build 72/73: Archer & Crossbow flat dmg/fireRate (skip global 0.38 dmg / 0.08 rate muls; single target)
+    // Build 72/73/74: Archer, Crossbow, Bazooka flat dmg/fireRate (skip global 0.38 dmg / 0.08 rate muls)
     const isArcher = tw.type === 'archer';
     const isCrossbow = tw.type === 'crossbow';
+    const isBazooka = tw.type === 'bazooka';
     return {
       name: def.name,
       damage: isArcher
         ? (6 + (lv - 1) * 3)
         : isCrossbow
           ? (16 + (lv - 1) * 4)
-          : Math.round(def.damage * dmgMul),
+          : isBazooka
+            ? (210 + (lv - 1) * 40)
+            : Math.round(def.damage * dmgMul),
       fireRate: isArcher
         ? Math.max(0.22, 0.50 - (lv - 1) * 0.05)
         : isCrossbow
           ? Math.max(0.22, 0.70 - (lv - 1) * 0.05)
-          : Math.max(0.22, def.fireRate * rateMul),
+          : isBazooka
+            ? Math.max(0.22, 11.0 - (lv - 1) * 0.8)
+            : Math.max(0.22, def.fireRate * rateMul),
       range: def.range * rangeMul,
       projectileSpeed: def.projectileSpeed,
       projectileColor: def.projectileColor,
@@ -3317,7 +3331,7 @@
     updateHUD();
   }
 
-  const TOWER_BAR_SPRITES = ['archer', 'crossbow', 'frost', 'fire', 'lightning', 'cannon', 'sniper', 'bank', 'barrier'];
+  const TOWER_BAR_SPRITES = ['archer', 'crossbow', 'frost', 'fire', 'lightning', 'cannon', 'sniper', 'bazooka', 'bank', 'barrier'];
 
   function appendTowerTypeBtn(box, type) {
     const def = TOWER_DEFS[type];
@@ -3329,7 +3343,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=68" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=74" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3500,9 +3514,10 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=68" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=74" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
+      : type === 'bazooka' ? 'Huge rocket nuke'
       : type === 'lightning' ? 'Chain targets'
       : type === 'frost' ? 'Shot damage + slow'
       : type === 'fire' ? 'Constant flame stream'
@@ -3860,6 +3875,7 @@
   function towerRoleLine(type) {
     if (type === 'cannon') return 'AoE punch vs armor clusters';
     if (type === 'sniper') return 'Map-wide pick on tough targets';
+    if (type === 'bazooka') return 'Huge single-target rocket — armor elites';
     if (type === 'lightning') return 'Chains armor — skips Scouts';
     if (type === 'frost') return 'Damage + slow shots and chill aura';
     if (type === 'fire') return 'Constant flame stream — damage while enemies walk through it';
@@ -3875,14 +3891,14 @@
     fast: 'Fast and slippery; Frost and Lightning cannot hurt them.',
     skitter: 'Quick pest; half damage from splash and Fire flame/DoT.',
     shell: 'Steel armor — Archer immune; use Gunnery or Lightning.',
-    tank: 'High HP, slow march — punch with Lightning or Sniper.',
-    raider: 'Fast and tough — Sniper and sustained fire shine.',
-    titan: 'Boss armor on waves 20 and 40 — Gunnery and Lightning.',
+    tank: 'High HP, slow march — punch with Lightning, Sniper, or Bazooka.',
+    raider: 'Fast and tough — Sniper, Bazooka, and sustained fire shine.',
+    titan: 'Boss armor on waves 20 and 40 — Gunnery (incl. Bazooka) and Lightning.',
   };
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=68`;
+    return `./sprites/${spr}.png?v=74`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -3981,7 +3997,7 @@
       const burnPct = Math.round((st.burnMul || 0) * 100);
       lines.push(towerDetailStatLine('Burn', `${st.burnTicks} ticks · ~${burnPct}% of hit each`));
     }
-    if (towerType === 'sniper' || towerType === 'lightning') {
+    if (towerType === 'sniper' || towerType === 'bazooka' || towerType === 'lightning') {
       lines.push(towerDetailStatLine('Armor', 'Pierce (ignores enemy armor)'));
     }
     return lines.join('');
@@ -4143,6 +4159,12 @@
     if (towerType === 'sniper') {
       if (kind === 'tank' || kind === 'raider' || kind === 'shell' || kind === 'titan') {
         info.mul = 1.05; info.ignoreArmor = true; return info;
+      }
+      return info;
+    }
+    if (towerType === 'bazooka') {
+      if (kind === 'tank' || kind === 'raider' || kind === 'shell' || kind === 'titan') {
+        info.mul = 1.08; info.ignoreArmor = true; return info;
       }
       return info;
     }
@@ -4534,23 +4556,31 @@
               applySlow(en, pr.slowMul, pr.slowDur || 1.4, { fromFrost: true });
               if (en.kind !== 'fast') burst(p.x, p.y, '#a5f3fc', 10);
             }
-            if (pr.type === 'cannon') {
+            if (pr.type === 'cannon' || pr.type === 'bazooka') {
               applyCannonSplash(
                 p.x, p.y, en, pr.damage,
-                pr.splashRadius || 45,
-                pr.splashMul || 0.5,
+                pr.splashRadius || (pr.type === 'bazooka' ? 28 : 45),
+                pr.splashMul || (pr.type === 'bazooka' ? 0.35 : 0.5),
                 pr.color,
                 pr.type
               );
+              if (pr.type === 'bazooka') {
+                burst(p.x, p.y, '#fb923c', 26, { rMin: 2.2, rMax: 5.5, upBias: 50, speedMax: 190, lifeMul: 1.15 });
+                burst(p.x, p.y, '#94a3b8', 14, { rMin: 2.5, rMax: 6, gravity: 28, lifeMul: 1.5, speedMax: 90 });
+              }
             }
-          } else if (pr.type === 'cannon') {
+          } else if (pr.type === 'cannon' || pr.type === 'bazooka') {
             applyCannonSplash(
               pr.x, pr.y, null, pr.damage,
-              pr.splashRadius || 45,
-              pr.splashMul || 0.5,
+              pr.splashRadius || (pr.type === 'bazooka' ? 28 : 45),
+              pr.splashMul || (pr.type === 'bazooka' ? 0.35 : 0.5),
               pr.color,
               pr.type
             );
+            if (pr.type === 'bazooka') {
+              burst(pr.x, pr.y, '#fb923c', 22, { rMin: 2.2, rMax: 5.5, upBias: 40, speedMax: 170, lifeMul: 1.1 });
+              burst(pr.x, pr.y, '#94a3b8', 12, { rMin: 2.5, rMax: 6, gravity: 28, lifeMul: 1.4, speedMax: 90 });
+            }
           } else {
             burst(pr.x, pr.y, pr.color, 4);
           }
@@ -4558,6 +4588,21 @@
         } else {
           pr.x += (dx / dist) * step;
           pr.y += (dy / dist) * step;
+          if (pr.type === 'bazooka' && state.juice !== false) {
+            // Orange + smoke trail behind slow rocket
+            state.particles.push({
+              x: pr.x - (dx / dist) * 6 + (Math.random() - 0.5) * 3,
+              y: pr.y - (dy / dist) * 6 + (Math.random() - 0.5) * 3,
+              vx: -(dx / dist) * (18 + Math.random() * 28) + (Math.random() - 0.5) * 16,
+              vy: -(dy / dist) * (18 + Math.random() * 28) + (Math.random() - 0.5) * 16 - 8,
+              life: 0.22 + Math.random() * 0.28,
+              max: 0.5,
+              color: Math.random() < 0.55 ? '#fb923c' : '#94a3b8',
+              r: 1.8 + Math.random() * 2.8,
+              g: 22,
+              spark: Math.random() < 0.35,
+            });
+          }
         }
       }
     }
@@ -5103,6 +5148,35 @@
           ctx.moveTo(6, 8);
           ctx.lineTo(11, 14);
           ctx.stroke();
+        } else if (tw.type === 'bazooka') {
+          // Tube + rocket doodle (fallback if sprite missing)
+          ctx.fillStyle = '#334155';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(-12, -3.5, 18, 7, 2); else ctx.rect(-12, -3.5, 18, 7);
+          ctx.fill();
+          ctx.fillStyle = '#1e293b';
+          ctx.beginPath();
+          ctx.arc(-12, 0, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath();
+          ctx.moveTo(6, 0);
+          ctx.lineTo(14, -3.2);
+          ctx.lineTo(14, 3.2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#fb923c';
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(2, -2.4, 8, 4.8, 1.5); else ctx.rect(2, -2.4, 8, 4.8);
+          ctx.fill();
+          ctx.strokeStyle = '#fdba74';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(-4, 5);
+          ctx.lineTo(-8, 11);
+          ctx.moveTo(2, 5);
+          ctx.lineTo(6, 11);
+          ctx.stroke();
         } else if (tw.type === 'bank') {
           ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
           ctx.beginPath();
@@ -5541,6 +5615,51 @@
 
     function drawProjectiles() {
     for (const pr of state.projectiles) {
+      if (pr.type === 'bazooka') {
+        let ang = 0;
+        if (pr.target && state.enemies.includes(pr.target)) {
+          const tp = posOnPath(pr.target.dist);
+          ang = Math.atan2(tp.y - pr.y, tp.x - pr.x);
+        } else {
+          ang = Math.atan2(pr.ty - pr.y, pr.tx - pr.x);
+        }
+        ctx.save();
+        ctx.translate(pr.x, pr.y);
+        ctx.rotate(ang);
+        ctx.shadowColor = '#fb923c';
+        ctx.shadowBlur = 12;
+        // body
+        ctx.fillStyle = '#fb923c';
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(-7, -3, 11, 6, 2); else ctx.rect(-7, -3, 11, 6);
+        ctx.fill();
+        // nose
+        ctx.fillStyle = '#fdba74';
+        ctx.beginPath();
+        ctx.moveTo(4, 0);
+        ctx.lineTo(10, -3.5);
+        ctx.lineTo(10, 3.5);
+        ctx.closePath();
+        ctx.fill();
+        // fins
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.moveTo(-7, -3);
+        ctx.lineTo(-11, -6);
+        ctx.lineTo(-5, -3);
+        ctx.moveTo(-7, 3);
+        ctx.lineTo(-11, 6);
+        ctx.lineTo(-5, 3);
+        ctx.fill();
+        // exhaust glow
+        ctx.fillStyle = 'rgba(251, 146, 60, 0.85)';
+        ctx.beginPath();
+        ctx.arc(-8.5, 0, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+        continue;
+      }
       ctx.beginPath();
       const r = pr.type === 'cannon' ? 6 : pr.type === 'sniper' ? 4 : pr.type === 'lightning' ? 3 : pr.type === 'frost' ? 4.5 : pr.type === 'crossbow' ? 4 : 3.5;
       ctx.arc(pr.x, pr.y, r, 0, Math.PI * 2);
@@ -5686,7 +5805,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v73';
+  const BOOT = 'pg-boot-v74';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
