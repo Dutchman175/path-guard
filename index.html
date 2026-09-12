@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 91 -->
+<!-- path-guard-build: 95 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -25,13 +25,15 @@
   html, body {
     height: 100%;
     height: 100dvh;
+    width: 100%;
     background: #0f1419;
     color: #e8eef4;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    overflow-x: hidden;
+    align-items: stretch;
+    /* Build 95: lock document scroll — iOS double-tap was sliding #app up and leaving black void */
+    overflow: hidden;
     touch-action: manipulation;
     overscroll-behavior: none;
   }
@@ -40,12 +42,15 @@
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     box-sizing: border-box;
+    /* Fixed pin stops rubber-band / double-tap scroll shifting the shell */
+    position: fixed;
+    inset: 0;
   }
   #app {
     width: 100%;
     max-width: 430px;
     flex: 1 1 auto;
-    height: auto;
+    height: 100%;
     min-height: 0;
     align-self: stretch;
     display: flex;
@@ -1352,13 +1357,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=94" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=95" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 20 (1) &amp; Wave 40 finale (2). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1424,7 +1429,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 94</div>
+    <div id="build-ver">build 95</div>
   </div>
 </div>
 
@@ -1432,6 +1437,30 @@
 (() => {
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
+  // Build 95: keep the shell pinned — iOS was scrolling the document on double-tap
+  function pinShell() {
+    try { window.scrollTo(0, 0); } catch (_) {}
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  }
+  pinShell();
+  window.addEventListener('scroll', pinShell, { passive: true });
+
+  // Build 95: block document rubber-band scroll; keep FAQ/map/tower strip scrollable
+  document.addEventListener('touchmove', (e) => {
+    let node = e.target;
+    while (node && node !== document.body && node !== document.documentElement) {
+      if (!(node instanceof Element)) break;
+      const id = node.id || '';
+      if (id === 'tower-btns' || id === 'faq-panel' || id === 'faq-overlay' || id === 'map-overlay' || id === 'overlay' || id === 'map-list') return;
+      const style = getComputedStyle(node);
+      const oy = node.scrollHeight > node.clientHeight + 1;
+      if (oy && /(auto|scroll)/.test(style.overflowY || style.overflow || '')) return;
+      node = node.parentElement;
+    }
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+
   const W = canvas.width;
   const H = canvas.height;
 
@@ -1715,7 +1744,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=94`;
+    img.src = `./sprites/${name}.png?v=95`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3428,7 +3457,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=94" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=95" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3598,7 +3627,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=94" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=95" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4012,7 +4041,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=94`;
+    return `./sprites/${spr}.png?v=95`;
   }
 
   function enemyChipHtml(kind, mode) {
