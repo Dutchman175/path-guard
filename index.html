@@ -60,7 +60,7 @@
     canvas { border-radius: 0; border-left: none; border-right: none; }
   }
 
-  /* Build 70: dark iOS status bar / theme-color; Build 69 tablet layout kept */
+  /* Build 71: Lightning targets = level; Build 70 dark iOS status bar kept */
   #map-list {
     display: flex;
     flex-direction: column;
@@ -1378,7 +1378,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 70</div>
+    <div id="build-ver">build 71</div>
   </div>
 </div>
 
@@ -1623,7 +1623,7 @@
       name: 'Lightning', category: 'elemental', cost: 250, range: 105, fireRate: 1.0, damage: 28,
       color: '#c084fc', projectileSpeed: 560, projectileColor: '#e9d5ff',
       upgradeCosts: [165, 250, 350, 480],
-      multi: 3, multiFalloff: 0.55,
+      multi: 1, multiFalloff: 0.55,
       hits: 'Shell, Brute, Titan (armor pierce)',
       blocked: 'Scout Immune',
     },
@@ -2028,9 +2028,11 @@
       color: def.color,
       slowMul: def.slowMul,
       slowDur: def.slowDur ? def.slowDur + (lv - 1) * 0.2 : 0,
-      multi: def.multi
-        ? Math.min(5, def.multi + Math.floor((lv - 1) / 2))
-        : (tw.type === 'archer' && lv >= 4 ? (lv >= 5 ? 3 : 2) : 0),
+      multi: tw.type === 'lightning'
+        ? Math.max(1, Math.min(MAX_TOWER_LEVEL, lv))
+        : def.multi
+          ? Math.min(5, def.multi + Math.floor((lv - 1) / 2))
+          : (tw.type === 'archer' && lv >= 4 ? (lv >= 5 ? 3 : 2) : 0),
       multiFalloff: def.multiFalloff || (tw.type === 'archer' ? 0.65 : 0.7),
       splashRadius: def.splashRadius ? def.splashRadius + (lv - 1) * 3.25 : 0,
       splashMul: def.splashMul != null ? Math.min(0.6, def.splashMul + (lv - 1) * 0.0375) : 0,
@@ -4296,7 +4298,7 @@
   }
 
   function fireLightning(tw, st) {
-    const targets = findTargetsInRange(tw, st.multi || 3);
+    const targets = findTargetsInRange(tw, st.multi || 1);
     if (!targets.length) return false;
     for (let i = 0; i < targets.length; i++) {
       const en = targets[i];
@@ -5697,7 +5699,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v70';
+  const BOOT = 'pg-boot-v71';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
