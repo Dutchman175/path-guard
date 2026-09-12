@@ -60,7 +60,7 @@
     canvas { border-radius: 0; border-left: none; border-right: none; }
   }
 
-  /* Build 72: Archer no multi, flat dmg+fireRate; Build 71 Lightning targets = level */
+  /* Build 73: Crossbow flat dmg+fireRate (Archer pattern); Build 72 Archer no multi, flat dmg+fireRate; Build 71 Lightning targets = level */
   #map-list {
     display: flex;
     flex-direction: column;
@@ -1378,7 +1378,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 72</div>
+    <div id="build-ver">build 73</div>
   </div>
 </div>
 
@@ -1576,7 +1576,7 @@
       blocked: '—',
     },
     crossbow: {
-      name: 'Crossbow', category: 'marksman', cost: 95, range: 112, fireRate: 0.7, damage: 16,
+      name: 'Crossbow', category: 'marksman', cost: 95, range: 112, fireRate: 0.70, damage: 16,
       color: '#f59e0b', projectileSpeed: 400, projectileColor: '#fcd34d',
       upgradeCosts: [65, 105, 155, 220],
       hits: 'Soft + mid packs',
@@ -2018,14 +2018,21 @@
     const dmgMul = 1 + (lv - 1) * 0.38;
     const rateMul = 1 - (lv - 1) * 0.08;
     const rangeMul = 1 + (lv - 1) * 0.07;
-    // Build 72: Archer uses flat dmg 6+(lv-1)*3 and fireRate 0.50-(lv-1)*0.05 (no global muls / no multi)
+    // Build 72/73: Archer & Crossbow flat dmg/fireRate (skip global 0.38 dmg / 0.08 rate muls; single target)
     const isArcher = tw.type === 'archer';
+    const isCrossbow = tw.type === 'crossbow';
     return {
       name: def.name,
-      damage: isArcher ? (6 + (lv - 1) * 3) : Math.round(def.damage * dmgMul),
+      damage: isArcher
+        ? (6 + (lv - 1) * 3)
+        : isCrossbow
+          ? (16 + (lv - 1) * 4)
+          : Math.round(def.damage * dmgMul),
       fireRate: isArcher
         ? Math.max(0.22, 0.50 - (lv - 1) * 0.05)
-        : Math.max(0.22, def.fireRate * rateMul),
+        : isCrossbow
+          ? Math.max(0.22, 0.70 - (lv - 1) * 0.05)
+          : Math.max(0.22, def.fireRate * rateMul),
       range: def.range * rangeMul,
       projectileSpeed: def.projectileSpeed,
       projectileColor: def.projectileColor,
@@ -5679,7 +5686,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v72';
+  const BOOT = 'pg-boot-v73';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
