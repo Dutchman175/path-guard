@@ -12,13 +12,13 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 68 -->
+<!-- path-guard-build: 69 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
     height: 100%;
     height: 100dvh;
-    background: #0f1419;
+    background: linear-gradient(180deg, #15202b 0%, #0f1419 100%);
     color: #e8eef4;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     display: flex;
@@ -44,9 +44,46 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   @media (display-mode: standalone), (display-mode: fullscreen) {
-    body { background: #0f1419; }
+    body { background: linear-gradient(180deg, #15202b 0%, #0f1419 100%); }
     #app { border-radius: 0; }
     canvas { border-radius: 0; border-left: none; border-right: none; }
+  }
+
+  /* Build 69: tablet-friendly wider app + 2-col map pick */
+  #map-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  @media (min-width: 640px) {
+    #app {
+      max-width: min(720px, 96vw);
+    }
+    #map-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      max-width: 100%;
+      align-items: stretch;
+    }
+    #map-list .map-pick-btn {
+      width: 100%;
+      max-width: none;
+      min-height: 72px;
+    }
+    #map-overlay .map-tip,
+    #map-overlay > p {
+      max-width: min(640px, 100%);
+    }
+  }
+  @media (min-width: 900px) {
+    #app {
+      max-width: min(840px, 96vw);
+    }
   }
 
   header {
@@ -1215,6 +1252,7 @@
       <p>Build on green tiles · hold 40 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
       <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Shells resist · Wave 20 &amp; 40 Titans</p>
+      <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
         <span class="map-title">Map 1: Spiral <span class="diff easy">Easy</span></span>
         <span class="sub">Longest path · more shoot time · +35 start gold</span>
@@ -1243,6 +1281,7 @@
         <span class="map-title">Map 7: Crucible <span class="diff nightmare">Nightmare</span></span>
         <span class="sub">Packed switchbacks · tiny build flanks · densest spawns</span>
       </button>
+      </div>
     </div>
     <div id="faq-overlay" aria-hidden="true">
       <div class="faq-head">
@@ -1328,7 +1367,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 68</div>
+    <div id="build-ver">build 69</div>
   </div>
 </div>
 
@@ -5647,7 +5686,7 @@
 
 <script>
 if ('serviceWorker' in navigator) {
-  const BOOT = 'pg-boot-v68';
+  const BOOT = 'pg-boot-v69';
   (async () => {
     try {
       if (!sessionStorage.getItem(BOOT)) {
