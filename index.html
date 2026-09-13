@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 101 -->
+<!-- path-guard-build: 106 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -62,7 +62,7 @@
   @media (display-mode: standalone), (display-mode: fullscreen) {
     body { background: #0f1419; }
     #app { border-radius: 0; }
-    canvas { border-radius: 0; border-left: none; border-right: none; }
+    #canvas-stage canvas { border-radius: 0; border-left: none; border-right: none; }
   }
 
   /* Build 75: Grunt HP=6 (Archer L1 one-shot); easy wave 1; Build 74 Bazooka; Build 73 Crossbow flat; Build 72 Archer flat */
@@ -163,16 +163,28 @@
     padding: 1px 6px;
     position: relative;
   }
-  canvas {
-    width: auto;
+  #canvas-stage {
     height: 100%;
     max-width: 100%;
     max-height: 100%;
     aspect-ratio: 400 / 560;
+    position: relative;
+    flex: 0 1 auto;
+  }
+  #canvas-stage canvas {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    aspect-ratio: auto;
     border-radius: 12px;
     background: #0b1220;
     border: 2px solid #1e3a5f;
     display: block;
+    touch-action: none;
+  }
+  /* legacy selector kept for standalone border tweaks */
+  canvas {
     touch-action: none;
   }
 
@@ -182,8 +194,49 @@
     display: flex;
     flex-direction: column;
     gap: 3px;
+    /* Build 106: fixed chrome height — map never resizes when menus swap */
+    height: 208px;
+    max-height: 208px;
+    min-height: 208px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
   }
-  #controls.pre-map { display: none; }
+  /* Keep slot reserved during map pick so the board size stays put */
+  #controls.pre-map {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  #tower-slot {
+    position: relative;
+    height: 80px;
+    min-height: 80px;
+    max-height: 80px;
+    flex-shrink: 0;
+  }
+  #tower-slot #tower-btns,
+  #tower-slot #tower-actions,
+  #tower-slot #sell-confirm {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  #tower-slot #tower-stats {
+    display: none !important; /* unused live region; keep out of layout */
+  }
+  #tower-slot .tower-btn,
+  #tower-slot .tower-menu-info,
+  #tower-slot .tower-btn.in-cat,
+  #tower-slot .tower-btn.back-btn,
+  #tower-slot .tower-btn.cat-btn {
+    min-height: 0 !important;
+    height: 100%;
+  }
+  #tower-btns .tower-menu-info { min-height: 0; height: 100%; }
+
   /* Build 65: multi-row inline info in tower row */
   #tower-btns .tower-menu-info {
     display: flex;
@@ -274,6 +327,8 @@
   #tower-btns {
     display: flex;
     flex-wrap: nowrap;
+    align-items: stretch;
+    height: 100%;
     gap: 4px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -330,6 +385,8 @@
   }
   #tower-btns.mode-categories .tower-btn.cat-btn {
     flex: 1 1 0;
+    height: 100%;
+    min-height: 0;
     width: auto;
     min-width: 0;
     max-width: none;
@@ -364,6 +421,8 @@
   }
   #tower-btns.mode-towers .tower-btn.in-cat {
     flex: 1 1 0;
+    height: 100%;
+    min-height: 0;
     width: auto;
     min-width: 96px;
     min-height: 76px;
@@ -383,6 +442,8 @@
   #tower-btns.mode-towers .tower-btn.in-cat .cost { font-size: 0.54rem; }
   #tower-btns.mode-towers .tower-btn.back-btn {
     flex: 0 0 auto;
+    height: 100%;
+    min-height: 0;
     width: 64px;
     min-width: 60px;
     max-width: 70px;
@@ -683,6 +744,72 @@
     border-color: #94a3b8;
     color: #e2e8f0;
   }
+
+  /* Build 106: phone landscape — map rotates 90°, controls sit on the side */
+  #app.pg-land {
+    max-width: none;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) min(250px, 40vw);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100%;
+  }
+  #app.pg-land header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  #app.pg-land #canvas-wrap {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 2px 4px;
+    min-width: 0;
+    min-height: 0;
+  }
+  #app.pg-land #controls {
+    grid-column: 2;
+    grid-row: 2;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-left: 1px solid #1e293b;
+    padding: 4px 6px;
+  }
+  #app.pg-land #controls.pre-map {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  #app.pg-land #canvas-stage {
+    container-type: size;
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 560 / 400;
+    overflow: hidden;
+  }
+  #app.pg-land #canvas-stage canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100cqh;
+    height: 100cqw;
+    max-width: none;
+    max-height: none;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center center;
+  }
+  #app.pg-land #tower-slot {
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+  }
+  #app.pg-land #onboard-tip {
+    bottom: auto;
+    top: 8px;
+  }
+
   @media (max-width: 380px) {
     .tower-btn { width: 50px; min-width: 50px; min-height: 46px; font-size: 0.92rem; }
     .tower-btn .tname { font-size: 0.44rem; }
@@ -793,12 +920,14 @@
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.55), inset 0 0 0 1px rgba(255,255,255,0.25);
     filter: brightness(1.08);
   }
-  #tower-btns.hidden { display: none; }
+  #tower-btns.hidden { visibility: hidden; pointer-events: none; }
   #tower-actions {
     display: none;
     grid-template-columns: 1.3fr 1fr 0.9fr;
     gap: 4px;
+    align-content: stretch;
   }
+  #tower-actions .action-btn { height: 100%; min-height: 0; }
   #btn-aim {
     border-color: #38bdf8;
     background: #0c4a6e;
@@ -810,8 +939,10 @@
     display: none;
     grid-template-columns: 1.4fr 1fr;
     gap: 4px;
+    align-content: stretch;
   }
   #sell-confirm.show { display: grid; }
+  #sell-confirm .action-btn { height: 100%; min-height: 0; }
   #btn-sell-yes {
     border-color: #f87171;
     background: #7f1d1d;
@@ -877,7 +1008,12 @@
     border-radius: 10px;
     padding: 8px 10px;
     line-height: 1.35;
-    margin: 0 0 2px;
+    margin: 0;
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 52px;
+    z-index: 5;
   }
   #onboard-tip.show { display: block; }
   #onboard-tip button {
@@ -1293,7 +1429,9 @@
   </header>
 
   <div id="canvas-wrap">
-    <canvas id="c" width="400" height="560"></canvas>
+    <div id="canvas-stage">
+      <canvas id="c" width="400" height="560"></canvas>
+    </div>
     <div id="counter-toast" aria-live="polite"></div>
 
     <div id="tower-detail" aria-hidden="true">
@@ -1371,13 +1509,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=105" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=106" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1410,6 +1548,7 @@
   </div>
 
   <div id="controls">
+    <div id="tower-slot">
     <div id="tower-btns"></div>
     <div id="tower-stats" aria-live="polite"></div>
     <div id="tower-actions">
@@ -1430,6 +1569,7 @@
       </button>
       <button type="button" class="action-btn" id="btn-sell-no">Keep</button>
     </div>
+    </div><!-- /tower-slot -->
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
@@ -1443,7 +1583,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 105</div>
+    <div id="build-ver">build 106</div>
   </div>
 </div>
 
@@ -1764,7 +1904,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=105`;
+    img.src = `./sprites/${name}.png?v=106`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2876,15 +3016,45 @@
     return null;
   }
 
+  const canvasStage = document.getElementById('canvas-stage');
+  const appEl = document.getElementById('app');
+
+  function isLandscapePlay() {
+    return !!(appEl && appEl.classList.contains('pg-land'));
+  }
+
+  function syncLandscapeLayout() {
+    if (!appEl) return;
+    // Phone / short landscape only — desktop wide stays portrait column
+    const land = window.matchMedia('(orientation: landscape)').matches
+      && window.innerHeight <= 560;
+    appEl.classList.toggle('pg-land', land);
+  }
+  try {
+    const mq = window.matchMedia('(orientation: landscape)');
+    if (mq.addEventListener) mq.addEventListener('change', syncLandscapeLayout);
+    else if (mq.addListener) mq.addListener(syncLandscapeLayout);
+  } catch (_) {}
+  window.addEventListener('resize', syncLandscapeLayout);
+  syncLandscapeLayout();
+
   function canvasCoords(e) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = W / rect.width;
-    const scaleY = H / rect.height;
+    const stage = canvasStage || canvas;
+    const rect = stage.getBoundingClientRect();
     const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX);
     const clientY = e.clientY ?? (e.touches && e.touches[0]?.clientY);
+    const nx = (clientX - rect.left) / Math.max(1, rect.width);
+    const ny = (clientY - rect.top) / Math.max(1, rect.height);
+    if (isLandscapePlay()) {
+      // CSS rotate(90deg): screen left→right is game top→bottom; screen top→bottom is game left→right
+      return {
+        x: Math.max(0, Math.min(W, ny * W)),
+        y: Math.max(0, Math.min(H, nx * H)),
+      };
+    }
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY,
+      x: Math.max(0, Math.min(W, nx * W)),
+      y: Math.max(0, Math.min(H, ny * H)),
     };
   }
 
@@ -3562,7 +3732,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=105" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=106" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3732,7 +3902,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=105" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=106" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4147,7 +4317,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=105`;
+    return `./sprites/${spr}.png?v=106`;
   }
 
   function enemyChipHtml(kind, mode) {
