@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 100 -->
+<!-- path-guard-build: 101 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1334,33 +1334,29 @@
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
       <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Brutes block Marksman · Tanks need Gunnery · Wave 40 &amp; 50 Titans</p>
       <div id="map-list">
-      <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
-        <span class="map-title">Map 1: Spiral <span class="diff easy">Easy</span></span>
-        <span class="sub">Longest path · more shoot time · +35 start gold</span>
-      </button>
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
-        <span class="map-title">Map 2: Serpentine <span class="diff medium">Medium</span></span>
-        <span class="sub">Open S-corridors · light pressure · +5 gold</span>
+        <span class="map-title">Map 1: Serpentine <span class="diff easy">Easy</span></span>
+        <span class="sub">Meadow S-path · uneven ends · +20 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
-        <span class="map-title">Map 3: Crosscut <span class="diff medhard">Medium-Hard</span></span>
-        <span class="sub">Bold midfield crossbar · pocket build lanes</span>
+        <span class="map-title">Map 2: Crosscut <span class="diff medium">Medium</span></span>
+        <span class="sub">Forest figure-8 · bridge overpass · pocket lanes</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
-        <span class="map-title">Map 4: Ridge <span class="diff medhard">Medium-Hard</span></span>
-        <span class="sub">Plateau jogs · open flanks · tighter than Crosscut · +10g</span>
+        <span class="map-title">Map 3: Ridge <span class="diff medhard">Medium-Hard</span></span>
+        <span class="sub">Desert side-entry · plateau drop · +10g</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
-        <span class="map-title">Map 5: Winding <span class="diff hard">Hard</span></span>
-        <span class="sub">Tight switchbacks · denser spawns</span>
+        <span class="map-title">Map 4: Winding <span class="diff hard">Hard</span></span>
+        <span class="sub">Dusk U-pockets · loop-backs · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
-        <span class="map-title">Map 6: Gauntlet <span class="diff brutal">Brutal</span></span>
-        <span class="sub">Short path · lighter pressure than Nightmare · +16 start gold</span>
+        <span class="map-title">Map 5: Gauntlet <span class="diff brutal">Brutal</span></span>
+        <span class="sub">Slag short run · one bridge · +16 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crucible" data-map="crucible">
-        <span class="map-title">Map 7: Crucible <span class="diff nightmare">Nightmare</span></span>
-        <span class="sub">Tight build space · denser spawns · hardest map</span>
+        <span class="map-title">Map 6: Crucible <span class="diff nightmare">Nightmare</span></span>
+        <span class="sub">Ember labyrinth · twin bridges · densest map</span>
       </button>
       </div>
     </div>
@@ -1375,13 +1371,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=100" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=101" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1507,76 +1503,90 @@
     serpentine: {
       id: 'serpentine',
       name: 'Serpentine',
-      difficulty: 2,
-      spawnExtra: 1,
-      hardenChance: 0.1,
-      startGoldBonus: 5,
-      // Medium: full-width S on every other row — open build lanes between
+      difficulty: 1,
+      spawnExtra: 0,
+      hardenChance: 0.06,
+      startGoldBonus: 20,
+      // Easy: S-corridors with uneven ends (not full-width every row)
       path: [
-        tc(0, 0), tc(9, 0),
-        tc(9, 2), tc(0, 2),
-        tc(0, 4), tc(9, 4),
-        tc(9, 6), tc(0, 6),
-        tc(0, 8), tc(9, 8),
-        tc(9, 10), tc(0, 10),
-        tc(0, 12), tc(9, 12),
+        tc(1, 0), tc(8, 0),
+        tc(8, 2), tc(0, 2),
+        tc(0, 4), tc(7, 4),
+        tc(7, 6), tc(2, 6),
+        tc(2, 8), tc(9, 8),
+        tc(9, 10), tc(1, 10),
+        tc(1, 12), tc(6, 12),
       ],
+      theme: {
+        bg: '#14301f', bgAlt: 'rgba(52, 211, 153, 0.08)',
+        pathDeep: '#3f2a14', pathMid: '#6b4423', pathTop: '#a16207',
+        deco: 'meadow',
+      },
     },
     crosscut: {
       id: 'crosscut',
       name: 'Crosscut',
-      difficulty: 3,
+      difficulty: 2,
       spawnExtra: 2,
-      hardenChance: 0.18,
+      hardenChance: 0.16,
       startGoldBonus: 0,
-      // Medium-Hard: clear midfield crossbar + north/south arms (distinct lanes)
+      // Medium: figure-8 style — horizontal midroad crosses vertical spine (bridge at 4,6)
       path: [
-        tc(1, 0), tc(1, 5),
-        tc(1, 5), tc(8, 5),
-        tc(8, 5), tc(8, 1),
-        tc(8, 1), tc(4, 1),
-        tc(4, 1), tc(4, 9),
-        tc(4, 9), tc(9, 9),
-        tc(9, 9), tc(9, 12),
-        tc(9, 12), tc(2, 12),
-        tc(2, 12), tc(2, 7),
-        tc(2, 7), tc(6, 7),
-        tc(6, 7), tc(6, 13),
+        tc(0, 0), tc(0, 6),
+        tc(9, 6),
+        tc(9, 1), tc(4, 1),
+        tc(4, 12),
+        tc(1, 12), tc(1, 3),
+        tc(7, 3), tc(7, 13),
       ],
+      theme: {
+        bg: '#12261a', bgAlt: 'rgba(34, 197, 94, 0.07)',
+        pathDeep: '#292524', pathMid: '#44403c', pathTop: '#78716c',
+        deco: 'forest',
+      },
     },
     ridge: {
       id: 'ridge',
       name: 'Ridge',
       difficulty: 3,
       spawnExtra: 2,
-      hardenChance: 0.22,
+      hardenChance: 0.2,
       startGoldBonus: 10,
-      // Medium-Hard+: longer plateau jogs (was too short vs Gauntlet) — open flanks
+      // Medium-Hard: enter from west side, climb plateau, drop south
       path: [
-        tc(0, 0), tc(5, 0), tc(5, 2), tc(1, 2),
-        tc(1, 4), tc(8, 4), tc(8, 6), tc(3, 6),
-        tc(3, 8), tc(9, 8), tc(9, 10), tc(2, 10),
-        tc(2, 12), tc(7, 12), tc(7, 13), tc(4, 13),
+        tc(0, 4), tc(5, 4),
+        tc(5, 1), tc(9, 1),
+        tc(9, 6), tc(3, 6),
+        tc(3, 10), tc(8, 10),
+        tc(8, 13), tc(2, 13),
+        tc(2, 8), tc(6, 8),
       ],
+      theme: {
+        bg: '#2a2114', bgAlt: 'rgba(251, 191, 36, 0.07)',
+        pathDeep: '#44403c', pathMid: '#78716c', pathTop: '#d6d3d1',
+        deco: 'sand',
+      },
     },
     winding: {
       id: 'winding',
       name: 'Winding',
       difficulty: 4,
       spawnExtra: 3,
-      hardenChance: 0.28,
+      hardenChance: 0.26,
       startGoldBonus: 0,
-      // Medium: tighter switchbacks with uneven corridor lengths
+      // Hard: U-pockets / loop-backs (not a flat zigzag)
       path: [
-        tc(0, 0), tc(9, 0),
-        tc(9, 1), tc(1, 1),
-        tc(1, 3), tc(8, 3),
-        tc(8, 5), tc(2, 5),
-        tc(2, 7), tc(9, 7),
-        tc(9, 9), tc(0, 9),
-        tc(0, 11), tc(8, 11),
-        tc(8, 13), tc(3, 13),
+        tc(0, 0), tc(3, 0), tc(3, 4), tc(0, 4),
+        tc(0, 2), tc(6, 2),
+        tc(6, 7), tc(2, 7), tc(2, 11),
+        tc(8, 11), tc(8, 5), tc(5, 5),
+        tc(5, 13), tc(9, 13),
       ],
+      theme: {
+        bg: '#1a1530', bgAlt: 'rgba(167, 139, 250, 0.08)',
+        pathDeep: '#1e1b4b', pathMid: '#312e81', pathTop: '#6366f1',
+        deco: 'dusk',
+      },
     },
     gauntlet: {
       id: 'gauntlet',
@@ -1585,16 +1595,20 @@
       spawnExtra: 1,
       hardenChance: 0.22,
       startGoldBonus: 16,
-      // Brutal: short path, softer pressure than Nightmare Crucible
+      // Brutal: shorter run with one bridge crossing at (5,9)
       path: [
-        tc(1, 0), tc(8, 0),
-        tc(8, 2), tc(2, 2),
-        tc(2, 5), tc(8, 5),
-        tc(8, 8), tc(1, 8),
-        tc(1, 11), tc(8, 11),
-        tc(8, 13),
-
+        tc(0, 0), tc(0, 9),
+        tc(9, 9),
+        tc(9, 3), tc(5, 3),
+        tc(5, 12),
+        tc(2, 12), tc(2, 5),
+        tc(7, 5), tc(7, 13),
       ],
+      theme: {
+        bg: '#1c1410', bgAlt: 'rgba(248, 113, 113, 0.06)',
+        pathDeep: '#292524', pathMid: '#57534e', pathTop: '#a8a29e',
+        deco: 'slag',
+      },
     },
     crucible: {
       id: 'crucible',
@@ -1603,35 +1617,23 @@
       spawnExtra: 5,
       hardenChance: 0.48,
       startGoldBonus: 6,
-      // Nightmare: denser/harder than Gauntlet — packed switchbacks, less start gold
+      // Nightmare: labyrinth with twin bridge crossings
       path: [
         tc(0, 0), tc(9, 0),
-        tc(9, 1), tc(1, 1),
-        tc(1, 2), tc(9, 2),
-        tc(9, 4), tc(0, 4),
-        tc(0, 5), tc(8, 5),
-        tc(8, 6), tc(0, 6),
-        tc(0, 8), tc(9, 8),
-        tc(9, 9), tc(1, 9),
-        tc(1, 10), tc(9, 10),
-        tc(9, 12), tc(0, 12),
-        tc(0, 13), tc(5, 13),
-      ],
-    },
-    spiral: {
-      id: 'spiral',
-      name: 'Spiral',
-      difficulty: 1,
-      spawnExtra: 0,
-      hardenChance: 0,
-      startGoldBonus: 35,
-      // Easy: rectangular grid coil (2-tile ring gaps) inward to center
-      path: [
-        tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
-        tc(0, 2), tc(7, 2), tc(7, 11), tc(2, 11),
-        tc(2, 4), tc(5, 4), tc(5, 9), tc(4, 9),
+        tc(9, 4), tc(3, 4),
+        tc(3, 1), tc(6, 1),
+        tc(6, 8),
+        tc(1, 8), tc(1, 12),
+        tc(8, 12), tc(8, 6),
         tc(4, 6),
+        tc(4, 13), tc(0, 13),
+        tc(0, 10), tc(5, 10),
       ],
+      theme: {
+        bg: '#1a0a0a', bgAlt: 'rgba(239, 68, 68, 0.08)',
+        pathDeep: '#450a0a', pathMid: '#7f1d1d', pathTop: '#b91c1c',
+        deco: 'ember',
+      },
     },
   };
 
@@ -1762,14 +1764,14 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=100`;
+    img.src = `./sprites/${name}.png?v=101`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
     return !!(SPRITE_OK[name] && SPRITES[name] && SPRITES[name].complete && SPRITES[name].naturalWidth > 0);
   }
 
-  let PATH = MAPS.spiral.path;
+  let PATH = MAPS.serpentine.path;
   let PATH_LEN = 0;
   let pathTileSet = new Set(); // tile indices occupied by the road
   let nextTowerId = 1;
@@ -1781,7 +1783,7 @@
   let buildable = []; // flat ROWS*COLS booleans
 
   const state = {
-    mapId: 'spiral',
+    mapId: 'serpentine',
     mapPicked: false,
     defaultTargetMode: 'first', // default aim for newly placed towers (LS_TARGET)
     hardMode: false,
@@ -1900,7 +1902,7 @@
   }
 
   function applyMap(mapId) {
-    const map = MAPS[mapId] || MAPS.spiral;
+    const map = MAPS[mapId] || MAPS.serpentine;
     state.mapId = map.id;
     PATH = map.path;
     PATH_LEN = pathLength(PATH);
@@ -1909,11 +1911,11 @@
   }
 
   function activeMap() {
-    return MAPS[state.mapId] || MAPS.spiral;
+    return MAPS[state.mapId] || MAPS.serpentine;
   }
 
   function startGoldForMap(mapId) {
-    const map = MAPS[mapId] || MAPS.spiral;
+    const map = MAPS[mapId] || MAPS.serpentine;
     return START_GOLD + (map.startGoldBonus || 0);
   }
 
@@ -2989,10 +2991,10 @@
       50: 42,             // Finale (3 Titans)
     };
     let n = table[w] || (10 + w);
-    // Spiral stays easy: fewer early + lighter scout swarm
-    if (state.mapId === 'spiral') {
+    // Serpentine (easy) stays a bit softer early
+    if (state.mapId === 'serpentine') {
       if (w <= 4) n = Math.max(2, n - 1);
-      else if (w === 5) n = Math.max(8, n - 3);
+      else if (w === 5) n = Math.max(8, n - 2);
       else if (w === 6) n = Math.max(4, n - 1);
     }
     return n;
@@ -3062,7 +3064,7 @@
   function wavePreviewCounts(w) {
     const map = activeMap();
     const hard = !!state.hardMode;
-    const hardExtra = hard ? (map.id === 'spiral' ? 1 : 2) : 0;
+    const hardExtra = hard ? (map.id === 'serpentine' ? 1 : 2) : 0;
     let n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra;
     const mix = enemyMixForWave(w);
     const counts = {};
@@ -3139,11 +3141,11 @@
   function buildSpawnQueue(w) {
     const map = activeMap();
     const hard = !!state.hardMode;
-    // Hard Mode: +2 spawns (+1 on Spiral so early stays forgiving). Gauntlet stays tough via mix.
-    const hardExtra = hard ? (map.id === 'spiral' ? 1 : 2) : 0;
+    // Hard Mode: +2 spawns (+1 on Serpentine so early stays forgiving). Gauntlet stays tough via mix.
+    const hardExtra = hard ? (map.id === 'serpentine' ? 1 : 2) : 0;
     const n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra;
     const mix = enemyMixForWave(w);
-    const hardChance = hard ? (map.id === 'spiral' ? 0.06 : 0.12) : 0;
+    const hardChance = hard ? (map.id === 'serpentine' ? 0.06 : 0.12) : 0;
     const chance = w <= 1 ? 0 : (map.hardenChance || 0) + hardChance;
     const q = [];
     for (let i = 0; i < n; i++) {
@@ -3321,9 +3323,9 @@
     state.mapPicked = false;
     el.mapOverlay.classList.add('show');
     el.overlay.classList.remove('show');
-    let last = 'spiral';
-    try { last = localStorage.getItem(LS_MAP) || 'spiral'; } catch (_) {}
-    if (!MAPS[last]) last = 'spiral';
+    let last = 'serpentine';
+    try { last = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
+    if (last === 'spiral' || !MAPS[last]) last = 'serpentine';
     document.querySelectorAll('.map-pick-btn').forEach(b => {
       b.classList.toggle('last', b.dataset.map === last);
     });
@@ -3435,7 +3437,7 @@
   }
 
   function replayMap() {
-    const mapId = state.mapId || 'spiral';
+    const mapId = state.mapId || 'serpentine';
     // Keep hard mode + targeting; skip map picker
     el.overlay.classList.remove('show');
     pickMap(mapId);
@@ -3490,7 +3492,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=100" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=101" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3660,7 +3662,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=100" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=101" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4074,7 +4076,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=100`;
+    return `./sprites/${spr}.png?v=101`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -4776,57 +4778,186 @@
     }
   }
 
+  function hashDeco(c, r, salt) {
+    let h = (c * 73856093) ^ (r * 19349663) ^ (salt * 83492791);
+    h = (h >>> 0) % 1000;
+    return h / 1000;
+  }
+
+  function expandPathCells(path) {
+    const cells = [];
+    for (let i = 1; i < path.length; i++) {
+      const a = path[i - 1], b = path[i];
+      const c0 = Math.round((a.x - TILE * 0.5) / TILE);
+      const r0 = Math.round((a.y - TILE * 0.5) / TILE);
+      const c1 = Math.round((b.x - TILE * 0.5) / TILE);
+      const r1 = Math.round((b.y - TILE * 0.5) / TILE);
+      if (r0 === r1) {
+        const step = c1 >= c0 ? 1 : -1;
+        for (let c = c0; c !== c1 + step; c += step) {
+          if (c >= 0 && c < COLS && r0 >= 0 && r0 < ROWS) cells.push({ c, r: r0, horiz: true, seg: i - 1 });
+        }
+      } else if (c0 === c1) {
+        const step = r1 >= r0 ? 1 : -1;
+        for (let r = r0; r !== r1 + step; r += step) {
+          if (c0 >= 0 && c0 < COLS && r >= 0 && r < ROWS) cells.push({ c: c0, r, horiz: false, seg: i - 1 });
+        }
+      }
+    }
+    // drop consecutive duplicates from corner joins
+    const out = [];
+    for (const cell of cells) {
+      const prev = out[out.length - 1];
+      if (prev && prev.c === cell.c && prev.r === cell.r) continue;
+      out.push(cell);
+    }
+    return out;
+  }
+
+  function findBridgeTiles(path) {
+    const cells = expandPathCells(path);
+    const seen = new Map();
+    const bridges = new Set();
+    for (let i = 0; i < cells.length; i++) {
+      const key = cells[i].c + ',' + cells[i].r;
+      if (seen.has(key)) {
+        const first = seen.get(key);
+        // true cross / revisit if not adjacent along the path
+        if (i - first >= 3) bridges.add(key);
+      } else {
+        seen.set(key, i);
+      }
+    }
+    return bridges;
+  }
+
+  function drawMapDeco(theme, bridges) {
+    const kind = (theme && theme.deco) || 'meadow';
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const idx = tileIndex(c, r);
+        if (pathTileSet.has(idx)) continue;
+        const h = hashDeco(c, r, kind.length * 17);
+        if (h > 0.42) continue;
+        const x = c * TILE + TILE * 0.5;
+        const y = r * TILE + TILE * 0.5;
+        ctx.save();
+        if (kind === 'meadow' || kind === 'forest') {
+          ctx.fillStyle = h < 0.18 ? '#166534' : '#15803d';
+          ctx.beginPath();
+          ctx.moveTo(x, y - 10);
+          ctx.lineTo(x + 7, y + 6);
+          ctx.lineTo(x - 7, y + 6);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#78350f';
+          ctx.fillRect(x - 1.5, y + 4, 3, 6);
+        } else if (kind === 'sand') {
+          ctx.fillStyle = 'rgba(214, 211, 209, 0.35)';
+          ctx.beginPath();
+          ctx.ellipse(x, y, 6 + h * 5, 3 + h * 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (kind === 'dusk') {
+          ctx.fillStyle = h < 0.2 ? 'rgba(129, 140, 248, 0.35)' : 'rgba(167, 139, 250, 0.25)';
+          ctx.beginPath();
+          ctx.arc(x, y, 3 + h * 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (kind === 'slag' || kind === 'ember') {
+          ctx.fillStyle = h < 0.15 ? 'rgba(248, 113, 113, 0.35)' : 'rgba(120, 113, 108, 0.4)';
+          ctx.beginPath();
+          ctx.moveTo(x - 5, y + 4);
+          ctx.lineTo(x, y - 5);
+          ctx.lineTo(x + 6, y + 3);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+  }
+
+  function strokePathPolyline(path, color, width) {
+    if (!path || path.length < 2) return;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+    ctx.stroke();
+  }
+
   function drawPath() {
-    ctx.fillStyle = '#0b1220';
+    const map = activeMap();
+    const theme = map.theme || {
+      bg: '#0b1220', bgAlt: 'rgba(30, 58, 95, 0.15)',
+      pathDeep: '#1e293b', pathMid: '#334155', pathTop: '#64748b',
+      deco: 'meadow',
+    };
+    const bridges = findBridgeTiles(PATH);
+
+    ctx.fillStyle = theme.bg;
     ctx.fillRect(0, 0, W, H);
 
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         if ((c + r) % 2 === 0) {
-          ctx.fillStyle = 'rgba(30, 58, 95, 0.15)';
+          ctx.fillStyle = theme.bgAlt;
           ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
         }
       }
     }
 
-    // Path tiles as filled grid squares (the road corridor)
+    drawMapDeco(theme, bridges);
+
+    // Soft path bed on all path tiles
     for (const idx of pathTileSet) {
       const c = idx % COLS;
       const r = (idx / COLS) | 0;
-      const x0 = c * TILE;
-      const y0 = r * TILE;
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(x0, y0, TILE, TILE);
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x0 + 3, y0 + 3, TILE - 6, TILE - 6);
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x0 + 0.5, y0 + 0.5, TILE - 1, TILE - 1);
+      ctx.fillStyle = theme.pathDeep;
+      ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
     }
 
-    // Centerline stroke along tile centers (orthogonal only)
-    ctx.lineCap = 'square';
-    ctx.lineJoin = 'miter';
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
-    ctx.lineWidth = TILE;
-    ctx.beginPath();
-    ctx.moveTo(PATH[0].x, PATH[0].y);
-    for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
-    ctx.stroke();
+    // Underpass (full path as deep ribbon)
+    strokePathPolyline(PATH, theme.pathDeep, TILE);
+    strokePathPolyline(PATH, theme.pathMid, TILE - 10);
 
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = TILE - 10;
-    ctx.beginPath();
-    ctx.moveTo(PATH[0].x, PATH[0].y);
-    for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
-    ctx.stroke();
+    // Bridge overpasses: bright raised segments on revisit tiles
+    if (bridges.size) {
+      const cells = expandPathCells(PATH);
+      const seen = new Map();
+      for (let i = 0; i < cells.length; i++) {
+        const key = cells[i].c + ',' + cells[i].r;
+        if (!bridges.has(key)) continue;
+        if (!seen.has(key)) { seen.set(key, i); continue; }
+        // second visit — draw a short bridge cap
+        const x = cells[i].c * TILE + TILE * 0.5;
+        const y = cells[i].r * TILE + TILE * 0.5;
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.55)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 3;
+        ctx.fillStyle = theme.pathTop;
+        if (cells[i].horiz) {
+          ctx.fillRect(x - TILE * 0.55, y - 9, TILE * 1.1, 18);
+          ctx.fillStyle = 'rgba(255,255,255,0.18)';
+          ctx.fillRect(x - TILE * 0.55, y - 9, TILE * 1.1, 4);
+        } else {
+          ctx.fillRect(x - 9, y - TILE * 0.55, 18, TILE * 1.1);
+          ctx.fillStyle = 'rgba(255,255,255,0.18)';
+          ctx.fillRect(x - 9, y - TILE * 0.55, 4, TILE * 1.1);
+        }
+        ctx.restore();
+        // tunnel mouth hint under bridge
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
-    ctx.strokeStyle = '#64748b';
-    ctx.lineWidth = TILE - 18;
-    ctx.beginPath();
-    ctx.moveTo(PATH[0].x, PATH[0].y);
-    for (let i = 1; i < PATH.length; i++) ctx.lineTo(PATH[i].x, PATH[i].y);
-    ctx.stroke();
+    strokePathPolyline(PATH, theme.pathTop, TILE - 18);
 
     ctx.fillStyle = '#22c55e';
     ctx.beginPath();
@@ -5875,9 +6006,10 @@
   }
 
   // Init map from last selection for preview path under overlay
-  let initialMap = 'spiral';
-  try { initialMap = localStorage.getItem(LS_MAP) || 'spiral'; } catch (_) {}
-  applyMap(MAPS[initialMap] ? initialMap : 'spiral');
+  let initialMap = 'serpentine';
+  try { initialMap = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
+  if (initialMap === 'spiral' || !MAPS[initialMap]) initialMap = 'serpentine';
+  applyMap(initialMap);
   // TARGET_MODES is declared later in file order — load prefs after constants exist
   loadPersistedPrefs();
   showMapSelect();
