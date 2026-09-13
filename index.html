@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 96 -->
+<!-- path-guard-build: 99 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -850,13 +850,21 @@
     color: #e2e8f0;
   }
   #btn-sell .cost { display: block; font-size: 0.62rem; font-weight: 600; color: #94a3b8; margin-top: 1px; }
+  /* Build 99: fixed hint box — long between-wave text was shrinking the flex canvas */
   #hint {
     text-align: center;
     font-size: 0.62rem;
     color: #94a3b8;
-    min-height: 1em;
+    height: 2.4em;
+    min-height: 2.4em;
+    max-height: 2.4em;
     line-height: 1.2;
     padding: 0 2px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
   #onboard-tip {
     display: none;
@@ -886,8 +894,18 @@
     border-radius: 10px; padding: 8px 12px;
   }
   .hard-mode-row input { width: 18px; height: 18px; accent-color: #ea580c; flex-shrink: 0; }
+  /* Build 99: reserve preview row so Incoming:… lines don't resize the board */
   #wave-preview {
-    text-align: center; font-size: 10px; color: #94a3b8; min-height: 12px; margin-top: 0;
+    text-align: center;
+    font-size: 10px;
+    color: #94a3b8;
+    height: 12px;
+    min-height: 12px;
+    max-height: 12px;
+    margin-top: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   #wave-preview.hot { color: #fecaca; font-weight: 700; }
   /* Build 66: FAQ overhaul — opaque overlay + tower cards for phone */
@@ -1357,13 +1375,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=98" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (2). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=99" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (2). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1744,7 +1762,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=98`;
+    img.src = `./sprites/${name}.png?v=99`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2447,14 +2465,12 @@
       if (mode === 'continuous') {
         state.awaitingNextWave = false;
         state.nextWaveIn = DENSE_WAVES.has(state.wave) ? 2.6 : 1.5;
-        el.hint.textContent = preview
-          ? `Wave ${state.wave} cleared! Next: ${preview}…`
-          : `Wave ${state.wave} cleared! Next wave soon…`;
+        el.hint.textContent = `Wave ${state.wave} cleared! Next wave soon…`;
       } else {
         state.awaitingNextWave = true;
         state.nextWaveIn = 0;
         el.hint.textContent = preview
-          ? `Wave ${state.wave} cleared! Next: ${preview}. Build, then Next Wave.`
+          ? `Wave ${state.wave} cleared! Build, then Next Wave.`
           : `Wave ${state.wave} cleared! Build up, then press Next Wave.`;
       }
     }
@@ -2492,14 +2508,13 @@
       state.awaitingNextWave = false;
       // Slightly longer breath after dense waves
       state.nextWaveIn = DENSE_WAVES.has(cleared) ? 2.6 : 1.5;
-      el.hint.textContent = preview
-        ? `Wave ${cleared} cleared${payBit}! Next: ${preview}…`
-        : `Wave ${cleared} cleared${payBit}!`;
+      // Keep hint short — long enemy lists live in #wave-preview (avoids canvas shrink)
+      el.hint.textContent = `Wave ${cleared} cleared${payBit}! Next wave soon…`;
     } else {
       state.awaitingNextWave = true;
       state.nextWaveIn = 0;
       el.hint.textContent = preview
-        ? `Wave ${cleared} cleared${payBit}! Next: ${preview}. Build, then Next Wave.`
+        ? `Wave ${cleared} cleared${payBit}! Build, then Next Wave.`
         : `Wave ${cleared} cleared${payBit}! Build up, then press Next Wave.`;
     }
     setWavePreview(preview ? `Incoming: ${preview}` : '', !!(preview && DENSE_WAVES.has(next)));
@@ -3194,11 +3209,11 @@
     hideNextWaveUI();
     saveBestWave(state.wave);
     if (state.wave === 50) {
-      el.hint.textContent = `Wave 50 — Titans incoming! ${wavePreviewLabel(state.wave)}`;
+      el.hint.textContent = 'Wave 50 — Titans incoming!';
       setWavePreview(wavePreviewLabel(state.wave), true);
       addFloat(W / 2, H * 0.22, 'TITANS INCOMING', '#fecaca', 2.4);
     } else if (state.wave === 40) {
-      el.hint.textContent = `Wave 40 — A Titan arrives! ${wavePreviewLabel(state.wave)}`;
+      el.hint.textContent = 'Wave 40 — A Titan arrives!';
       setWavePreview(wavePreviewLabel(state.wave), true);
       addFloat(W / 2, H * 0.22, 'TITAN INCOMING', '#fecaca', 2.2);
     } else if (state.wave === 4) {
@@ -3218,7 +3233,7 @@
       setWavePreview(wavePreviewLabel(state.wave), false);
     } else {
       const hot = DENSE_WAVES.has(state.wave);
-      el.hint.textContent = `Wave ${state.wave} incoming — ${wavePreviewLabel(state.wave)}`;
+      el.hint.textContent = `Wave ${state.wave} incoming`;
       setWavePreview(wavePreviewLabel(state.wave), hot);
     }
     updateHUD();
@@ -3472,7 +3487,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=98" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=99" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3642,7 +3657,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=98" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=99" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4056,7 +4071,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=98`;
+    return `./sprites/${spr}.png?v=99`;
   }
 
   function enemyChipHtml(kind, mode) {
