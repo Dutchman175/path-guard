@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 109 -->
+<!-- path-guard-build: 110 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -137,6 +137,20 @@
   #wave .val { color: #a78bfa; }
   #wave.hard .label { color: #fb923c; font-weight: 800; }
   #wave.hard .val { color: #fdba74; }
+
+  /* Build 110: quieter home chrome on Choose Map */
+  #app.pre-map #hud {
+    display: none;
+  }
+  #app.pre-map #best-line {
+    margin-bottom: 2px;
+    max-height: none;
+    white-space: normal;
+  }
+  #app.pre-map header {
+    padding-bottom: 4px;
+  }
+
   #best-line {
     text-align: center;
     font-size: 0.6rem;
@@ -194,7 +208,7 @@
     display: flex;
     flex-direction: column;
     gap: 3px;
-    /* Build 106: fixed chrome height — map never resizes when menus swap */
+    /* Build 110: fixed chrome only after map pick — home screen uses full height */
     height: 208px;
     max-height: 208px;
     min-height: 208px;
@@ -202,10 +216,9 @@
     overflow: hidden;
     position: relative;
   }
-  /* Keep slot reserved during map pick so the board size stays put */
+  /* Choose Map / home: collapse controls so the picker isn't crushed */
   #controls.pre-map {
-    visibility: hidden;
-    pointer-events: none;
+    display: none;
   }
   #tower-slot {
     position: relative;
@@ -777,8 +790,7 @@
     padding: 4px 6px;
   }
   #app.pg-land #controls.pre-map {
-    visibility: hidden;
-    pointer-events: none;
+    display: none;
   }
   #app.pg-land #canvas-stage {
     container-type: size;
@@ -1470,7 +1482,7 @@
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
       <p>Build on green tiles · hold 50 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
-      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · Brutes block Marksman · Tanks need Gunnery · Wave 40 &amp; 50 Titans</p>
+      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · FAQ for counters</p>
       <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         <span class="map-title">Map 1: Serpentine <span class="diff easy">Easy</span></span>
@@ -1478,23 +1490,23 @@
       </button>
       <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
         <span class="map-title">Map 2: Crosscut <span class="diff medium">Medium</span></span>
-        <span class="sub">Lakeside figure-8 · bridge overpass · pocket lanes</span>
+        <span class="sub">Lakeside spaced sweeps · no crossings</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
         <span class="map-title">Map 3: Ridge <span class="diff medhard">Medium-Hard</span></span>
-        <span class="sub">Desert side-entry · plateau drop · +10g</span>
+        <span class="sub">Hills side-entry · plateau then drop · +10g</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         <span class="map-title">Map 4: Winding <span class="diff hard">Hard</span></span>
-        <span class="sub">Dusk U-pockets · loop-backs · denser spawns</span>
+        <span class="sub">Orchard wide sweeps · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
         <span class="map-title">Map 5: Gauntlet <span class="diff brutal">Brutal</span></span>
-        <span class="sub">Creek short run · one bridge · +16 start gold</span>
+        <span class="sub">Creek short run · few bends · +16 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crucible" data-map="crucible">
         <span class="map-title">Map 6: Crucible <span class="diff nightmare">Nightmare</span></span>
-        <span class="sub">Garden labyrinth · twin bridges · densest map</span>
+        <span class="sub">Garden spaced snake · densest spawns</span>
       </button>
       </div>
     </div>
@@ -1509,13 +1521,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=109" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1583,7 +1595,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 109</div>
+    <div id="build-ver">build 110</div>
   </div>
 </div>
 
@@ -1670,14 +1682,13 @@
       spawnExtra: 2,
       hardenChance: 0.16,
       startGoldBonus: 0,
-      // Medium: figure-8 style — horizontal midroad crosses vertical spine (bridge at 4,6)
+      // Medium: spaced horizontals (4-row gaps) — no crossings / double-dips
       path: [
-        tc(0, 0), tc(0, 6),
-        tc(9, 6),
-        tc(9, 1), tc(4, 1),
-        tc(4, 12),
-        tc(1, 12), tc(1, 3),
-        tc(7, 3), tc(7, 13),
+        tc(0, 0), tc(0, 3),
+        tc(9, 3),
+        tc(9, 7), tc(0, 7),
+        tc(0, 11), tc(9, 11),
+        tc(9, 13),
       ],
       theme: {
         sky: '#89d4f5', mid: '#7ec8a0', ground: '#5aad6e',
@@ -1692,14 +1703,13 @@
       spawnExtra: 2,
       hardenChance: 0.2,
       startGoldBonus: 10,
-      // Medium-Hard: enter from west side, climb plateau, drop south
+      // Medium-Hard: side entry, plateau, then spaced drop — no path revisits
       path: [
-        tc(0, 4), tc(5, 4),
-        tc(5, 1), tc(9, 1),
-        tc(9, 6), tc(3, 6),
-        tc(3, 10), tc(8, 10),
-        tc(8, 13), tc(2, 13),
-        tc(2, 8), tc(6, 8),
+        tc(0, 5), tc(4, 5),
+        tc(4, 0), tc(9, 0),
+        tc(9, 5), tc(6, 5),
+        tc(6, 9), tc(1, 9),
+        tc(1, 13), tc(8, 13),
       ],
       theme: {
         sky: '#9fd4ff', mid: '#b8e986', ground: '#7bc96f',
@@ -1714,13 +1724,12 @@
       spawnExtra: 3,
       hardenChance: 0.26,
       startGoldBonus: 0,
-      // Hard: U-pockets / loop-backs (not a flat zigzag)
+      // Hard: three wide sweeps only — 4-row gaps, no U-pockets
       path: [
-        tc(0, 0), tc(3, 0), tc(3, 4), tc(0, 4),
-        tc(0, 2), tc(6, 2),
-        tc(6, 7), tc(2, 7), tc(2, 11),
-        tc(8, 11), tc(8, 5), tc(5, 5),
-        tc(5, 13), tc(9, 13),
+        tc(1, 0), tc(9, 0),
+        tc(9, 4), tc(0, 4),
+        tc(0, 8), tc(9, 8),
+        tc(9, 13),
       ],
       theme: {
         sky: '#87ceeb', mid: '#c5e87c', ground: '#8fce5a',
@@ -1735,14 +1744,11 @@
       spawnExtra: 1,
       hardenChance: 0.22,
       startGoldBonus: 16,
-      // Brutal: shorter run with one bridge crossing at (5,9)
+      // Brutal: short single-pass — few bends, little farm time
       path: [
-        tc(0, 0), tc(0, 9),
-        tc(9, 9),
-        tc(9, 3), tc(5, 3),
-        tc(5, 12),
-        tc(2, 12), tc(2, 5),
-        tc(7, 5), tc(7, 13),
+        tc(0, 0), tc(0, 5),
+        tc(5, 5), tc(5, 10),
+        tc(9, 10), tc(9, 13),
       ],
       theme: {
         sky: '#8ecae6', mid: '#90e0a0', ground: '#6bcf7a',
@@ -1757,17 +1763,13 @@
       spawnExtra: 5,
       hardenChance: 0.48,
       startGoldBonus: 6,
-      // Nightmare: labyrinth with twin bridge crossings
+      // Nightmare: long spaced snake — no bridges / no shared tower lanes
       path: [
-        tc(0, 0), tc(9, 0),
-        tc(9, 4), tc(3, 4),
-        tc(3, 1), tc(6, 1),
-        tc(6, 8),
-        tc(1, 8), tc(1, 12),
-        tc(8, 12), tc(8, 6),
-        tc(4, 6),
-        tc(4, 13), tc(0, 13),
-        tc(0, 10), tc(5, 10),
+        tc(0, 0), tc(8, 0),
+        tc(8, 4), tc(1, 4),
+        tc(1, 8), tc(9, 8),
+        tc(9, 12), tc(0, 12),
+        tc(0, 13), tc(5, 13),
       ],
       theme: {
         sky: '#a0d8ef', mid: '#d4f0a0', ground: '#9ad67a',
@@ -1887,7 +1889,7 @@
     shell:   { name: 'Tank',    r: 15, hp: 560, speed: 34,  reward: 22, color: '#9ca3af', stroke: '#111827' },
     tank:    { name: 'Brute',   r: 16, hp: 255, speed: 38,  reward: 16, color: '#ea580c', stroke: '#7c2d12' },
     raider:  { name: 'Raider',  r: 19, hp: 190, speed: 120, reward: 24, color: '#7f1d1d', stroke: '#fecaca' },
-    titan:   { name: 'Titan',   r: 28, hp: 2200, speed: 24,  reward: 70, color: '#6b7280', stroke: '#e5e7eb' },
+    titan:   { name: 'Titan',   r: 28, hp: 4000, speed: 24,  reward: 70, color: '#6b7280', stroke: '#e5e7eb' },
   };
 
   // Dense waves (tougher count/mix) — slightly longer auto pause, no Challenge branding/bonuses
@@ -1904,7 +1906,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=109`;
+    img.src = `./sprites/${name}.png?v=110`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2577,6 +2579,8 @@
       el.btnChangeMap.disabled = !state.mapPicked;
     }
     if (el.controls) el.controls.classList.toggle('pre-map', !state.mapPicked);
+    const appRoot = document.getElementById('app');
+    if (appRoot) appRoot.classList.toggle('pre-map', !state.mapPicked);
     refreshBestLine();
     updateWaveButtonLabels();
   }
@@ -3748,7 +3752,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=109" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=110" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3918,7 +3922,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=109" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=110" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4333,7 +4337,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=109`;
+    return `./sprites/${spr}.png?v=110`;
   }
 
   function enemyChipHtml(kind, mode) {
