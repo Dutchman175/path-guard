@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 110 -->
+<!-- path-guard-build: 111 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1482,31 +1482,31 @@
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
       <p>Build on green tiles · hold 50 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
-      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · FAQ for counters</p>
+      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · gray tiles = no build · FAQ for counters</p>
       <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         <span class="map-title">Map 1: Serpentine <span class="diff easy">Easy</span></span>
-        <span class="sub">Meadow S-path · uneven ends · +20 start gold</span>
+        <span class="sub">Meadow S-path · light rocks · +20 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
         <span class="map-title">Map 2: Crosscut <span class="diff medium">Medium</span></span>
-        <span class="sub">Lakeside spaced sweeps · no crossings</span>
+        <span class="sub">Lakeside doglegs · water blocks farm lanes</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
         <span class="map-title">Map 3: Ridge <span class="diff medhard">Medium-Hard</span></span>
-        <span class="sub">Hills side-entry · plateau then drop · +10g</span>
+        <span class="sub">Hills plateau · cliff blocks · +10g</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         <span class="map-title">Map 4: Winding <span class="diff hard">Hard</span></span>
-        <span class="sub">Orchard wide sweeps · denser spawns</span>
+        <span class="sub">Orchard zig · thicket blocks · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
         <span class="map-title">Map 5: Gauntlet <span class="diff brutal">Brutal</span></span>
-        <span class="sub">Creek short run · few bends · +16 start gold</span>
+        <span class="sub">Creek short jog · wall blocks · +16 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crucible" data-map="crucible">
         <span class="map-title">Map 6: Crucible <span class="diff nightmare">Nightmare</span></span>
-        <span class="sub">Garden spaced snake · densest spawns</span>
+        <span class="sub">Garden zig · ruin blocks · densest spawns</span>
       </button>
       </div>
     </div>
@@ -1521,13 +1521,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=110" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=111" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1595,7 +1595,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 110</div>
+    <div id="build-ver">build 111</div>
   </div>
 </div>
 
@@ -1659,7 +1659,7 @@
       spawnExtra: 0,
       hardenChance: 0.06,
       startGoldBonus: 20,
-      // Easy: S-corridors with uneven ends (not full-width every row)
+      // Easy: friendly S — light rocks only in corners
       path: [
         tc(1, 0), tc(8, 0),
         tc(8, 2), tc(0, 2),
@@ -1668,6 +1668,10 @@
         tc(2, 8), tc(9, 8),
         tc(9, 10), tc(1, 10),
         tc(1, 12), tc(6, 12),
+      ],
+      blocked: [
+        [3, 1], [5, 3], [4, 5], [6, 7], [3, 9], [5, 11],
+        [9, 5], [0, 7], [0, 11],
       ],
       theme: {
         sky: '#7ec8f0', mid: '#a8e063', ground: '#6bbf59',
@@ -1682,13 +1686,29 @@
       spawnExtra: 2,
       hardenChance: 0.16,
       startGoldBonus: 0,
-      // Medium: spaced horizontals (4-row gaps) — no crossings / double-dips
+      // Medium: dogleg staircase — blocked mid-lanes kill double-hit farms
       path: [
-        tc(0, 0), tc(0, 3),
-        tc(9, 3),
-        tc(9, 7), tc(0, 7),
-        tc(0, 11), tc(9, 11),
-        tc(9, 13),
+        tc(0, 0), tc(0, 5),
+        tc(3, 5), tc(3, 2),
+        tc(7, 2), tc(7, 6),
+        tc(1, 6), tc(1, 10),
+        tc(8, 10), tc(8, 13),
+        tc(3, 13),
+      ],
+      blocked: [
+        // between early doglegs
+        [1, 1], [1, 2], [1, 3], [1, 4],
+        [2, 1], [2, 3], [2, 4],
+        [4, 3], [4, 4], [5, 3], [5, 4], [5, 5],
+        [6, 3], [6, 4], [6, 5],
+        // mid corridor farm strip
+        [2, 7], [3, 7], [4, 7], [5, 7], [6, 7],
+        [3, 8], [4, 8], [5, 8],
+        [4, 9], [5, 9], [6, 9],
+        // late pocket
+        [4, 11], [5, 11], [6, 11], [7, 11],
+        [5, 12], [6, 12], [7, 12],
+        [9, 4], [9, 7], [9, 8],
       ],
       theme: {
         sky: '#89d4f5', mid: '#7ec8a0', ground: '#5aad6e',
@@ -1703,13 +1723,29 @@
       spawnExtra: 2,
       hardenChance: 0.2,
       startGoldBonus: 10,
-      // Medium-Hard: side entry, plateau, then spaced drop — no path revisits
+      // Medium-Hard: plateau climb then stepped drop; cliffs block inner farms
       path: [
-        tc(0, 5), tc(4, 5),
-        tc(4, 0), tc(9, 0),
-        tc(9, 5), tc(6, 5),
-        tc(6, 9), tc(1, 9),
-        tc(1, 13), tc(8, 13),
+        tc(0, 3), tc(6, 3),
+        tc(6, 0), tc(9, 0),
+        tc(9, 4), tc(4, 4),
+        tc(4, 8), tc(9, 8),
+        tc(9, 12), tc(2, 12),
+        tc(2, 13),
+      ],
+      blocked: [
+        // cliff under plateau
+        [7, 1], [8, 1], [7, 2], [8, 2],
+        [1, 1], [2, 1], [3, 1], [4, 1], [5, 1],
+        [1, 2], [2, 2], [3, 2], [4, 2], [5, 2],
+        // between mid horizontals
+        [5, 5], [6, 5], [7, 5], [8, 5],
+        [5, 6], [6, 6], [7, 6], [8, 6],
+        [5, 7], [6, 7], [7, 7],
+        // lower shelf
+        [3, 9], [4, 9], [5, 9], [6, 9], [7, 9],
+        [3, 10], [4, 10], [5, 10], [6, 10], [7, 10],
+        [3, 11], [5, 11], [6, 11], [7, 11], [8, 11],
+        [0, 6], [0, 9], [0, 11],
       ],
       theme: {
         sky: '#9fd4ff', mid: '#b8e986', ground: '#7bc96f',
@@ -1724,12 +1760,25 @@
       spawnExtra: 3,
       hardenChance: 0.26,
       startGoldBonus: 0,
-      // Hard: three wide sweeps only — 4-row gaps, no U-pockets
+      // Hard: asymmetric zig — orchards fill the double-hit guts
       path: [
-        tc(1, 0), tc(9, 0),
-        tc(9, 4), tc(0, 4),
-        tc(0, 8), tc(9, 8),
+        tc(0, 0), tc(6, 0),
+        tc(6, 3), tc(1, 3),
+        tc(1, 6), tc(8, 6),
+        tc(8, 9), tc(2, 9),
+        tc(2, 12), tc(9, 12),
         tc(9, 13),
+      ],
+      blocked: [
+        [2, 1], [3, 1], [4, 1], [5, 1],
+        [2, 2], [3, 2], [4, 2], [5, 2],
+        [3, 4], [4, 4], [5, 4], [6, 4], [7, 4],
+        [3, 5], [4, 5], [5, 5], [6, 5], [7, 5],
+        [3, 7], [4, 7], [5, 7], [6, 7],
+        [3, 8], [4, 8], [5, 8], [6, 8],
+        [4, 10], [5, 10], [6, 10], [7, 10],
+        [4, 11], [5, 11], [6, 11], [7, 11],
+        [0, 4], [0, 8], [0, 11], [9, 2], [9, 5], [9, 8],
       ],
       theme: {
         sky: '#87ceeb', mid: '#c5e87c', ground: '#8fce5a',
@@ -1744,11 +1793,25 @@
       spawnExtra: 1,
       hardenChance: 0.22,
       startGoldBonus: 16,
-      // Brutal: short single-pass — few bends, little farm time
+      // Brutal: short jogged run — side walls force awkward placements
       path: [
-        tc(0, 0), tc(0, 5),
-        tc(5, 5), tc(5, 10),
-        tc(9, 10), tc(9, 13),
+        tc(0, 0), tc(0, 4),
+        tc(4, 4), tc(4, 8),
+        tc(8, 8), tc(8, 11),
+        tc(3, 11), tc(3, 13),
+        tc(7, 13),
+      ],
+      blocked: [
+        // left wall
+        [1, 1], [2, 1], [3, 1], [1, 2], [2, 2], [3, 2], [1, 3], [2, 3],
+        // inside elbow
+        [1, 5], [2, 5], [3, 5], [1, 6], [2, 6], [3, 6], [1, 7], [2, 7], [3, 7],
+        [5, 5], [6, 5], [7, 5], [5, 6], [6, 6], [7, 6], [5, 7], [6, 7], [7, 7],
+        // lower choke
+        [5, 9], [6, 9], [7, 9], [5, 10], [6, 10], [7, 10],
+        [0, 6], [0, 9], [0, 12], [9, 2], [9, 5], [9, 9], [9, 12],
+        [1, 9], [2, 9], [1, 10], [2, 10],
+        [4, 12], [5, 12], [6, 12],
       ],
       theme: {
         sky: '#8ecae6', mid: '#90e0a0', ground: '#6bcf7a',
@@ -1763,13 +1826,27 @@
       spawnExtra: 5,
       hardenChance: 0.48,
       startGoldBonus: 6,
-      // Nightmare: long spaced snake — no bridges / no shared tower lanes
+      // Nightmare: long zig with ruin blocks in every farm pocket
       path: [
-        tc(0, 0), tc(8, 0),
-        tc(8, 4), tc(1, 4),
-        tc(1, 8), tc(9, 8),
-        tc(9, 12), tc(0, 12),
-        tc(0, 13), tc(5, 13),
+        tc(0, 0), tc(9, 0),
+        tc(9, 3), tc(3, 3),
+        tc(3, 6), tc(8, 6),
+        tc(8, 9), tc(1, 9),
+        tc(1, 12), tc(9, 12),
+        tc(9, 13), tc(5, 13),
+      ],
+      blocked: [
+        [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1],
+        [1, 2], [2, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2],
+        [4, 4], [5, 4], [6, 4], [7, 4],
+        [4, 5], [5, 5], [6, 5], [7, 5],
+        [0, 4], [0, 5], [1, 4], [1, 5], [2, 4], [2, 5],
+        [4, 7], [5, 7], [6, 7], [7, 7],
+        [4, 8], [5, 8], [6, 8], [7, 8],
+        [2, 7], [2, 8], [3, 7], [3, 8],
+        [2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10],
+        [2, 11], [3, 11], [4, 11], [5, 11], [6, 11], [7, 11],
+        [0, 7], [0, 10], [0, 11],
       ],
       theme: {
         sky: '#a0d8ef', mid: '#d4f0a0', ground: '#9ad67a',
@@ -1906,7 +1983,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=110`;
+    img.src = `./sprites/${name}.png?v=111`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1916,6 +1993,7 @@
   let PATH = MAPS.serpentine.path;
   let PATH_LEN = 0;
   let pathTileSet = new Set(); // tile indices occupied by the road
+  let blockedTileSet = new Set(); // no-build rocks / water / ruins
   let bridgeSpans = []; // { key, c, r, under:{a,b}, over:{a,b}, overHoriz }
   let nextTowerId = 1;
 
@@ -2903,12 +2981,25 @@
   function rebuildBuildable() {
     pathTileSet = collectPathTiles(PATH);
     rebuildBridgeSpans();
+    blockedTileSet = new Set();
+    const map = activeMap();
+    const blocks = (map && map.blocked) || [];
+    for (const b of blocks) {
+      const c = Array.isArray(b) ? b[0] : b.c;
+      const r = Array.isArray(b) ? b[1] : b.r;
+      if (c >= 0 && r >= 0 && c < COLS && r < ROWS) {
+        const idx = tileIndex(c, r);
+        if (!pathTileSet.has(idx)) blockedTileSet.add(idx);
+      }
+    }
     buildable = new Array(ROWS * COLS);
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         const idx = tileIndex(c, r);
         const p = tileCenter(c, r);
-        buildable[idx] = !pathTileSet.has(idx) && distToPath(p.x, p.y) >= BUILD_CLEAR;
+        buildable[idx] = !pathTileSet.has(idx)
+          && !blockedTileSet.has(idx)
+          && distToPath(p.x, p.y) >= BUILD_CLEAR;
       }
     }
   }
@@ -3752,7 +3843,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=110" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=111" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -3922,7 +4013,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=110" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=111" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4337,7 +4428,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=110`;
+    return `./sprites/${spr}.png?v=111`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -5104,6 +5195,69 @@
     return bridges;
   }
 
+  function drawBlockedTiles(theme) {
+    if (!blockedTileSet.size) return;
+    const kind = (theme && theme.deco) || 'meadow';
+    for (const idx of blockedTileSet) {
+      const c = idx % COLS;
+      const r = (idx / COLS) | 0;
+      const x = c * TILE + TILE * 0.5;
+      const y = r * TILE + TILE * 0.5;
+      ctx.save();
+      if (kind === 'lake' || kind === 'creek') {
+        const g = ctx.createRadialGradient(x, y, 2, x, y, TILE * 0.48);
+        g.addColorStop(0, 'rgba(125, 211, 252, 0.95)');
+        g.addColorStop(1, 'rgba(14, 165, 233, 0.55)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.ellipse(x, y, TILE * 0.42, TILE * 0.34, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.ellipse(x, y - 2, TILE * 0.22, TILE * 0.12, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (kind === 'hills' || kind === 'garden') {
+        ctx.fillStyle = '#78716c';
+        ctx.beginPath();
+        ctx.moveTo(x - 14, y + 10);
+        ctx.lineTo(x - 6, y - 8);
+        ctx.lineTo(x + 4, y - 12);
+        ctx.lineTo(x + 14, y + 6);
+        ctx.lineTo(x + 8, y + 12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#a8a29e';
+        ctx.beginPath();
+        ctx.moveTo(x - 4, y - 2);
+        ctx.lineTo(x + 2, y - 10);
+        ctx.lineTo(x + 10, y + 2);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        // trees / orchard thicket
+        ctx.fillStyle = '#3f2a14';
+        ctx.fillRect(x - 3, y + 2, 6, 12);
+        ctx.fillStyle = kind === 'orchard' ? '#4d7c0f' : '#166534';
+        ctx.beginPath();
+        ctx.arc(x, y - 2, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(134, 239, 172, 0.45)';
+        ctx.beginPath();
+        ctx.arc(x - 4, y - 6, 6, 0, Math.PI * 2);
+        ctx.fill();
+        if (kind === 'orchard') {
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath();
+          ctx.arc(x + 5, y - 1, 2.4, 0, Math.PI * 2);
+          ctx.arc(x - 5, y + 2, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
+  }
+
   function drawMapDeco(theme, bridges) {
     const kind = (theme && theme.deco) || 'meadow';
     const t = performance.now() / 1000;
@@ -5154,7 +5308,7 @@
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         const idx = tileIndex(c, r);
-        if (pathTileSet.has(idx)) continue;
+        if (pathTileSet.has(idx) || blockedTileSet.has(idx)) continue;
         const h = hashDeco(c, r, kind.length * 19 + 3);
         if (h > 0.55) continue;
         const x = c * TILE + TILE * 0.5;
@@ -5297,6 +5451,7 @@
     ctx.fillRect(0, 0, W, H);
 
     drawMapDeco(theme, null);
+    drawBlockedTiles(theme);
 
     // Path only: difficulty-colored ribbon
     strokePathPolyline(PATH, theme.pathDeep, TILE);
@@ -5545,9 +5700,23 @@
         const y0 = r * TILE;
         const ok = pathMode ? pathTileSet.has(idx) : !!buildable[idx];
         if (!ok) {
-          // Dim illegal tiles (off-path for Barrier, path/buffer for others)
-          ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
-          ctx.fillRect(x0 + 1, y0 + 1, TILE - 2, TILE - 2);
+          if (!pathMode && blockedTileSet.has(idx)) {
+            // Blocked rocks/water/ruins — clearer "no build" than plain dim
+            ctx.fillStyle = 'rgba(55, 65, 81, 0.55)';
+            ctx.fillRect(x0 + 1, y0 + 1, TILE - 2, TILE - 2);
+            ctx.strokeStyle = 'rgba(156, 163, 175, 0.7)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(x0 + 8, y0 + 8);
+            ctx.lineTo(x0 + TILE - 8, y0 + TILE - 8);
+            ctx.moveTo(x0 + TILE - 8, y0 + 8);
+            ctx.lineTo(x0 + 8, y0 + TILE - 8);
+            ctx.stroke();
+          } else {
+            // Dim illegal tiles (off-path for Barrier, path/buffer for others)
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+            ctx.fillRect(x0 + 1, y0 + 1, TILE - 2, TILE - 2);
+          }
           continue;
         }
         if (isTileOccupied(c, r)) continue;
