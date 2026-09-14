@@ -3105,7 +3105,7 @@
           placeFeedback(c.x, c.y, false);
         }
         if (pathTower && tile && isBridgeTile(tile.col, tile.row)) {
-          el.hint.textContent = 'Can't place a Barrier under a bridge — pick another path tile';
+          el.hint.textContent = "Can't place a Barrier under a bridge — pick another path tile";
         } else {
           el.hint.textContent = pathTower
             ? 'Barrier goes on the path — tap an amber path tile (or re-tap to cancel)'
