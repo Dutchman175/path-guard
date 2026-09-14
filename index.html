@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 117 -->
+<!-- path-guard-build: 118 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1405,6 +1405,34 @@
     line-height: 1.3;
     white-space: normal;
   }
+  .map-pick-btn .map-stars {
+    color: #fbbf24;
+    letter-spacing: 0.06em;
+    font-weight: 800;
+  }
+  #daily-btn {
+    width: 100%;
+    max-width: 300px;
+    flex-shrink: 0;
+    margin: 0 0 6px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(251, 191, 36, 0.55);
+    background: linear-gradient(180deg, rgba(120, 53, 15, 0.55), rgba(30, 41, 59, 0.9));
+    color: #fef3c7;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
+    line-height: 1.35;
+  }
+  #daily-btn .daily-title { display: block; color: #fbbf24; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  #daily-btn .daily-sub { display: block; color: #e2e8f0; font-weight: 600; font-size: 0.8rem; margin-top: 2px; }
+  #daily-btn .daily-status { display: block; color: #67e8f9; font-size: 0.72rem; margin-top: 3px; font-weight: 600; }
+  #daily-btn:active { transform: scale(0.98); }
+  #overlay-rating .stars { color: #fbbf24; letter-spacing: 0.08em; }
+
   .map-pick-btn:active { transform: scale(0.97); }
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
@@ -1482,7 +1510,12 @@
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
       <p>Build on green tiles · hold 50 waves.</p>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
-      <p class="map-tip">Threat: <span style="color:#22c55e">green</span> → <span style="color:#eab308">yellow</span> → <span style="color:#ea580c">orange</span> → <span style="color:#f87171">red</span> · FAQ for counters</p>
+      <button type="button" id="daily-btn" title="Today's challenge">
+        <span class="daily-title">Daily Challenge</span>
+        <span class="daily-sub" id="daily-sub">Loading…</span>
+        <span class="daily-status" id="daily-status"></span>
+      </button>
+      <p class="map-tip">Stars: clear · 5♥ · perfect · Threat green → red · FAQ for counters</p>
       <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         <span class="map-title">Map 1: Serpentine <span class="diff easy">Easy</span></span>
@@ -1521,13 +1554,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=117" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#7f1d1d"></span><span class="muted">Dark red</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=118" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1595,7 +1628,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 117</div>
+    <div id="build-ver">build 118</div>
   </div>
 </div>
 
@@ -1640,8 +1673,9 @@
   const LS_BEST_WIN = 'pg-best-win'; // lives remaining on best win
   const LS_TARGET = 'pg-target-mode';
   const LS_HARD = 'pg-hard-mode';
-  const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs } }
+  const LS_MAP_STATS = 'pg-map-stats'; // { mapId: { wins, bestMs, stars, starsHard } }
   const LS_ACH = 'pg-achievements'; // { maps:{}, hardWin, titanKill }
+  const LS_DAILY = 'pg-daily-v1'; // { day, mapId, modId, bestWave, cleared, bestMs, stars }
   const LS_UX_TIP = 'pg-ux-tip-v42';
   const LS_ENEMY_INTRO = 'pg-enemy-intro-v1'; // seen enemy kinds (once per device)
 
@@ -1963,7 +1997,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=117`;
+    img.src = `./sprites/${name}.png?v=118`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -1988,6 +2022,10 @@
     mapPicked: false,
     defaultTargetMode: 'first', // default aim for newly placed towers (LS_TARGET)
     hardMode: false,
+    dailyRun: null, // { day, mapId, mod }
+    dailyRangeMul: 1,
+    dailySpawnExtra: 0,
+    dailySpeedMul: 1,
     killStreak: 0,
     killStreakTimer: 0,
     lastTowerTapAt: 0,
@@ -2090,6 +2128,9 @@
     sellConfirmValue: document.getElementById('sell-confirm-value'),
     wavePreview: document.getElementById('wave-preview'),
     hardMode: document.getElementById('hard-mode'),
+    dailyBtn: document.getElementById('daily-btn'),
+    dailySub: document.getElementById('daily-sub'),
+    dailyStatus: document.getElementById('daily-status'),
     overlayAch: document.getElementById('overlay-achievements'),
   };
 
@@ -2179,15 +2220,136 @@
     } catch (_) { return {}; }
   }
 
-  function saveMapWin(mapId, elapsedMs) {
+  function starCountForWin(livesLeft) {
+    if (livesLeft >= START_LIVES) return 3;
+    if (livesLeft >= 5) return 2;
+    return 1;
+  }
+
+  function formatStars(n) {
+    const s = Math.max(0, Math.min(3, n | 0));
+    return '★'.repeat(s) + '☆'.repeat(3 - s);
+  }
+
+  function saveMapWin(mapId, elapsedMs, livesLeft) {
     try {
       const all = loadMapStats();
-      const cur = all[mapId] || { wins: 0, bestMs: 0 };
+      const cur = all[mapId] || { wins: 0, bestMs: 0, stars: 0, starsHard: 0 };
       cur.wins = (cur.wins || 0) + 1;
       if (elapsedMs > 0 && (!cur.bestMs || elapsedMs < cur.bestMs)) cur.bestMs = Math.floor(elapsedMs);
+      const got = starCountForWin(livesLeft);
+      if (state.hardMode) cur.starsHard = Math.max(cur.starsHard || 0, got);
+      else cur.stars = Math.max(cur.stars || 0, got);
       all[mapId] = cur;
       localStorage.setItem(LS_MAP_STATS, JSON.stringify(all));
     } catch (_) {}
+  }
+
+  const DAILY_MODS = [
+    { id: 'swarm', name: 'Swarm', desc: '+4 enemies each wave' },
+    { id: 'fog', name: 'Fog', desc: 'Tower range −20%' },
+    { id: 'budget', name: 'Budget', desc: '−25 start gold' },
+    { id: 'haste', name: 'Haste', desc: 'Enemies +12% speed' },
+    { id: 'armor', name: 'Hardened', desc: '+2 enemies · tougher packs' },
+  ];
+
+  function localDayKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function hashStr(str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function todaysDaily() {
+    const day = localDayKey();
+    const h = hashStr(day + '|path-guard-daily');
+    const mapIds = Object.keys(MAPS);
+    const mapId = mapIds[h % mapIds.length];
+    const mod = DAILY_MODS[(h >>> 8) % DAILY_MODS.length];
+    return { day, mapId, mod };
+  }
+
+  function loadDailySave() {
+    try {
+      const raw = localStorage.getItem(LS_DAILY);
+      if (!raw) return {};
+      const o = JSON.parse(raw);
+      return o && typeof o === 'object' ? o : {};
+    } catch (_) { return {}; }
+  }
+
+  function saveDailyResult(won, elapsedMs) {
+    if (!state.dailyRun) return;
+    const today = todaysDaily();
+    if (state.dailyRun.day !== today.day) return;
+    try {
+      const prev = loadDailySave();
+      const same = prev.day === today.day ? prev : {};
+      const rec = {
+        day: today.day,
+        mapId: today.mapId,
+        modId: today.mod.id,
+        bestWave: Math.max(same.bestWave || 0, state.wave || 0),
+        cleared: !!(same.cleared || won),
+        bestMs: same.bestMs || 0,
+        stars: same.stars || 0,
+      };
+      if (won) {
+        rec.stars = Math.max(rec.stars || 0, starCountForWin(state.lives));
+        if (elapsedMs > 0 && (!rec.bestMs || elapsedMs < rec.bestMs)) rec.bestMs = Math.floor(elapsedMs);
+      }
+      localStorage.setItem(LS_DAILY, JSON.stringify(rec));
+    } catch (_) {}
+  }
+
+  function clearDailyMods() {
+    state.dailyRun = null;
+    state.dailyRangeMul = 1;
+    state.dailySpawnExtra = 0;
+    state.dailySpeedMul = 1;
+  }
+
+  function applyDailyMod(mod) {
+    state.dailyRangeMul = 1;
+    state.dailySpawnExtra = 0;
+    state.dailySpeedMul = 1;
+    if (!mod) return;
+    if (mod.id === 'swarm') state.dailySpawnExtra = 4;
+    else if (mod.id === 'fog') state.dailyRangeMul = 0.8;
+    else if (mod.id === 'budget') {
+      state.gold = Math.max(40, state.gold - 25);
+    } else if (mod.id === 'haste') state.dailySpeedMul = 1.12;
+    else if (mod.id === 'armor') {
+      state.dailySpawnExtra = 2;
+    }
+  }
+
+  function refreshDailyButton() {
+    if (!el.dailySub) return;
+    const d = todaysDaily();
+    const mapName = MAPS[d.mapId] ? MAPS[d.mapId].name : d.mapId;
+    el.dailySub.textContent = `${mapName} · ${d.mod.name} — ${d.mod.desc}`;
+    const save = loadDailySave();
+    if (save.day === d.day && save.cleared) {
+      const t = formatBestTime(save.bestMs);
+      el.dailyStatus.textContent = t
+        ? `Cleared ${formatStars(save.stars || 1)} · best ${t}`
+        : `Cleared ${formatStars(save.stars || 1)}`;
+    } else if (save.day === d.day && (save.bestWave || 0) > 0) {
+      el.dailyStatus.textContent = `Best wave ${save.bestWave} · not cleared yet`;
+    } else {
+      el.dailyStatus.textContent = 'New today — tap to play';
+    }
   }
 
   function loadAchievements() {
@@ -2278,28 +2440,38 @@
         line.className = 'map-stats';
         btn.appendChild(line);
       }
+      const stars = Math.max(st && st.stars ? st.stars : 0, st && st.starsHard ? st.starsHard : 0);
+      const starBit = stars > 0 ? `<span class="map-stars">${formatStars(stars)}</span> · ` : '';
       const cleared = !!(ach.maps && ach.maps[id]);
       if (!st || !(st.wins > 0)) {
-        line.textContent = cleared ? 'Cleared' : 'No wins yet';
+        line.innerHTML = starBit + (cleared ? 'Cleared' : 'No wins yet');
         return;
       }
       const tm = formatBestTime(st.bestMs);
-      const clearedBit = cleared ? 'Cleared · ' : '';
-      line.textContent = tm
-        ? `${clearedBit}${st.wins} win${st.wins > 1 ? 's' : ''} · best ${tm}`
-        : `${clearedBit}${st.wins} win${st.wins > 1 ? 's' : ''}`;
+      const winBit = `${st.wins} win${st.wins > 1 ? 's' : ''}`;
+      line.innerHTML = tm
+        ? `${starBit}${winBit} · best ${tm}`
+        : `${starBit}${winBit}`;
     });
+    refreshDailyButton();
   }
 
   function refreshBestLine() {
     const { bestWave, bestWin } = loadBest();
     const parts = [];
-    if (state.hardMode && state.mapPicked) parts.push('<span class="hard-tag">HARD</span>');
+    if (state.dailyRun && state.mapPicked) {
+      parts.push('<span class="hard-tag">DAILY</span>');
+      parts.push(state.dailyRun.mod.name);
+    } else if (state.hardMode && state.mapPicked) {
+      parts.push('<span class="hard-tag">HARD</span>');
+    }
     if (state.mapPicked) {
       const ms = loadMapStats()[state.mapId];
+      const starN = state.hardMode ? (ms && ms.starsHard) || 0 : (ms && ms.stars) || 0;
+      if (starN > 0) parts.push(`<span class="map-stars">${formatStars(starN)}</span>`);
       if (ms && ms.wins > 0) {
         const t = formatBestTime(ms.bestMs);
-        parts.push(t ? `${ms.wins}W · ${t}` : `${ms.wins}W`);
+        parts.push(t ? `PB ${t}` : `${ms.wins}W`);
       } else if (bestWave > 0) {
         parts.push(`Best W${bestWave}`);
       }
@@ -2366,7 +2538,7 @@
                   : isBazooka
                     ? Math.max(0.22, 11.0 - (lv - 1) * 0.8)
                     : Math.max(0.22, def.fireRate * rateMul),
-      range: def.range * rangeMul,
+      range: def.range * rangeMul * (state.dailyRangeMul || 1),
       projectileSpeed: def.projectileSpeed,
       projectileColor: def.projectileColor,
       color: def.color,
@@ -3448,7 +3620,7 @@
     const map = activeMap();
     const hard = !!state.hardMode;
     const hardExtra = hard ? (map.id === 'serpentine' ? 1 : 2) : 0;
-    let n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra;
+    let n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra + (state.dailySpawnExtra || 0);
     const mix = enemyMixForWave(w);
     const counts = {};
     for (let i = 0; i < n; i++) {
@@ -3526,10 +3698,11 @@
     const hard = !!state.hardMode;
     // Hard Mode: +2 spawns (+1 on Serpentine so early stays forgiving). Gauntlet stays tough via mix.
     const hardExtra = hard ? (map.id === 'serpentine' ? 1 : 2) : 0;
-    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra;
+    const n = waveEnemyCount(w) + (map.spawnExtra || 0) + hardExtra + (state.dailySpawnExtra || 0);
     const mix = enemyMixForWave(w);
     const hardChance = hard ? (map.id === 'serpentine' ? 0.06 : 0.12) : 0;
-    const chance = w <= 1 ? 0 : (map.hardenChance || 0) + hardChance;
+    const dailyHard = (state.dailyRun && state.dailyRun.mod && state.dailyRun.mod.id === 'armor') ? 0.08 : 0;
+    const chance = w <= 1 ? 0 : (map.hardenChance || 0) + hardChance + dailyHard;
     const q = [];
     for (let i = 0; i < n; i++) {
       q.push(hardenKind(mix[i % mix.length], chance, w));
@@ -3634,7 +3807,7 @@
     state.enemies.push({
       kind,
       dist: 0,
-      baseSpeed: et.speed,
+      baseSpeed: et.speed * (state.dailySpeedMul || 1),
       speed: 0,
       hp,
       maxHp: hp,
@@ -3651,9 +3824,10 @@
   }
 
   function victoryRating(livesLeft) {
-    if (livesLeft >= START_LIVES) return { label: 'Perfect Clear' };
-    if (livesLeft >= 5) return { label: 'Good Clear' }; // half of 10
-    return { label: 'Close Call' };
+    const stars = starCountForWin(livesLeft);
+    if (livesLeft >= START_LIVES) return { label: 'Perfect Clear', stars };
+    if (livesLeft >= 5) return { label: 'Good Clear', stars };
+    return { label: 'Close Call', stars };
   }
 
   function endGame(won) {
@@ -3673,7 +3847,8 @@
       const rating = victoryRating(state.lives);
       saveBestWin(state.lives);
       const elapsed = state.runStartedAt ? (performance.now() - state.runStartedAt) : 0;
-      saveMapWin(state.mapId, elapsed);
+      saveMapWin(state.mapId, elapsed, state.lives);
+      saveDailyResult(true, elapsed);
       const newly = [];
       const m = unlockAchievement('map', state.mapId);
       if (m) newly.push(m);
@@ -3684,17 +3859,19 @@
       // Titan may already unlock mid-wave; refresh summary either way
       const bestT = formatBestTime(loadMapStats()[state.mapId]?.bestMs);
       el.overlayTitle.className = 'win';
-      el.overlayTitle.textContent = 'Victory!';
-      el.overlayRating.textContent = rating.label;
-      const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (best ${bestT})` : ''}.` : '';
-      const hardBit = state.hardMode ? ' HARD' : '';
+      el.overlayTitle.textContent = state.dailyRun ? 'Daily Cleared!' : 'Victory!';
+      el.overlayRating.innerHTML = `<span class="stars">${formatStars(rating.stars)}</span> · ${rating.label}`;
+      const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (PB ${bestT})` : ''}.` : '';
+      const hardBit = state.dailyRun ? ` · Daily ${state.dailyRun.mod.name}` : (state.hardMode ? ' HARD' : '');
       el.overlayMsg.textContent = `${MAPS[state.mapId].name}${hardBit} · ${state.lives}♥ left · ${Math.floor(state.gold)}g.${timeBit}`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(newly);
     } else {
+      saveDailyResult(false, 0);
       el.overlayTitle.className = 'lose';
-      el.overlayTitle.textContent = 'Path Breached';
+      el.overlayTitle.textContent = state.dailyRun ? 'Daily Failed' : 'Path Breached';
       el.overlayRating.textContent = '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}. Tip: Marksman vs soft · Elemental/Gunnery vs Brute · Gunnery vs Tank · double-tap to upgrade.`;
+      const dailyBit = state.dailyRun ? ` Daily ${state.dailyRun.mod.name}.` : '';
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}.${dailyBit} Tip: Marksman vs soft · Elemental/Gunnery vs Brute · Gunnery vs Tank · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -3723,10 +3900,17 @@
     updateHUD();
   }
 
-  function pickMap(mapId) {
+  function pickMap(mapId, opts) {
+    const asDaily = !!(opts && opts.daily);
     state.changingMap = false;
-    state.hardMode = !!(el.hardMode && el.hardMode.checked);
-    saveHardMode(state.hardMode);
+    if (!asDaily) clearDailyMods();
+    if (asDaily) {
+      state.hardMode = false;
+      if (el.hardMode) el.hardMode.checked = false;
+    } else {
+      state.hardMode = !!(el.hardMode && el.hardMode.checked);
+      saveHardMode(state.hardMode);
+    }
     // Clear board + reset start economy whenever a map is (re)picked
     state.gold = startGoldForMap(mapId);
     state.lives = START_LIVES;
@@ -3760,12 +3944,23 @@
     state.mapPicked = true;
     el.mapOverlay.classList.remove('show');
     el.overlay.classList.remove('show');
-    const hardTag = state.hardMode ? ' · HARD' : '';
-    el.hint.textContent = `${MAPS[mapId].name}${hardTag}`;
+    if (asDaily && state.dailyRun) applyDailyMod(state.dailyRun.mod);
+    const hardTag = state.dailyRun
+      ? ` · Daily ${state.dailyRun.mod.name}`
+      : (state.hardMode ? ' · HARD' : '');
+    el.hint.textContent = state.dailyRun
+      ? `Daily · ${MAPS[mapId].name} · ${state.dailyRun.mod.name}: ${state.dailyRun.mod.desc}`
+      : `${MAPS[mapId].name}${hardTag}`;
     setWavePreview('', false);
     maybeShowOnboardTip();
     updateWaveButtons();
     updateHUD();
+  }
+
+  function startDailyChallenge() {
+    const d = todaysDaily();
+    state.dailyRun = { day: d.day, mapId: d.mapId, mod: d.mod };
+    pickMap(d.mapId, { daily: true });
   }
 
   function maybeShowOnboardTip() {
@@ -3785,6 +3980,7 @@
   }
 
   function resetGame() {
+    clearDailyMods();
     state.gold = START_GOLD;
     state.lives = START_LIVES;
     state.wave = 0;
@@ -3821,10 +4017,10 @@
 
   function replayMap() {
     const mapId = state.mapId || 'serpentine';
-    // Keep hard mode + targeting; skip map picker
+    // Keep hard mode + targeting (or daily mods); skip map picker
     el.overlay.classList.remove('show');
-    pickMap(mapId);
-    el.hint.textContent = `${MAPS[mapId].name}${state.hardMode ? ' · HARD' : ''}`;
+    if (state.dailyRun) pickMap(mapId, { daily: true });
+    else pickMap(mapId);
   }
 
   // Input
@@ -3875,7 +4071,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=117" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=118" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -4045,7 +4241,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=117" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=118" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4348,6 +4544,13 @@
   // Map cards: tap selects; scroll/drag must not (finger often lands on a card)
   const MAP_TAP_SLOP = 10;
   let mapPickGesture = null;
+  if (el.dailyBtn) {
+    el.dailyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startDailyChallenge();
+    });
+  }
+
   document.querySelectorAll('.map-pick-btn').forEach(btn => {
     btn.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -4460,7 +4663,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=117`;
+    return `./sprites/${spr}.png?v=118`;
   }
 
   function enemyChipHtml(kind, mode) {
