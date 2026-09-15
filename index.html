@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 129 -->
+<!-- path-guard-build: 130 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1436,6 +1436,194 @@
   .map-pick-btn:active { transform: scale(0.97); }
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
+
+  /* Build 130: meta progression (Intel / unlocks) */
+  #meta-bar {
+    width: 100%;
+    max-width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 6px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid #334155;
+  }
+  #meta-bar .intel-bal {
+    color: #67e8f9;
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
+  #meta-bar .intel-bal span { color: #fbbf24; }
+  #meta-bar button {
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: #e2e8f0;
+    cursor: pointer;
+  }
+  #meta-bar button:active { transform: scale(0.97); }
+  #perk-equip {
+    width: 100%;
+    max-width: 300px;
+    flex-shrink: 0;
+    margin: 0 0 6px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid #334155;
+  }
+  #perk-equip .perk-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  #perk-equip .perk-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  #perk-equip .perk-chip {
+    font: inherit;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #475569;
+    background: #0f172a;
+    color: #cbd5e1;
+    cursor: pointer;
+  }
+  #perk-equip .perk-chip.owned { border-color: #64748b; color: #e2e8f0; }
+  #perk-equip .perk-chip.equipped {
+    border-color: #38bdf8;
+    background: rgba(14, 116, 144, 0.35);
+    color: #e0f2fe;
+  }
+  #perk-equip .perk-chip:disabled { opacity: 0.4; cursor: not-allowed; }
+  #prog-panel {
+    width: 100%;
+    max-width: 300px;
+    flex-shrink: 0;
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid #334155;
+    display: none;
+    max-height: 42vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #prog-panel.show { display: block; }
+  #prog-panel h3 {
+    font-size: 0.78rem;
+    color: #38bdf8;
+    margin: 8px 0 4px;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 2px;
+  }
+  #prog-panel h3:first-child { margin-top: 0; }
+  #prog-panel .shop-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+  #prog-panel .shop-row:last-child { border-bottom: none; }
+  #prog-panel .shop-info { flex: 1; min-width: 0; color: #cbd5e1; }
+  #prog-panel .shop-info .muted { color: #64748b; font-weight: 600; }
+  #prog-panel .shop-info .locked-why { color: #fdba74; display: block; font-size: 0.66rem; }
+  #prog-panel .shop-buy {
+    flex-shrink: 0;
+    font: inherit;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #ca8a04;
+    background: #78350f;
+    color: #fef3c7;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #prog-panel .shop-buy:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #475569;
+    background: #1e293b;
+    color: #94a3b8;
+  }
+  #prog-panel .shop-buy.owned {
+    border-color: #166534;
+    background: #14532d;
+    color: #86efac;
+  }
+  #career-stats {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+  #career-stats strong { color: #e2e8f0; }
+  .map-pick-btn.locked {
+    opacity: 0.72;
+    border-style: dashed;
+    cursor: not-allowed;
+  }
+  .map-pick-btn.locked .map-lock {
+    display: block;
+    color: #fdba74;
+    font-size: 0.66rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .map-pick-btn:not(.locked) .map-lock { display: none; }
+  .tower-btn.locked-tower {
+    opacity: 0.5;
+    border-style: dashed;
+  }
+  .tower-btn.locked-tower .cost { color: #94a3b8; }
+  #meta-toast {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    transform: translateX(-50%) translateY(8px);
+    z-index: 8;
+    pointer-events: none;
+    max-width: min(360px, 94%);
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid #38bdf8;
+    color: #e0f2fe;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  #meta-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  #meta-toast.intel { border-color: #fbbf24; color: #fef3c7; }
+
   .flash-gold { animation: flashGold 0.35s ease; }
   @keyframes flashGold {
     0% { background: #854d0e; }
@@ -1473,6 +1661,7 @@
       <canvas id="c" width="400" height="560"></canvas>
     </div>
     <div id="counter-toast" aria-live="polite"></div>
+    <div id="meta-toast" aria-live="polite"></div>
 
     <div id="tower-detail" aria-hidden="true">
       <div class="card" id="tower-detail-card" role="dialog" aria-labelledby="tower-detail-title">
@@ -1509,6 +1698,15 @@
       <h2>Choose Map</h2>
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
       <p>Build on green tiles · hold 50 waves.</p>
+      <div id="meta-bar">
+        <div class="intel-bal">Intel <span id="intel-bal">0</span></div>
+        <button type="button" id="prog-toggle" title="Progression shop">Progression</button>
+      </div>
+      <div id="perk-equip">
+        <div class="perk-label">Perks · equip up to 2</div>
+        <div class="perk-slots" id="perk-slots"></div>
+      </div>
+      <div id="prog-panel" aria-hidden="true"></div>
       <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
       <button type="button" id="daily-btn" title="Today's challenge">
         <span class="daily-title">Daily Challenge</span>
@@ -1518,26 +1716,32 @@
       <p class="map-tip">Stars: clear · 5♥ · perfect · Threat green → red · FAQ for counters</p>
       <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
+        <span class="map-lock" id="lock-serpentine"></span>
         <span class="map-title">Map 1: Serpentine <span class="diff easy">Easy</span></span>
         <span class="sub">Meadow S-path · light scenery · +20 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crosscut" data-map="crosscut">
+        <span class="map-lock" id="lock-crosscut"></span>
         <span class="map-title">Map 2: Crosscut <span class="diff medium">Medium</span></span>
         <span class="sub">Doglegs · ponds & rocks block farm lanes</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
+        <span class="map-lock" id="lock-ridge"></span>
         <span class="map-title">Map 3: Ridge <span class="diff medhard">Medium-Hard</span></span>
         <span class="sub">Hills plateau · rock outcrops · +10g</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
+        <span class="map-lock" id="lock-winding"></span>
         <span class="map-title">Map 4: Winding <span class="diff hard">Hard</span></span>
         <span class="sub">Orchard zig · grove blocks · denser spawns</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-gauntlet" data-map="gauntlet">
+        <span class="map-lock" id="lock-gauntlet"></span>
         <span class="map-title">Map 5: Gauntlet <span class="diff brutal">Brutal</span></span>
         <span class="sub">Short jog · rock walls · +16 start gold</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crucible" data-map="crucible">
+        <span class="map-lock" id="lock-crucible"></span>
         <span class="map-title">Map 6: Crucible <span class="diff nightmare">Nightmare</span></span>
         <span class="sub">Garden zig · ruin outcrops · densest spawns</span>
       </button>
@@ -1554,13 +1758,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=129" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=130" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1580,6 +1784,7 @@
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
         <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
+        <p><strong>Progression</strong> — Intel, map/tower unlocks, and perks are saved in this browser only (local). Clearing site data resets progress.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1628,7 +1833,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 129</div>
+    <div id="build-ver">build 130</div>
   </div>
 </div>
 
@@ -1651,7 +1856,7 @@
     while (node && node !== document.body && node !== document.documentElement) {
       if (!(node instanceof Element)) break;
       const id = node.id || '';
-      if (id === 'tower-btns' || id === 'faq-panel' || id === 'faq-overlay' || id === 'map-overlay' || id === 'overlay' || id === 'map-list') return;
+      if (id === 'tower-btns' || id === 'faq-panel' || id === 'faq-overlay' || id === 'map-overlay' || id === 'overlay' || id === 'map-list' || id === 'prog-panel') return;
       const style = getComputedStyle(node);
       const oy = node.scrollHeight > node.clientHeight + 1;
       if (oy && /(auto|scroll)/.test(style.overflowY || style.overflow || '')) return;
@@ -1678,6 +1883,688 @@
   const LS_DAILY = 'pg-daily-v1'; // { day, mapId, modId, bestWave, cleared, bestMs, stars }
   const LS_UX_TIP = 'pg-ux-tip-v42';
   const LS_ENEMY_INTRO = 'pg-enemy-intro-v1'; // seen enemy kinds (once per device)
+
+  // ===== Build 130: Path Guard meta progression (unlock ladder v3) =====
+  const LS_PROFILE = 'pg-profile-v1';
+  const START_TOWERS = ['archer', 'frost', 'cannon', 'barrier'];
+  const MAP_ORDER = ['serpentine', 'crosscut', 'ridge', 'winding', 'gauntlet', 'crucible'];
+  const MAX_PERK_EQUIP = 2;
+
+  const TOWER_CAT_TIER = {
+    marksman: 'ms', support: 'ms', elemental: 'el', gunnery: 'gn',
+  };
+  const CAP_COSTS = {
+    ms: [0, 0, 3, 5, 8, 12],
+    el: [0, 0, 5, 8, 12, 18],
+    gn: [0, 0, 7, 11, 16, 24],
+  };
+
+  const TOWER_SHOP = [
+    { id: 'crossbow', cost: 5, gate: 'wave10' },
+    { id: 'bank', cost: 6, gate: 'wave12' },
+    { id: 'fire', cost: 10, gate: 'fire' },
+    { id: 'lightning', cost: 14, gate: 'lightning' },
+    { id: 'sniper', cost: 18, gate: 'sniper' },
+    { id: 'bazooka', cost: 28, gate: 'bazooka' },
+  ];
+
+  const PERK_DEFS = {
+    seedMoney: {
+      id: 'seedMoney', name: 'Seed Money', cost: 6, gate: 'wave10',
+      desc: '+25 starting gold',
+    },
+    secondWind: {
+      id: 'secondWind', name: 'Second Wind', cost: 8, gate: 'firstClear',
+      desc: '+1 life at run start',
+    },
+    scoutNetwork: {
+      id: 'scoutNetwork', name: 'Scout Network', cost: 8, gate: 'wave15',
+      desc: 'Marksman range +8%',
+    },
+    overcharge: {
+      id: 'overcharge', name: 'Overcharge', cost: 8, gate: 'wave15',
+      desc: 'Elemental damage +8%',
+    },
+    heavyOrdnance: {
+      id: 'heavyOrdnance', name: 'Heavy Ordnance', cost: 12, gate: 'wave30',
+      desc: 'Gunnery damage +8%',
+    },
+    deepPockets: {
+      id: 'deepPockets', name: 'Deep Pockets', cost: 10, gate: 'bankOwned',
+      desc: 'Bank +2g per wave clear',
+    },
+  };
+  const PERK_ORDER = Object.keys(PERK_DEFS);
+
+  const MAP_UNLOCK_HINT = {
+    serpentine: 'Start',
+    crosscut: 'Reach wave 15 on Serpentine or clear it',
+    ridge: 'Clear Crosscut or earn 3 total stars',
+    winding: 'Clear Ridge or earn 6 total stars',
+    gauntlet: 'Clear Winding or earn 10 total stars',
+    crucible: 'Clear Gauntlet and earn 12 total stars',
+  };
+
+  let profile = null;
+  let metaToastHide = 0;
+
+  function defaultProfile() {
+    const towersUnlocked = {};
+    const towerMaxLevel = {};
+    for (const t of START_TOWERS) {
+      towersUnlocked[t] = true;
+      towerMaxLevel[t] = 1;
+    }
+    return {
+      v: 1,
+      intel: 0,
+      intelEarned: 0,
+      mapsUnlocked: { serpentine: true },
+      towersUnlocked,
+      towerMaxLevel,
+      perksOwned: {},
+      perksEquipped: [],
+      stats: {
+        playTimeMs: 0,
+        runs: 0,
+        wins: 0,
+        losses: 0,
+        kills: 0,
+        damage: 0,
+        gold: 0,
+        highestWave: 0,
+        intelSpent: 0,
+      },
+      flags: {
+        consolationDay: '',
+        consolationCount: 0,
+        firstClearBonus: {},
+      },
+      milestones: {
+        highestWave: 0,
+        highestWaveByMap: {},
+        towersPlaced: {},
+        towerWave15: {},
+        towerCleared: {},
+        mapsCleared: {},
+        anyMapCleared: false,
+        stars2Clear: false,
+        wave10: false,
+        wave12: false,
+        wave15: false,
+        wave20: false,
+        wave30: false,
+      },
+    };
+  }
+
+  function normalizeProfile(p) {
+    const d = defaultProfile();
+    if (!p || typeof p !== 'object') return d;
+    const out = { ...d, ...p, v: 1 };
+    out.mapsUnlocked = { ...d.mapsUnlocked, ...(p.mapsUnlocked || {}) };
+    out.towersUnlocked = { ...d.towersUnlocked, ...(p.towersUnlocked || {}) };
+    out.towerMaxLevel = { ...d.towerMaxLevel, ...(p.towerMaxLevel || {}) };
+    for (const t of START_TOWERS) {
+      out.towersUnlocked[t] = true;
+      out.towerMaxLevel[t] = Math.max(1, out.towerMaxLevel[t] | 0);
+    }
+    for (const t of Object.keys(TOWER_DEFS)) {
+      if (out.towersUnlocked[t] && !(out.towerMaxLevel[t] >= 1)) out.towerMaxLevel[t] = 1;
+    }
+    out.perksOwned = { ...(p.perksOwned || {}) };
+    out.perksEquipped = Array.isArray(p.perksEquipped)
+      ? p.perksEquipped.filter((id) => PERK_DEFS[id] && out.perksOwned[id]).slice(0, MAX_PERK_EQUIP)
+      : [];
+    out.stats = { ...d.stats, ...(p.stats || {}) };
+    out.flags = { ...d.flags, ...(p.flags || {}) };
+    out.flags.firstClearBonus = { ...(d.flags.firstClearBonus), ...((p.flags && p.flags.firstClearBonus) || {}) };
+    out.milestones = { ...d.milestones, ...(p.milestones || {}) };
+    out.milestones.highestWaveByMap = { ...(d.milestones.highestWaveByMap), ...((p.milestones && p.milestones.highestWaveByMap) || {}) };
+    out.milestones.towersPlaced = { ...(d.milestones.towersPlaced), ...((p.milestones && p.milestones.towersPlaced) || {}) };
+    out.milestones.towerWave15 = { ...(d.milestones.towerWave15), ...((p.milestones && p.milestones.towerWave15) || {}) };
+    out.milestones.towerCleared = { ...(d.milestones.towerCleared), ...((p.milestones && p.milestones.towerCleared) || {}) };
+    out.milestones.mapsCleared = { ...(d.milestones.mapsCleared), ...((p.milestones && p.milestones.mapsCleared) || {}) };
+    out.intel = Math.max(0, out.intel | 0);
+    out.intelEarned = Math.max(0, out.intelEarned | 0);
+    return out;
+  }
+
+  function saveProfile() {
+    if (!profile) return;
+    try { localStorage.setItem(LS_PROFILE, JSON.stringify(profile)); } catch (_) {}
+  }
+
+  function totalStarsFromMapStats() {
+    const all = loadMapStats();
+    let n = 0;
+    for (const id of MAP_ORDER) {
+      const st = all[id];
+      if (!st) continue;
+      n += Math.max(st.stars || 0, st.starsHard || 0);
+    }
+    return n;
+  }
+
+  function mapIsCleared(mapId) {
+    if (profile && profile.milestones.mapsCleared[mapId]) return true;
+    try {
+      const ach = loadAchievements();
+      if (ach.maps && ach.maps[mapId]) return true;
+    } catch (_) {}
+    const st = loadMapStats()[mapId];
+    return !!(st && st.wins > 0);
+  }
+
+  function migrateProfileFromLegacy() {
+    const p = defaultProfile();
+    const all = loadMapStats();
+    let wins = 0;
+    let clearedN = 0;
+    for (const id of MAP_ORDER) {
+      const st = all[id];
+      if (st && st.wins > 0) {
+        p.mapsUnlocked[id] = true;
+        p.milestones.mapsCleared[id] = true;
+        p.milestones.anyMapCleared = true;
+        wins += st.wins | 0;
+        clearedN += 1;
+        const stars = Math.max(st.stars || 0, st.starsHard || 0);
+        if (stars >= 2) p.milestones.stars2Clear = true;
+      }
+    }
+    let bestWave = 0;
+    try { bestWave = parseInt(localStorage.getItem(LS_BEST_WAVE) || '0', 10) || 0; } catch (_) {}
+    if (bestWave > 0) {
+      p.milestones.highestWave = bestWave;
+      p.stats.highestWave = bestWave;
+      if (bestWave >= 10) p.milestones.wave10 = true;
+      if (bestWave >= 12) p.milestones.wave12 = true;
+      if (bestWave >= 15) p.milestones.wave15 = true;
+      if (bestWave >= 20) p.milestones.wave20 = true;
+      if (bestWave >= 30) p.milestones.wave30 = true;
+      // Assume veterans who reached wave 15 on some map also hit serpentine gate
+      if (bestWave >= 15) {
+        p.milestones.highestWaveByMap.serpentine = Math.max(
+          p.milestones.highestWaveByMap.serpentine || 0, 15
+        );
+      }
+    }
+    // Veteran intel so they aren't soft-locked on shop
+    const grant = Math.min(120, wins * 6 + clearedN * 5);
+    p.intel = grant;
+    p.intelEarned = grant;
+    return p;
+  }
+
+  function loadProfile() {
+    try {
+      const raw = localStorage.getItem(LS_PROFILE);
+      if (raw) {
+        profile = normalizeProfile(JSON.parse(raw));
+        evaluateMapUnlocks(false);
+        return profile;
+      }
+    } catch (_) {}
+    // First create — migrate from legacy map stats if any
+    const hasLegacy = (() => {
+      try {
+        const raw = localStorage.getItem(LS_MAP_STATS);
+        if (!raw) return false;
+        const o = JSON.parse(raw);
+        return o && typeof o === 'object' && Object.keys(o).some((k) => o[k] && o[k].wins > 0);
+      } catch (_) { return false; }
+    })();
+    profile = hasLegacy ? migrateProfileFromLegacy() : defaultProfile();
+    evaluateMapUnlocks(false);
+    saveProfile();
+    return profile;
+  }
+
+  function perkEquipped(id) {
+    return !!(profile && profile.perksEquipped.includes(id));
+  }
+
+  function towerUnlocked(type) {
+    return !!(profile && profile.towersUnlocked[type]);
+  }
+
+  function towerCap(type) {
+    if (!profile) return MAX_TOWER_LEVEL;
+    const cap = profile.towerMaxLevel[type];
+    return Math.max(1, Math.min(MAX_TOWER_LEVEL, cap | 0 || 1));
+  }
+
+  function mapUnlocked(mapId) {
+    return !!(profile && profile.mapsUnlocked[mapId]);
+  }
+
+  function showMetaToast(msg, kind) {
+    const toast = document.getElementById('meta-toast');
+    if (!toast || !msg) return;
+    toast.textContent = msg;
+    toast.classList.toggle('intel', kind === 'intel');
+    toast.classList.add('show');
+    clearTimeout(metaToastHide);
+    metaToastHide = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  function grantIntel(n, reason) {
+    if (!profile || !n || n <= 0) return 0;
+    profile.intel += n;
+    profile.intelEarned += n;
+    saveProfile();
+    showMetaToast(`+${n} Intel${reason ? ` · ${reason}` : ''}`, 'intel');
+    refreshMetaUI();
+    return n;
+  }
+
+  function spendIntel(n) {
+    if (!profile || n <= 0 || profile.intel < n) return false;
+    profile.intel -= n;
+    profile.stats.intelSpent = (profile.stats.intelSpent || 0) + n;
+    saveProfile();
+    return true;
+  }
+
+  function evaluateMapUnlocks(doToast) {
+    if (!profile) return;
+    const m = profile.milestones;
+    const stars = totalStarsFromMapStats();
+    const newly = [];
+    const unlock = (id, ok) => {
+      if (!ok || profile.mapsUnlocked[id]) return;
+      profile.mapsUnlocked[id] = true;
+      newly.push(MAPS[id] ? MAPS[id].name : id);
+    };
+    unlock('serpentine', true);
+    unlock('crosscut',
+      mapIsCleared('serpentine') || (m.highestWaveByMap.serpentine || 0) >= 15);
+    unlock('ridge', mapIsCleared('crosscut') || stars >= 3);
+    unlock('winding', mapIsCleared('ridge') || stars >= 6);
+    unlock('gauntlet', mapIsCleared('winding') || stars >= 10);
+    unlock('crucible', mapIsCleared('gauntlet') && stars >= 12);
+    if (newly.length) {
+      saveProfile();
+      if (doToast) showMetaToast(`Map unlocked: ${newly.join(', ')}`);
+    }
+  }
+
+  function towerGateMet(gate) {
+    const m = profile.milestones;
+    if (gate === 'wave10') return !!m.wave10;
+    if (gate === 'wave12') return !!m.wave12;
+    if (gate === 'wave15') return !!m.wave15;
+    if (gate === 'wave20') return !!m.wave20;
+    if (gate === 'wave30') return !!m.wave30;
+    if (gate === 'fire') return mapIsCleared('serpentine') || !!m.wave20;
+    if (gate === 'lightning') return !!profile.towersUnlocked.fire && mapIsCleared('crosscut');
+    if (gate === 'sniper') return mapIsCleared('ridge');
+    if (gate === 'bazooka') return !!profile.towersUnlocked.sniper && mapIsCleared('winding');
+    if (gate === 'firstClear') return !!m.anyMapCleared;
+    if (gate === 'bankOwned') return !!profile.towersUnlocked.bank;
+    return false;
+  }
+
+  function towerGateHint(gate) {
+    if (gate === 'wave10') return 'Reach wave 10 once';
+    if (gate === 'wave12') return 'Reach wave 12 once';
+    if (gate === 'wave15') return 'Reach wave 15 once';
+    if (gate === 'wave20') return 'Reach wave 20 once';
+    if (gate === 'wave30') return 'Reach wave 30 once';
+    if (gate === 'fire') return 'Clear Serpentine or reach wave 20';
+    if (gate === 'lightning') return 'Unlock Fire · clear Crosscut';
+    if (gate === 'sniper') return 'Clear Ridge';
+    if (gate === 'bazooka') return 'Unlock Sniper · clear Winding';
+    if (gate === 'firstClear') return 'Clear any map once';
+    if (gate === 'bankOwned') return 'Unlock Bank first';
+    return 'Locked';
+  }
+
+  function capGateMet(type, nextLv) {
+    const m = profile.milestones;
+    if (nextLv === 2) return !!m.towersPlaced[type];
+    if (nextLv === 3) return !!m.towerWave15[type];
+    if (nextLv === 4) return !!m.towerCleared[type];
+    if (nextLv === 5) return !!m.stars2Clear && (profile.towerMaxLevel[type] | 0) >= 4;
+    return false;
+  }
+
+  function capGateHint(type, nextLv) {
+    if (nextLv === 2) return 'Place this tower in any run';
+    if (nextLv === 3) return 'Reach wave 15 with it placed';
+    if (nextLv === 4) return 'Clear a map with it placed';
+    if (nextLv === 5) return '★★ clear · already at cap 4';
+    return '';
+  }
+
+  function capCostFor(type, nextLv) {
+    const def = TOWER_DEFS[type];
+    if (!def) return 999;
+    const tier = TOWER_CAT_TIER[def.category] || 'ms';
+    return (CAP_COSTS[tier] && CAP_COSTS[tier][nextLv]) || 999;
+  }
+
+  function noteWaveMilestone(wave, mapId) {
+    if (!profile || !wave) return;
+    const m = profile.milestones;
+    let dirty = false;
+    if (wave > (m.highestWave || 0)) { m.highestWave = wave; dirty = true; }
+    if (wave > (profile.stats.highestWave || 0)) { profile.stats.highestWave = wave; dirty = true; }
+    const by = m.highestWaveByMap[mapId] || 0;
+    if (wave > by) { m.highestWaveByMap[mapId] = wave; dirty = true; }
+    if (wave >= 10 && !m.wave10) { m.wave10 = true; dirty = true; }
+    if (wave >= 12 && !m.wave12) { m.wave12 = true; dirty = true; }
+    if (wave >= 15 && !m.wave15) { m.wave15 = true; dirty = true; }
+    if (wave >= 20 && !m.wave20) { m.wave20 = true; dirty = true; }
+    if (wave >= 30 && !m.wave30) { m.wave30 = true; dirty = true; }
+    if (wave >= 15) {
+      for (const tw of state.towers) {
+        if (!m.towerWave15[tw.type]) { m.towerWave15[tw.type] = true; dirty = true; }
+      }
+    }
+    if (dirty) {
+      saveProfile();
+      evaluateMapUnlocks(true);
+    }
+  }
+
+  function noteTowerPlaced(type) {
+    if (!profile || !type) return;
+    if (!profile.milestones.towersPlaced[type]) {
+      profile.milestones.towersPlaced[type] = true;
+      saveProfile();
+      refreshMetaUI();
+    }
+  }
+
+  function noteRunClear(mapId, livesLeft) {
+    if (!profile) return;
+    profile.milestones.mapsCleared[mapId] = true;
+    profile.milestones.anyMapCleared = true;
+    const stars = starCountForWin(livesLeft);
+    if (stars >= 2) profile.milestones.stars2Clear = true;
+    for (const tw of state.towers) {
+      profile.milestones.towerCleared[tw.type] = true;
+    }
+    saveProfile();
+    evaluateMapUnlocks(true);
+  }
+
+  function awardRunIntel(won) {
+    if (!profile) return { total: 0, parts: [] };
+    const parts = [];
+    let total = 0;
+    if (won) {
+      let n = 8;
+      parts.push('clear 8');
+      if (state.hardMode && !state.dailyRun) { n += 2; parts.push('hard +2'); }
+      if (state.dailyRun) { n += 3; parts.push('daily +3'); }
+      if (state.lives >= START_LIVES) { n += 3; parts.push('perfect +3'); }
+      const first = !profile.flags.firstClearBonus[state.mapId];
+      if (first) {
+        n += 5;
+        parts.push('first clear +5');
+        profile.flags.firstClearBonus[state.mapId] = true;
+      }
+      total = n;
+    } else {
+      const w = state.wave || 0;
+      if (w >= 50) { total = 6; parts.push('wave 50 milestone'); }
+      else if (w >= 40) { total = 4; parts.push('wave 40 milestone'); }
+      else if (w >= 25) { total = 2; parts.push('wave 25 milestone'); }
+      else if (w >= 15) {
+        const day = localDayKey();
+        if (profile.flags.consolationDay !== day) {
+          profile.flags.consolationDay = day;
+          profile.flags.consolationCount = 0;
+        }
+        if ((profile.flags.consolationCount || 0) < 3) {
+          profile.flags.consolationCount = (profile.flags.consolationCount || 0) + 1;
+          total = 1;
+          parts.push('consolation');
+        }
+      }
+    }
+    if (total > 0) {
+      profile.intel += total;
+      profile.intelEarned += total;
+      saveProfile();
+      showMetaToast(`+${total} Intel · ${parts.join(', ')}`, 'intel');
+    }
+    return { total, parts };
+  }
+
+  function recordRunStats(won) {
+    if (!profile) return;
+    const s = profile.stats;
+    s.runs = (s.runs || 0) + 1;
+    if (won) s.wins = (s.wins || 0) + 1;
+    else s.losses = (s.losses || 0) + 1;
+    s.kills = (s.kills || 0) + (state.runKills || 0);
+    s.damage = (s.damage || 0) + Math.floor(state.runDamage || 0);
+    s.gold = (s.gold || 0) + Math.floor(state.runGoldEarned || 0);
+    if (state.runStartedAt) {
+      s.playTimeMs = (s.playTimeMs || 0) + Math.max(0, performance.now() - state.runStartedAt);
+    }
+    const w = state.wave || 0;
+    if (w > (s.highestWave || 0)) s.highestWave = w;
+    saveProfile();
+  }
+
+  function buyTowerUnlock(type) {
+    const row = TOWER_SHOP.find((t) => t.id === type);
+    if (!row || !profile) return false;
+    if (profile.towersUnlocked[type]) return false;
+    if (!towerGateMet(row.gate)) {
+      showMetaToast(towerGateHint(row.gate));
+      return false;
+    }
+    if (!spendIntel(row.cost)) {
+      showMetaToast('Not enough Intel');
+      return false;
+    }
+    profile.towersUnlocked[type] = true;
+    profile.towerMaxLevel[type] = Math.max(1, profile.towerMaxLevel[type] | 0 || 1);
+    saveProfile();
+    showMetaToast(`${TOWER_DEFS[type].name} unlocked!`);
+    refreshMetaUI();
+    renderTowerBar();
+    updateHUD();
+    return true;
+  }
+
+  function buyTowerCap(type) {
+    if (!profile || !profile.towersUnlocked[type]) return false;
+    const cur = towerCap(type);
+    if (cur >= MAX_TOWER_LEVEL) return false;
+    const next = cur + 1;
+    if (!capGateMet(type, next)) {
+      showMetaToast(capGateHint(type, next));
+      return false;
+    }
+    const cost = capCostFor(type, next);
+    if (!spendIntel(cost)) {
+      showMetaToast('Not enough Intel');
+      return false;
+    }
+    profile.towerMaxLevel[type] = next;
+    saveProfile();
+    showMetaToast(`${TOWER_DEFS[type].name} cap → L${next}`);
+    refreshMetaUI();
+    updateHUD();
+    return true;
+  }
+
+  function buyPerk(id) {
+    const def = PERK_DEFS[id];
+    if (!def || !profile) return false;
+    if (profile.perksOwned[id]) return false;
+    if (!towerGateMet(def.gate)) {
+      showMetaToast(towerGateHint(def.gate));
+      return false;
+    }
+    if (!spendIntel(def.cost)) {
+      showMetaToast('Not enough Intel');
+      return false;
+    }
+    profile.perksOwned[id] = true;
+    saveProfile();
+    showMetaToast(`${def.name} unlocked!`);
+    refreshMetaUI();
+    return true;
+  }
+
+  function togglePerkEquip(id) {
+    if (!profile || !profile.perksOwned[id]) return;
+    const eq = profile.perksEquipped.slice();
+    const ix = eq.indexOf(id);
+    if (ix >= 0) eq.splice(ix, 1);
+    else {
+      if (eq.length >= MAX_PERK_EQUIP) {
+        showMetaToast('Equip at most 2 perks');
+        return;
+      }
+      eq.push(id);
+    }
+    profile.perksEquipped = eq;
+    saveProfile();
+    refreshMetaUI();
+  }
+
+  function formatPlayTime(ms) {
+    const s = Math.floor((ms || 0) / 1000);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m`;
+    return `${s}s`;
+  }
+
+  function refreshMetaUI() {
+    if (!profile) return;
+    const bal = document.getElementById('intel-bal');
+    if (bal) bal.textContent = String(profile.intel | 0);
+
+    const slots = document.getElementById('perk-slots');
+    if (slots) {
+      slots.innerHTML = '';
+      for (const id of PERK_ORDER) {
+        const def = PERK_DEFS[id];
+        const owned = !!profile.perksOwned[id];
+        const eq = perkEquipped(id);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'perk-chip' + (owned ? ' owned' : '') + (eq ? ' equipped' : '');
+        btn.textContent = owned
+          ? `${eq ? '✓ ' : ''}${def.name}`
+          : `🔒 ${def.name}`;
+        btn.title = `${def.desc} · ${towerGateHint(def.gate)} · ${def.cost} Intel`;
+        btn.disabled = !owned;
+        if (owned) btn.addEventListener('click', () => togglePerkEquip(id));
+        slots.appendChild(btn);
+      }
+    }
+
+    const panel = document.getElementById('prog-panel');
+    if (panel && panel.classList.contains('show')) renderProgPanel();
+
+    // Map lock UI
+    document.querySelectorAll('.map-pick-btn').forEach((btn) => {
+      const id = btn.dataset.map;
+      const unlocked = mapUnlocked(id);
+      btn.classList.toggle('locked', !unlocked);
+      const lock = btn.querySelector('.map-lock');
+      if (lock) {
+        lock.textContent = unlocked ? '' : `🔒 ${MAP_UNLOCK_HINT[id] || 'Locked'}`;
+      }
+    });
+  }
+
+  function renderProgPanel() {
+    const panel = document.getElementById('prog-panel');
+    if (!panel || !profile) return;
+    const rows = [];
+    rows.push('<h3>Towers</h3>');
+    for (const row of TOWER_SHOP) {
+      const def = TOWER_DEFS[row.id];
+      const owned = !!profile.towersUnlocked[row.id];
+      const gateOk = towerGateMet(row.gate);
+      let btn;
+      if (owned) btn = `<button type="button" class="shop-buy owned" disabled>Owned</button>`;
+      else if (!gateOk) btn = `<button type="button" class="shop-buy" disabled>🔒</button>`;
+      else btn = `<button type="button" class="shop-buy" data-buy-tower="${row.id}">${row.cost} Intel</button>`;
+      const why = owned ? '' : (!gateOk ? `<span class="locked-why">${towerGateHint(row.gate)}</span>` : '');
+      rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${CAT_LABEL[def.category] || ''}</span>${why}</div>${btn}</div>`);
+    }
+
+    rows.push('<h3>Tower caps</h3>');
+    for (const type of TOWER_ORDER) {
+      if (!profile.towersUnlocked[type]) continue;
+      const def = TOWER_DEFS[type];
+      const cur = towerCap(type);
+      if (cur >= MAX_TOWER_LEVEL) {
+        rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">L5 max</span></div><button type="button" class="shop-buy owned" disabled>MAX</button></div>`);
+        continue;
+      }
+      const next = cur + 1;
+      const gateOk = capGateMet(type, next);
+      const cost = capCostFor(type, next);
+      const btn = gateOk
+        ? `<button type="button" class="shop-buy" data-buy-cap="${type}">L${next} · ${cost}</button>`
+        : `<button type="button" class="shop-buy" disabled>🔒 L${next}</button>`;
+      const why = gateOk ? '' : `<span class="locked-why">${capGateHint(type, next)}</span>`;
+      rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">cap L${cur}</span>${why}</div>${btn}</div>`);
+    }
+
+    rows.push('<h3>Perks</h3>');
+    for (const id of PERK_ORDER) {
+      const def = PERK_DEFS[id];
+      const owned = !!profile.perksOwned[id];
+      const gateOk = towerGateMet(def.gate);
+      let btn;
+      if (owned) btn = `<button type="button" class="shop-buy owned" disabled>Owned</button>`;
+      else if (!gateOk) btn = `<button type="button" class="shop-buy" disabled>🔒</button>`;
+      else btn = `<button type="button" class="shop-buy" data-buy-perk="${id}">${def.cost} Intel</button>`;
+      const why = owned ? '' : (!gateOk ? `<span class="locked-why">${towerGateHint(def.gate)}</span>` : '');
+      rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${def.desc}</span>${why}</div>${btn}</div>`);
+    }
+
+    const s = profile.stats;
+    const wr = s.runs ? Math.round((s.wins / s.runs) * 100) : 0;
+    rows.push('<h3>Career</h3>');
+    rows.push(`<div id="career-stats">
+      <div><strong>${formatPlayTime(s.playTimeMs)}</strong> play · <strong>${s.runs}</strong> runs · <strong>${s.wins}W</strong>/${s.losses}L (${wr}%)</div>
+      <div>Highest wave <strong>${s.highestWave || 0}</strong> · Kills <strong>${s.kills || 0}</strong></div>
+      <div>Damage <strong>${Math.floor(s.damage || 0)}</strong> · Gold earned <strong>${Math.floor(s.gold || 0)}</strong></div>
+      <div>Intel earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
+      <div class="muted" style="margin-top:4px">Progress is local to this browser.</div>
+    </div>`);
+
+    panel.innerHTML = rows.join('');
+    panel.querySelectorAll('[data-buy-tower]').forEach((b) => {
+      b.addEventListener('click', () => buyTowerUnlock(b.getAttribute('data-buy-tower')));
+    });
+    panel.querySelectorAll('[data-buy-cap]').forEach((b) => {
+      b.addEventListener('click', () => buyTowerCap(b.getAttribute('data-buy-cap')));
+    });
+    panel.querySelectorAll('[data-buy-perk]').forEach((b) => {
+      b.addEventListener('click', () => buyPerk(b.getAttribute('data-buy-perk')));
+    });
+  }
+
+  function toggleProgPanel() {
+    const panel = document.getElementById('prog-panel');
+    const btn = document.getElementById('prog-toggle');
+    if (!panel) return;
+    const show = !panel.classList.contains('show');
+    panel.classList.toggle('show', show);
+    panel.setAttribute('aria-hidden', show ? 'false' : 'true');
+    if (btn) btn.textContent = show ? 'Hide shop' : 'Progression';
+    if (show) renderProgPanel();
+  }
+
+  // ===== end meta progression =====
 
   // 40px tile grid on 400×560 → 10×14. Paths use tile centers only (orthogonal).
   const TILE = 40;
@@ -1997,7 +2884,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=129`;
+    img.src = `./sprites/${name}.png?v=130`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -2060,6 +2947,9 @@
     waveLivesStart: START_LIVES,
     juice: true, // always on (FX toggle removed in build 65)
     runStartedAt: 0,
+    runKills: 0,
+    runDamage: 0,
+    runGoldEarned: 0,
     counterToastLast: Object.create(null),
     counterToastHide: 0,
     enemyIntroQueue: [],
@@ -2158,7 +3048,13 @@
 
   function startGoldForMap(mapId) {
     const map = MAPS[mapId] || MAPS.serpentine;
-    return START_GOLD + (map.startGoldBonus || 0);
+    let g = START_GOLD + (map.startGoldBonus || 0);
+    if (perkEquipped('seedMoney')) g += 25;
+    return g;
+  }
+
+  function startLivesForRun() {
+    return START_LIVES + (perkEquipped('secondWind') ? 1 : 0);
   }
 
   function loadBest() {
@@ -2175,6 +3071,7 @@
       const cur = parseInt(localStorage.getItem(LS_BEST_WAVE) || '0', 10) || 0;
       if (w > cur) localStorage.setItem(LS_BEST_WAVE, String(w));
     } catch (_) {}
+    noteWaveMilestone(w, state.mapId);
   }
 
   function saveBestWin(livesLeft) {
@@ -2505,7 +3402,7 @@
     const isBazooka = tw.type === 'bazooka';
     const fireDmg = flatDmg(18, 5);
     const fireRateFlat = Math.max(0.22, 0.85 - (lv - 1) * 0.05);
-    return {
+    const st = {
       name: def.name,
       damage: isArcher
         ? flatDmg(6, 3)
@@ -2539,7 +3436,9 @@
                   : isBazooka
                     ? Math.max(0.22, 11.0 - (lv - 1) * 0.8)
                     : Math.max(0.22, def.fireRate * rateMul),
-      range: def.range * rangeMul * (state.dailyRangeMul || 1),
+      range: def.range * rangeMul * (state.dailyRangeMul || 1) * (
+        (def.category === 'marksman' && perkEquipped('scoutNetwork')) ? 1.08 : 1
+      ),
       projectileSpeed: def.projectileSpeed,
       projectileColor: def.projectileColor,
       color: def.color,
@@ -2582,16 +3481,27 @@
       hits: def.hits || '',
       blocked: def.blocked || '',
     };
+    // Perk damage bonuses (Build 130)
+    if (st.category === 'elemental' && perkEquipped('overcharge') && st.damage) {
+      st.damage = Math.round(st.damage * 1.08);
+      if (st.flameDps) st.flameDps *= 1.08;
+    }
+    if (st.category === 'gunnery' && perkEquipped('heavyOrdnance') && st.damage) {
+      st.damage = Math.round(st.damage * 1.08);
+    }
+    return st;
   }
 
   function upgradeCostFor(tw) {
-    if (!tw || (tw.level || 1) >= MAX_TOWER_LEVEL) return null;
+    if (!tw) return null;
+    const cap = towerCap(tw.type);
+    if ((tw.level || 1) >= Math.min(MAX_TOWER_LEVEL, cap)) return null;
     const costs = TOWER_DEFS[tw.type].upgradeCosts;
     return costs[(tw.level || 1) - 1];
   }
 
   function upgradeBlurb(tw) {
-    if (!tw || (tw.level || 1) >= MAX_TOWER_LEVEL) return 'MAX';
+    if (!tw || (tw.level || 1) >= Math.min(MAX_TOWER_LEVEL, towerCap(tw.type))) return 'MAX';
     const cur = towerStats(tw);
     const next = towerStats({ type: tw.type, level: (tw.level || 1) + 1 });
     const parts = [];
@@ -2740,7 +3650,9 @@
     Object.keys(TOWER_DEFS).forEach((type) => {
       const btn = document.querySelector(`.tower-btn[data-type="${type}"]`);
       if (!btn) return;
-      btn.disabled = state.gold < TOWER_DEFS[type].cost || state.gameOver || !state.mapPicked;
+      const locked = !towerUnlocked(type);
+      btn.disabled = locked || state.gold < TOWER_DEFS[type].cost || state.gameOver || !state.mapPicked;
+      btn.classList.toggle('locked-tower', locked);
     });
     document.querySelectorAll('.tower-btn').forEach((b) => {
       if (b.classList.contains('cat-btn') || b.classList.contains('back-btn')) {
@@ -2753,7 +3665,7 @@
     if (!showActions && (state.towerMenuMode || 'categories') === 'categories') {
       document.querySelectorAll('.tower-btn.cat-btn').forEach((btn) => {
         const cat = btn.dataset.category;
-        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat);
+        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat && towerUnlocked(t));
         const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
         btn.classList.toggle('dim', !!(allUnaffordable && state.mapPicked && !state.gameOver));
       });
@@ -2787,8 +3699,11 @@
       const cost = upgradeCostFor(tw);
       const maxed = cost == null;
       const value = sellValueFor(tw);
+      const atProfileCap = (tw.level || 1) >= towerCap(tw.type) && (tw.level || 1) < MAX_TOWER_LEVEL;
       el.btnUpgrade.disabled = maxed || state.gold < cost;
-      el.upgradeCost.textContent = maxed ? 'MAX' : `${cost}g`;
+      el.upgradeCost.textContent = maxed
+        ? (atProfileCap ? `CAP L${towerCap(tw.type)}` : 'MAX')
+        : `${cost}g`;
       el.sellValue.textContent = `+${value}g`;
       el.btnUpgrade.title = towerStatLine(tw);
       el.hint.dataset.towerStats = towerStatLine(tw);
@@ -2857,10 +3772,11 @@
 
   function bankIncomeTotal() {
     let total = 0;
+    const bonus = perkEquipped('deepPockets') ? 2 : 0;
     for (const tw of state.towers) {
       if (tw.type !== 'bank') continue;
       const st = towerStats(tw);
-      total += st.incomePerWave || 0;
+      total += (st.incomePerWave || 0) + bonus;
     }
     return total;
   }
@@ -2917,6 +3833,7 @@
     if (!Number.isFinite(state.gold)) state.gold = 0;
     state.gold = Math.max(0, state.gold + add);
     if (!Number.isFinite(state.gold)) state.gold = 0;
+    if (add > 0) state.runGoldEarned = (state.runGoldEarned || 0) + add;
     if (!opts || opts.flash !== false) flashGold();
     return Math.floor(add);
   }
@@ -3424,6 +4341,11 @@
       }
       const def = TOWER_DEFS[state.selected];
       const center = tileCenter(tile.col, tile.row);
+      if (!towerUnlocked(state.selected)) {
+        el.hint.textContent = 'Tower locked — unlock in Progression';
+        placeFeedback(center.x, center.y, false);
+        return;
+      }
       if (state.gold < def.cost) {
         el.hint.textContent = 'Not enough gold';
         placeFeedback(center.x, center.y, false);
@@ -3448,6 +4370,7 @@
         pulse: 0.4,
       };
       state.towers.push(placed);
+      noteTowerPlaced(state.selected);
       placeFeedback(center.x, center.y, true);
       state.selected = null;
       selectTower(placed);
@@ -3470,7 +4393,10 @@
     if (!tw || state.gameOver) return;
     const cost = upgradeCostFor(tw);
     if (cost == null) {
-      el.hint.textContent = `Already max level (${MAX_TOWER_LEVEL})`;
+      const cap = towerCap(tw.type);
+      el.hint.textContent = (tw.level || 1) >= MAX_TOWER_LEVEL
+        ? `Already max level (${MAX_TOWER_LEVEL})`
+        : `Cap L${cap} — raise in Progression shop`;
       return;
     }
     if (state.gold < cost) {
@@ -3837,6 +4763,8 @@
     state.paused = false;
     hideNextWaveUI();
     el.overlay.classList.add('show');
+    noteWaveMilestone(state.wave, state.mapId);
+    let intelBit = '';
     if (won) {
       // Final wave skips enterWavePause — Bank income once
       grantWaveClearExtras();
@@ -3845,6 +4773,7 @@
       const elapsed = state.runStartedAt ? (performance.now() - state.runStartedAt) : 0;
       saveMapWin(state.mapId, elapsed, state.lives);
       saveDailyResult(true, elapsed);
+      noteRunClear(state.mapId, state.lives);
       const newly = [];
       const m = unlockAchievement('map', state.mapId);
       if (m) newly.push(m);
@@ -3852,6 +4781,9 @@
         const h = unlockAchievement('hard');
         if (h) newly.push(h);
       }
+      const intel = awardRunIntel(true);
+      if (intel.total) intelBit = ` · +${intel.total} Intel`;
+      recordRunStats(true);
       // Titan may already unlock mid-wave; refresh summary either way
       const bestT = formatBestTime(loadMapStats()[state.mapId]?.bestMs);
       el.overlayTitle.className = 'win';
@@ -3859,19 +4791,23 @@
       el.overlayRating.innerHTML = `<span class="stars">${formatStars(rating.stars)}</span> · ${rating.label}`;
       const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (PB ${bestT})` : ''}.` : '';
       const hardBit = state.dailyRun ? ` · Daily ${state.dailyRun.mod.name}` : (state.hardMode ? ' HARD' : '');
-      el.overlayMsg.textContent = `${MAPS[state.mapId].name}${hardBit} · ${state.lives}♥ left · ${Math.floor(state.gold)}g.${timeBit}`;
+      el.overlayMsg.textContent = `${MAPS[state.mapId].name}${hardBit} · ${state.lives}♥ left · ${Math.floor(state.gold)}g.${timeBit}${intelBit}`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(newly);
     } else {
       saveDailyResult(false, 0);
+      const intel = awardRunIntel(false);
+      if (intel.total) intelBit = ` · +${intel.total} Intel`;
+      recordRunStats(false);
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = state.dailyRun ? 'Daily Failed' : 'Path Breached';
       el.overlayRating.textContent = '';
       const dailyBit = state.dailyRun ? ` Daily ${state.dailyRun.mod.name}.` : '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}.${dailyBit} Tip: Marksman vs soft · Elemental/Gunnery vs Brute · Gunnery vs Tank · double-tap to upgrade.`;
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}.${dailyBit}${intelBit} Tip: Marksman vs soft · Elemental/Gunnery vs Brute · Gunnery vs Tank · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
     if (rb) rb.textContent = won ? 'Replay Map' : 'Retry Map';
+    refreshMetaUI();
     updateHUD();
   }
 
@@ -3886,6 +4822,7 @@
       b.classList.toggle('last', b.dataset.map === last);
     });
     refreshMapPickStats();
+    refreshMetaUI();
     try {
       const hm = localStorage.getItem(LS_HARD);
       const on = hm === '1' || hm === 'true' || state.hardMode;
@@ -3898,6 +4835,10 @@
 
   function pickMap(mapId, opts) {
     const asDaily = !!(opts && opts.daily);
+    if (!asDaily && !mapUnlocked(mapId)) {
+      showMetaToast(`Locked: ${MAP_UNLOCK_HINT[mapId] || 'Locked'}`);
+      return;
+    }
     state.changingMap = false;
     if (!asDaily) clearDailyMods();
     if (asDaily) {
@@ -3909,7 +4850,10 @@
     }
     // Clear board + reset start economy whenever a map is (re)picked
     state.gold = startGoldForMap(mapId);
-    state.lives = START_LIVES;
+    state.lives = startLivesForRun();
+    state.runKills = 0;
+    state.runDamage = 0;
+    state.runGoldEarned = 0;
     state.wave = 0;
     state.selected = null;
     state.selectedTower = null;
@@ -3934,7 +4878,7 @@
     state.nextWaveIn = 0;
     state.awaitingNextWave = false;
     state.sellConfirming = false;
-    state.waveLivesStart = START_LIVES;
+    state.waveLivesStart = state.lives;
     state.runStartedAt = 0;
     applyMap(mapId);
     state.mapPicked = true;
@@ -4039,6 +4983,11 @@
     if (btn.disabled || state.gameOver || !state.mapPicked) return;
     const type = btn.dataset.type;
     if (!type || !TOWER_DEFS[type]) return;
+    if (!towerUnlocked(type)) {
+      el.hint.textContent = 'Tower locked — buy in Progression on Choose Map';
+      showMetaToast('Tower locked');
+      return;
+    }
     clearTowerSelection();
     const deselect = state.selected === type;
     state.selected = deselect ? null : type;
@@ -4067,11 +5016,18 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=129" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=130" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
-    btn.innerHTML = `${iconHtml}<span class="tname">${def.name}</span><span class="cost">${def.cost}g</span>`;
+    const locked = !towerUnlocked(type);
+    const costLabel = locked ? '🔒' : `${def.cost}g`;
+    btn.innerHTML = `${iconHtml}<span class="tname">${def.name}</span><span class="cost">${costLabel}</span>`;
+    if (locked) {
+      btn.classList.add('locked-tower');
+      btn.disabled = true;
+      btn.title = `${def.name} — locked (Progression shop)`;
+    }
     btn.addEventListener('pointerdown', onTowerTypePointer);
     box.appendChild(btn);
     return btn;
@@ -4163,7 +5119,7 @@
         btn.dataset.category = c.id;
         btn.title = `${c.label} towers`;
         btn.innerHTML = `${c.icon}<span class="tname">${c.label}</span>`;
-        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === c.id);
+        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === c.id && towerUnlocked(t));
         const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
         if (allUnaffordable && state.mapPicked && !state.gameOver) btn.classList.add('dim');
         btn.addEventListener('pointerdown', (ev) => {
@@ -4237,7 +5193,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=129" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=130" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -4564,6 +5520,10 @@
       mapPickGesture = null;
       if (g.moved) return;
       e.preventDefault();
+      if (btn.classList.contains('locked') || !mapUnlocked(btn.dataset.map)) {
+        showMetaToast(`Locked: ${MAP_UNLOCK_HINT[btn.dataset.map] || 'Locked'}`);
+        return;
+      }
       pickMap(btn.dataset.map);
     });
     btn.addEventListener('pointercancel', (e) => {
@@ -4659,7 +5619,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=129`;
+    return `./sprites/${spr}.png?v=130`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -4921,12 +5881,14 @@
     }
     en.hp -= dealt;
     en.hitFlash = 0.12;
+    state.runDamage = (state.runDamage || 0) + dealt;
     burst(p.x, p.y, color, o.burstN != null ? o.burstN : 6);
     if (en.hp <= 0) {
       const reward = Number(en.reward);
       const got = addGold(Number.isFinite(reward) ? reward : 0);
       burst(p.x, p.y, '#fbbf24', 18);
       addFloat(p.x, p.y - 16, `+${got}`, '#fde68a');
+      state.runKills = (state.runKills || 0) + 1;
       state.killStreak = (state.killStreak || 0) + 1;
       state.killStreakTimer = 1.45;
       if (state.killStreak >= 3) {
@@ -6886,6 +7848,9 @@
   applyMap(initialMap);
   // TARGET_MODES is declared later in file order — load prefs after constants exist
   loadPersistedPrefs();
+  loadProfile();
+  const progToggle = document.getElementById('prog-toggle');
+  if (progToggle) progToggle.addEventListener('click', (e) => { e.preventDefault(); toggleProgPanel(); });
   showMapSelect();
   updateWaveButtons();
   renderTowerBar();
