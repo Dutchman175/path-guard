@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 134 -->
+<!-- path-guard-build: 135 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -95,6 +95,10 @@
     #map-overlay > p {
       max-width: min(640px, 100%);
     }
+    #hub-home, .hub-panel {
+      max-width: min(420px, 100%);
+    }
+    #hub-nav .hub-nav-btn { min-height: 56px; font-size: 1.1rem; }
   }
   @media (min-width: 900px) {
     #app {
@@ -1444,18 +1448,132 @@
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
 
-  /* Build 134: Choose Map meta — Credits + Upgrade only; compact perk strip */
+  /* Build 135: home hub — Credits read-only; nav + subpanels */
+  #hub-home, .hub-panel {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .hub-panel[hidden] { display: none !important; }
+  #hub-home[hidden] { display: none !important; }
+  #hub-nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .hub-nav-btn {
+    appearance: none;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 2px solid #38bdf8;
+    background: #1e293b;
+    color: #e8eef4;
+    font: inherit;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+  }
+  .hub-nav-btn:active { transform: scale(0.98); }
+  #hub-btn-daily { border-color: #fbbf24; }
+  #hub-btn-upgrades { border-color: #67e8f9; }
+  #hub-btn-account { border-color: #94a3b8; }
+  .hub-back {
+    appearance: none;
+    align-self: flex-start;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 9px;
+    padding: 8px 12px;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 40px;
+  }
+  .hub-back:active { transform: scale(0.97); }
+  .daily-note {
+    max-width: 300px;
+    margin: 2px 0 0;
+    font-size: 0.68rem;
+    color: #94a3b8;
+    line-height: 1.35;
+  }
+  #account-panel {
+    width: 100%;
+    max-width: 300px;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid #334155;
+    max-height: 58vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    text-align: left;
+  }
+  #account-panel .reset-zone {
+    margin-top: 8px;
+    padding: 8px 8px 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    background: rgba(127, 29, 29, 0.18);
+  }
+  #account-panel .reset-zone strong { color: #fca5a5; font-size: 0.74rem; display: block; margin-bottom: 2px; }
+  #account-panel .reset-zone .reset-lead {
+    color: #94a3b8;
+    font-size: 0.64rem;
+    margin: 0 0 4px;
+    line-height: 1.35;
+  }
+  #account-panel .reset-wipe-list {
+    margin: 0 0 8px 1.1em;
+    padding: 0;
+    color: #fecaca;
+    font-size: 0.62rem;
+    line-height: 1.4;
+  }
+  #account-panel .reset-wipe-list li { margin: 0 0 2px; }
+  #account-panel .shop-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 0;
+    border: none;
+  }
+  #account-panel .shop-buy.danger {
+    appearance: none;
+    border: 1px solid #f87171;
+    background: #7f1d1d;
+    color: #fecaca;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
   #meta-bar {
     width: 100%;
     max-width: 300px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 6px;
     margin: 0 0 3px;
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
     background: rgba(30, 41, 59, 0.85);
     border: 1px solid #334155;
   }
@@ -1567,16 +1685,18 @@
     width: 100%;
     max-width: 300px;
     flex-shrink: 0;
-    margin: 0 0 8px;
+    margin: 0;
     padding: 8px 10px;
     border-radius: 12px;
     background: rgba(15, 23, 42, 0.92);
     border: 1px solid #334155;
     display: none;
-    max-height: 42vh;
+    max-height: 52vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    text-align: left;
   }
+  #hub-panel-upgrades:not([hidden]) #prog-panel,
   #prog-panel.show { display: block; }
   #prog-panel h3 {
     font-size: 0.78rem;
@@ -1758,28 +1878,27 @@
     </div>
 
     <div id="map-overlay" class="show">
-      <h2>Choose Map</h2>
-      <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
-      <p class="home-tagline">Build on green tiles · hold 50 waves.</p>
-      <div id="meta-bar">
-        <div class="intel-bal">Credits <span id="intel-bal">0</span></div>
-        <div class="meta-actions">
-          <button type="button" id="prog-toggle" title="Upgrade Towers">Upgrade Towers</button>
+      <div id="hub-home" class="hub-view">
+        <h2>PATH GUARD</h2>
+        <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
+        <p class="home-tagline">Build on green tiles · hold 50 waves.</p>
+        <div id="meta-bar">
+          <div class="intel-bal">Credits <span id="intel-bal">0</span></div>
+        </div>
+        <div id="hub-nav">
+          <button type="button" class="hub-nav-btn" id="hub-btn-play" data-hub="play">Play Map</button>
+          <button type="button" class="hub-nav-btn" id="hub-btn-daily" data-hub="daily">Daily Challenge</button>
+          <button type="button" class="hub-nav-btn" id="hub-btn-upgrades" data-hub="upgrades">Upgrades</button>
+          <button type="button" class="hub-nav-btn" id="hub-btn-account" data-hub="account">Account</button>
         </div>
       </div>
-      <div id="perk-equip">
-        <div class="perk-label">Perks</div>
-        <div class="perk-slots" id="perk-slots"></div>
-      </div>
-      <div id="prog-panel" aria-hidden="true"></div>
-      <button type="button" id="daily-btn" title="Today's challenge">
-        <span class="daily-title">Daily Challenge</span>
-        <span class="daily-sub" id="daily-sub">Loading…</span>
-        <span class="daily-status" id="daily-status"></span>
-      </button>
-      <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · denser spawns</label>
-      <p class="map-tip">Stars: clear · 5♥ · perfect · FAQ for counters</p>
-      <div id="map-list">
+
+      <div id="hub-panel-play" class="hub-panel" hidden aria-hidden="true">
+        <button type="button" class="hub-back" data-hub-back>← Back</button>
+        <h2>Play Map</h2>
+        <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · denser spawns</label>
+        <p class="map-tip">Stars: clear · 5♥ · perfect · FAQ for counters</p>
+        <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         <span class="map-lock" id="lock-serpentine"></span>
         <span class="map-title">Map 1: Serpentine <span class="diff easy">Easy</span></span>
@@ -1810,8 +1929,37 @@
         <span class="map-title">Map 6: Crucible <span class="diff nightmare">Nightmare</span></span>
         <span class="sub">Garden zig · ruin outcrops · densest spawns</span>
       </button>
+        </div>
+      </div>
+
+      <div id="hub-panel-daily" class="hub-panel" hidden aria-hidden="true">
+        <button type="button" class="hub-back" data-hub-back>← Back</button>
+        <h2>Daily Challenge</h2>
+        <button type="button" id="daily-btn" title="Today's challenge">
+          <span class="daily-title">Daily Challenge</span>
+          <span class="daily-sub" id="daily-sub">Loading…</span>
+          <span class="daily-status" id="daily-status"></span>
+        </button>
+        <p class="daily-note">Today’s daily can use a locked map for the day only.</p>
+      </div>
+
+      <div id="hub-panel-upgrades" class="hub-panel" hidden aria-hidden="true">
+        <button type="button" class="hub-back" data-hub-back>← Back</button>
+        <h2>Upgrades</h2>
+        <div id="perk-equip">
+          <div class="perk-label">Equip (max 2)</div>
+          <div class="perk-slots" id="perk-slots"></div>
+        </div>
+        <div id="prog-panel" aria-hidden="true"></div>
+      </div>
+
+      <div id="hub-panel-account" class="hub-panel" hidden aria-hidden="true">
+        <button type="button" class="hub-back" data-hub-back>← Back</button>
+        <h2>Account</h2>
+        <div id="account-panel" aria-hidden="true"></div>
       </div>
     </div>
+
     <div id="faq-overlay" aria-hidden="true">
       <div class="faq-head">
         <h2>Path Guard FAQ</h2>
@@ -1823,13 +1971,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=134" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=135" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1848,8 +1996,8 @@
       </div>
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
-        <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
-        <p><strong>Upgrade Towers</strong> — Credits, map/tower unlocks, and perks are saved in this browser only (local). Progress is local; use <strong>Reset</strong> at the bottom of Upgrade Towers → Career to start over.</p>
+        <p><strong>Hard Mode</strong> — denser spawns (toggle under Play Map). <strong>Aim</strong> on a placed tower cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
+        <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Use <strong>Account → Reset</strong> to wipe progress and start over.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1888,7 +2036,7 @@
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
-      <button type="button" class="util-btn" id="btn-change-map" title="Menu · choose map" disabled>Menu</button>
+      <button type="button" class="util-btn" id="btn-change-map" title="Menu · home hub" disabled>Menu</button>
       <button type="button" class="util-btn" id="btn-faq" title="FAQ">FAQ</button>
     </div>
     <div id="wave-btns">
@@ -1898,7 +2046,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 134</div>
+    <div id="build-ver">build 135</div>
   </div>
 </div>
 
@@ -2573,7 +2721,10 @@
     }
 
     const panel = document.getElementById('prog-panel');
-    if (panel && panel.classList.contains('show')) renderProgPanel();
+    const upg = document.getElementById('hub-panel-upgrades');
+    if (panel && (panel.classList.contains('show') || (upg && !upg.hidden))) renderProgPanel();
+    const acct = document.getElementById('hub-panel-account');
+    if (acct && !acct.hidden) renderAccountPanel();
 
     // Map lock UI
     document.querySelectorAll('.map-pick-btn').forEach((btn) => {
@@ -2636,31 +2787,6 @@
       rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${def.desc}</span>${why}</div>${btn}</div>`);
     }
 
-    const s = profile.stats;
-    const wr = s.runs ? Math.round((s.wins / s.runs) * 100) : 0;
-    rows.push('<h3>Career</h3>');
-    rows.push(`<div id="career-stats">
-      <div><strong>${formatPlayTime(s.playTimeMs)}</strong> play · <strong>${s.runs}</strong> runs · <strong>${s.wins}W</strong>/${s.losses}L (${wr}%)</div>
-      <div>Highest wave <strong>${s.highestWave || 0}</strong> · Kills <strong>${s.kills || 0}</strong></div>
-      <div>Damage <strong>${Math.floor(s.damage || 0)}</strong> · Gold earned <strong>${Math.floor(s.gold || 0)}</strong></div>
-      <div>Credits earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
-      <div class="muted" style="margin-top:4px">Progress is local to this browser.</div>
-    </div>`);
-    rows.push(`<div class="reset-zone">
-      <strong>Reset Progress</strong>
-      <p class="reset-lead">Danger zone — wipes career progress in this browser. Starters stay: Serpentine + Archer, Frost, Cannon, Barrier (level 1).</p>
-      <ul class="reset-wipe-list">
-        <li>Credits (balance and earned/spent career totals)</li>
-        <li>Map unlocks (back to Serpentine only)</li>
-        <li>Tower unlocks (back to Archer, Frost, Cannon, Barrier)</li>
-        <li>Tower level caps (back to level 1 on starters)</li>
-        <li>Owned and equipped perks</li>
-        <li>Career stats (wins, losses, hours, kills, damage, etc.)</li>
-        <li>Related map star/win records used for unlocks</li>
-      </ul>
-      <div class="shop-row"><button type="button" class="shop-buy danger" data-reset-progress>Reset everything</button></div>
-    </div>`);
-
     panel.innerHTML = rows.join('');
     panel.querySelectorAll('[data-buy-tower]').forEach((b) => {
       b.addEventListener('click', () => buyTowerUnlock(b.getAttribute('data-buy-tower')));
@@ -2671,20 +2797,88 @@
     panel.querySelectorAll('[data-buy-perk]').forEach((b) => {
       b.addEventListener('click', () => buyPerk(b.getAttribute('data-buy-perk')));
     });
+  }
+
+  function renderAccountPanel() {
+    const panel = document.getElementById('account-panel');
+    if (!panel || !profile) return;
+    const s = profile.stats;
+    const wr = s.runs ? Math.round((s.wins / s.runs) * 100) : 0;
+    panel.innerHTML = `
+      <div id="career-stats">
+        <div><strong>${formatPlayTime(s.playTimeMs)}</strong> play · <strong>${s.runs}</strong> runs · <strong>${s.wins}W</strong>/${s.losses}L (${wr}%)</div>
+        <div>Highest wave <strong>${s.highestWave || 0}</strong> · Kills <strong>${s.kills || 0}</strong></div>
+        <div>Damage <strong>${Math.floor(s.damage || 0)}</strong> · Gold earned <strong>${Math.floor(s.gold || 0)}</strong></div>
+        <div>Credits earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
+        <div class="muted" style="margin-top:4px">Progress is local to this browser.</div>
+      </div>
+      <div class="reset-zone">
+        <strong>Reset Progress</strong>
+        <p class="reset-lead">Danger zone — wipes career progress in this browser. Starters stay: Serpentine + Archer, Frost, Cannon, Barrier (level 1).</p>
+        <ul class="reset-wipe-list">
+          <li>Credits (balance and earned/spent career totals)</li>
+          <li>Map unlocks (back to Serpentine only)</li>
+          <li>Tower unlocks (back to Archer, Frost, Cannon, Barrier)</li>
+          <li>Tower level caps (back to level 1 on starters)</li>
+          <li>Owned and equipped perks</li>
+          <li>Career stats (wins, losses, hours, kills, damage, etc.)</li>
+          <li>Related map star/win records used for unlocks</li>
+        </ul>
+        <div class="shop-row"><button type="button" class="shop-buy danger" data-reset-progress>Reset everything</button></div>
+      </div>`;
     panel.querySelectorAll('[data-reset-progress]').forEach((b) => {
       b.addEventListener('click', () => resetProgress());
     });
   }
 
+  const HUB_PANELS = ['play', 'daily', 'upgrades', 'account'];
+
+  function showHubHome() {
+    const home = document.getElementById('hub-home');
+    if (home) home.hidden = false;
+    for (const id of HUB_PANELS) {
+      const p = document.getElementById('hub-panel-' + id);
+      if (p) {
+        p.hidden = true;
+        p.setAttribute('aria-hidden', 'true');
+      }
+    }
+    const prog = document.getElementById('prog-panel');
+    if (prog) {
+      prog.classList.remove('show');
+      prog.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function openHubPanel(name) {
+    if (!HUB_PANELS.includes(name)) return;
+    const home = document.getElementById('hub-home');
+    if (home) home.hidden = true;
+    for (const id of HUB_PANELS) {
+      const p = document.getElementById('hub-panel-' + id);
+      if (!p) continue;
+      const on = id === name;
+      p.hidden = !on;
+      p.setAttribute('aria-hidden', on ? 'false' : 'true');
+    }
+    if (name === 'upgrades') {
+      const prog = document.getElementById('prog-panel');
+      if (prog) {
+        prog.classList.add('show');
+        prog.setAttribute('aria-hidden', 'false');
+      }
+      renderProgPanel();
+      refreshMetaUI();
+    } else if (name === 'account') {
+      renderAccountPanel();
+    } else if (name === 'daily') {
+      refreshDailyButton();
+    }
+  }
+
   function toggleProgPanel() {
-    const panel = document.getElementById('prog-panel');
-    const btn = document.getElementById('prog-toggle');
-    if (!panel) return;
-    const show = !panel.classList.contains('show');
-    panel.classList.toggle('show', show);
-    panel.setAttribute('aria-hidden', show ? 'false' : 'true');
-    if (btn) btn.textContent = show ? 'Hide upgrades' : 'Upgrade Towers';
-    if (show) renderProgPanel();
+    // Legacy: open Upgrades panel from hub
+    openHubPanel('upgrades');
   }
 
   // ===== end meta progression =====
@@ -3007,7 +3201,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=134`;
+    img.src = `./sprites/${name}.png?v=135`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -4492,7 +4686,7 @@
       const def = TOWER_DEFS[state.selected];
       const center = tileCenter(tile.col, tile.row);
       if (!towerUnlocked(state.selected)) {
-        el.hint.textContent = 'Tower locked — unlock in Upgrade Towers';
+        el.hint.textContent = 'Tower locked — unlock in Upgrades';
         placeFeedback(center.x, center.y, false);
         return;
       }
@@ -4561,7 +4755,7 @@
         el.hint.textContent = `Already max level (${MAX_TOWER_LEVEL})`;
         return;
       }
-      // Mid-run profile cap unlock (same ladder as Upgrade Towers shop)
+      // Mid-run profile cap unlock (same ladder as Upgrades shop)
       const next = towerCap(tw.type) + 1;
       if (!capGateMet(tw.type, next)) {
         el.hint.textContent = capGateHint(tw.type, next);
@@ -4998,6 +5192,7 @@
     state.mapPicked = false;
     el.mapOverlay.classList.add('show');
     el.overlay.classList.remove('show');
+    showHubHome();
     let last = 'serpentine';
     try { last = localStorage.getItem(LS_MAP) || 'serpentine'; } catch (_) {}
     if (last === 'spiral' || !MAPS[last]) last = 'serpentine';
@@ -5133,7 +5328,7 @@
     hideNextWaveUI();
     el.overlay.classList.remove('show');
     showMapSelect();
-    el.hint.textContent = 'Pick a map to begin';
+    el.hint.textContent = 'Home — Play Map, Daily, Upgrades, or Account';
     updateWaveButtons();
     updateHUD();
   }
@@ -5167,7 +5362,7 @@
     const type = btn.dataset.type;
     if (!type || !TOWER_DEFS[type]) return;
     if (!towerUnlocked(type)) {
-      el.hint.textContent = 'Tower locked — buy in Upgrade Towers on Choose Map';
+      el.hint.textContent = 'Tower locked — buy in Upgrades';
       showMetaToast('Tower locked');
       return;
     }
@@ -5199,7 +5394,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=134" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=135" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -5209,7 +5404,7 @@
     if (locked) {
       btn.classList.add('locked-tower');
       btn.disabled = true;
-      btn.title = `${def.name} — locked (Upgrade Towers)`;
+      btn.title = `${def.name} — locked (Upgrades)`;
     }
     btn.addEventListener('pointerdown', onTowerTypePointer);
     box.appendChild(btn);
@@ -5376,7 +5571,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=134" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=135" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -5591,7 +5786,7 @@
     hideNextWaveUI();
     el.overlay.classList.remove('show');
     showMapSelect();
-    el.hint.textContent = 'Pick a map to start over.';
+    el.hint.textContent = 'Menu — pick Play Map or another option.';
   });
 
   function pressWaveButton(mode) {
@@ -5802,7 +5997,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=134`;
+    return `./sprites/${spr}.png?v=135`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -8032,8 +8227,18 @@
   // TARGET_MODES is declared later in file order — load prefs after constants exist
   loadPersistedPrefs();
   loadProfile();
-  const progToggle = document.getElementById('prog-toggle');
-  if (progToggle) progToggle.addEventListener('click', (e) => { e.preventDefault(); toggleProgPanel(); });
+  document.querySelectorAll('[data-hub]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openHubPanel(btn.getAttribute('data-hub'));
+    });
+  });
+  document.querySelectorAll('[data-hub-back]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showHubHome();
+    });
+  });
   showMapSelect();
   updateWaveButtons();
   renderTowerBar();
