@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 131 -->
+<!-- path-guard-build: 132 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -986,6 +986,12 @@
     background: #3b0764;
     color: #e9d5ff;
   }
+  #btn-upgrade.cap-unlock {
+    border-color: #38bdf8;
+    background: #0c4a6e;
+    color: #e0f2fe;
+  }
+  #btn-upgrade.cap-unlock .cost { color: #7dd3fc; }
   #btn-upgrade .cost { display: block; font-size: 0.62rem; font-weight: 600; color: #fbbf24; margin-top: 1px; }
   #btn-sell {
     border-color: #64748b;
@@ -1573,6 +1579,17 @@
     background: #14532d;
     color: #86efac;
   }
+  #prog-panel .shop-buy.danger {
+    border-color: #f87171;
+    background: #7f1d1d;
+    color: #fecaca;
+  }
+  #prog-panel .shop-buy.danger:disabled {
+    opacity: 0.45;
+    border-color: #475569;
+    background: #1e293b;
+    color: #94a3b8;
+  }
   #career-stats {
     font-size: 0.68rem;
     color: #94a3b8;
@@ -1700,7 +1717,7 @@
       <p>Build on green tiles · hold 50 waves.</p>
       <div id="meta-bar">
         <div class="intel-bal">Intel <span id="intel-bal">0</span></div>
-        <button type="button" id="prog-toggle" title="Progression shop">Progression</button>
+        <button type="button" id="prog-toggle" title="Upgrade Towers">Upgrade Towers</button>
       </div>
       <div id="perk-equip">
         <div class="perk-label">Perks · equip up to 2</div>
@@ -1758,13 +1775,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=131" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1784,7 +1801,7 @@
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
         <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
-        <p><strong>Progression</strong> — Intel, map/tower unlocks, and perks are saved in this browser only (local). Clearing site data resets progress.</p>
+        <p><strong>Upgrade Towers</strong> — Intel, map/tower unlocks, and perks are saved in this browser only (local). Progress is local; use <strong>Reset Progress</strong> in the Upgrade Towers panel to start over.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1833,7 +1850,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 131</div>
+    <div id="build-ver">build 132</div>
   </div>
 </div>
 
@@ -1979,6 +1996,9 @@
         consolationDay: '',
         consolationCount: 0,
         firstClearBonus: {},
+        migrated: false,
+        skipMigrate: false,
+        resetAt: 0,
       },
       milestones: {
         highestWave: 0,
@@ -2102,6 +2122,7 @@
       const raw = localStorage.getItem(LS_PROFILE);
       if (raw) {
         profile = normalizeProfile(JSON.parse(raw));
+        // Reset Progress sets flags.skipMigrate + wipes map stats/achs so unlocks are not re-granted
         evaluateMapUnlocks(false);
         return profile;
       }
@@ -2116,6 +2137,9 @@
       } catch (_) { return false; }
     })();
     profile = hasLegacy ? migrateProfileFromLegacy() : defaultProfile();
+    if (hasLegacy) {
+      profile.flags.migrated = true;
+    }
     evaluateMapUnlocks(false);
     saveProfile();
     return profile;
@@ -2396,6 +2420,29 @@
     return true;
   }
 
+  function resetProgress() {
+    if (!confirm('Reset all career progress? Intel, unlocks, perks, and career stats will be wiped.')) return;
+    if (!confirm('Really start over? This cannot be undone.')) return;
+    const p = defaultProfile();
+    p.flags.migrated = true;
+    p.flags.skipMigrate = true;
+    p.flags.resetAt = Date.now();
+    profile = p;
+    saveProfile();
+    // Wipe map-unlock sources so evaluateMapUnlocks / mapIsCleared do not re-grant
+    try { localStorage.setItem(LS_MAP_STATS, '{}'); } catch (_) {}
+    try { localStorage.removeItem(LS_BEST_WAVE); } catch (_) {}
+    try { localStorage.removeItem(LS_BEST_WIN); } catch (_) {}
+    try { saveAchievements({ maps: {}, hardWin: false, titanKill: false }); } catch (_) {}
+    evaluateMapUnlocks(false);
+    saveProfile();
+    refreshMapPickStats();
+    refreshMetaUI();
+    if (typeof renderTowerBar === 'function') renderTowerBar();
+    updateHUD();
+    showMetaToast('Progress reset');
+  }
+
   function buyPerk(id) {
     const def = PERK_DEFS[id];
     if (!def || !profile) return false;
@@ -2540,6 +2587,7 @@
       <div>Intel earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
       <div class="muted" style="margin-top:4px">Progress is local to this browser.</div>
     </div>`);
+    rows.push(`<div class="shop-row"><div class="shop-info"><strong>Reset Progress</strong> <span class="muted">Wipe career · Serpentine starter</span></div><button type="button" class="shop-buy danger" data-reset-progress>Reset</button></div>`);
 
     panel.innerHTML = rows.join('');
     panel.querySelectorAll('[data-buy-tower]').forEach((b) => {
@@ -2551,6 +2599,9 @@
     panel.querySelectorAll('[data-buy-perk]').forEach((b) => {
       b.addEventListener('click', () => buyPerk(b.getAttribute('data-buy-perk')));
     });
+    panel.querySelectorAll('[data-reset-progress]').forEach((b) => {
+      b.addEventListener('click', () => resetProgress());
+    });
   }
 
   function toggleProgPanel() {
@@ -2560,7 +2611,7 @@
     const show = !panel.classList.contains('show');
     panel.classList.toggle('show', show);
     panel.setAttribute('aria-hidden', show ? 'false' : 'true');
-    if (btn) btn.textContent = show ? 'Hide shop' : 'Progression';
+    if (btn) btn.textContent = show ? 'Hide upgrades' : 'Upgrade Towers';
     if (show) renderProgPanel();
   }
 
@@ -2884,7 +2935,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=131`;
+    img.src = `./sprites/${name}.png?v=132`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3605,8 +3656,11 @@
     closeTowerTip();
     const st = towerStats(tw);
     const up = upgradeCostFor(tw);
+    const atCap = up == null && (tw.level || 1) < MAX_TOWER_LEVEL;
     el.hint.textContent = up == null
-      ? `${st.name} maxed — Sell or pick another`
+      ? (atCap
+        ? `${st.name} at cap L${towerCap(tw.type)} — Unlock next level with Intel or Sell`
+        : `${st.name} maxed — Sell or pick another`)
       : `${st.name} selected — Upgrade, double-tap, or Sell`;
   }
 
@@ -3678,9 +3732,20 @@
         const st = towerStats(tw);
         const curStats = towerStatLine(tw);
         const cost = upgradeCostFor(tw);
-        const nextBit = cost == null
-          ? '<span class="muted">MAX</span>'
-          : `<span class="next">Next ${cost}g: ${upgradeBlurb(tw)}</span>`;
+        const atCap = cost == null && (tw.level || 1) < MAX_TOWER_LEVEL;
+        let nextBit;
+        if (cost == null && atCap) {
+          const next = towerCap(tw.type) + 1;
+          const ic = capCostFor(tw.type, next);
+          const gateOk = capGateMet(tw.type, next);
+          nextBit = gateOk
+            ? `<span class="next">Unlock L${next}: ${ic} Intel</span>`
+            : `<span class="muted">Cap L${towerCap(tw.type)} · ${capGateHint(tw.type, next)}</span>`;
+        } else if (cost == null) {
+          nextBit = '<span class="muted">MAX</span>';
+        } else {
+          nextBit = `<span class="next">Next ${cost}g: ${upgradeBlurb(tw)}</span>`;
+        }
         const ctr = towerCounterLines(tw.type);
         const hitBit = ctr.hits ? ` · <span class="hits">Hits: ${ctr.hits}</span>` : '';
         const weakBit = (ctr.blocked && ctr.blocked !== '—')
@@ -3700,12 +3765,25 @@
       const maxed = cost == null;
       const value = sellValueFor(tw);
       const atProfileCap = (tw.level || 1) >= towerCap(tw.type) && (tw.level || 1) < MAX_TOWER_LEVEL;
-      el.btnUpgrade.disabled = maxed || state.gold < cost;
-      el.upgradeCost.textContent = maxed
-        ? (atProfileCap ? `CAP L${towerCap(tw.type)}` : 'MAX')
-        : `${cost}g`;
+      el.btnUpgrade.classList.toggle('cap-unlock', !!atProfileCap);
+      if (atProfileCap) {
+        const next = towerCap(tw.type) + 1;
+        const gateOk = capGateMet(tw.type, next);
+        const intelCost = capCostFor(tw.type, next);
+        const canAfford = !!(profile && profile.intel >= intelCost);
+        el.btnUpgrade.disabled = !gateOk || !canAfford;
+        el.upgradeCost.textContent = `Unlock Lv ${next} — ${intelCost} Intel`;
+        el.btnUpgrade.title = !gateOk
+          ? capGateHint(tw.type, next)
+          : (!canAfford
+            ? `Need ${intelCost} Intel (have ${profile ? profile.intel : 0})`
+            : `Spend ${intelCost} Intel to raise ${TOWER_DEFS[tw.type].name} cap to L${next}`);
+      } else {
+        el.btnUpgrade.disabled = maxed || state.gold < cost;
+        el.upgradeCost.textContent = maxed ? 'MAX' : `${cost}g`;
+        el.btnUpgrade.title = towerStatLine(tw);
+      }
       el.sellValue.textContent = `+${value}g`;
-      el.btnUpgrade.title = towerStatLine(tw);
       el.hint.dataset.towerStats = towerStatLine(tw);
 
       el.btnSell.disabled = false;
@@ -4342,7 +4420,7 @@
       const def = TOWER_DEFS[state.selected];
       const center = tileCenter(tile.col, tile.row);
       if (!towerUnlocked(state.selected)) {
-        el.hint.textContent = 'Tower locked — unlock in Progression';
+        el.hint.textContent = 'Tower locked — unlock in Upgrade Towers';
         placeFeedback(center.x, center.y, false);
         return;
       }
@@ -4388,23 +4466,7 @@
     }
   }
 
-  function upgradeSelectedTower() {
-    const tw = state.selectedTower;
-    if (!tw || state.gameOver) return;
-    const cost = upgradeCostFor(tw);
-    if (cost == null) {
-      const cap = towerCap(tw.type);
-      el.hint.textContent = (tw.level || 1) >= MAX_TOWER_LEVEL
-        ? `Already max level (${MAX_TOWER_LEVEL})`
-        : `Cap L${cap} — raise in Progression shop`;
-      return;
-    }
-    if (state.gold < cost) {
-      el.hint.textContent = 'Not enough gold to upgrade';
-      flashGold();
-      return;
-    }
-    addGold(-cost);
+  function applyTowerLevelUp(tw) {
     tw.level = (tw.level || 1) + 1;
     tw.pulse = 0.45;
     burst(tw.x, tw.y, LEVEL_RING[tw.level - 1], 18);
@@ -4416,6 +4478,55 @@
       });
     }
     addFloat(tw.x, tw.y - 20, `Lv${tw.level}!`, LEVEL_RING[tw.level - 1]);
+  }
+
+  function upgradeSelectedTower() {
+    const tw = state.selectedTower;
+    if (!tw || state.gameOver) return;
+    let cost = upgradeCostFor(tw);
+    if (cost == null) {
+      if ((tw.level || 1) >= MAX_TOWER_LEVEL) {
+        el.hint.textContent = `Already max level (${MAX_TOWER_LEVEL})`;
+        return;
+      }
+      // Mid-run profile cap unlock (same ladder as Upgrade Towers shop)
+      const next = towerCap(tw.type) + 1;
+      if (!capGateMet(tw.type, next)) {
+        el.hint.textContent = capGateHint(tw.type, next);
+        return;
+      }
+      const intelCost = capCostFor(tw.type, next);
+      if (!profile || profile.intel < intelCost) {
+        el.hint.textContent = `Need ${intelCost} Intel (have ${profile ? profile.intel : 0})`;
+        return;
+      }
+      if (!buyTowerCap(tw.type)) return;
+      cost = upgradeCostFor(tw);
+      if (cost == null) {
+        el.hint.textContent = `Cap L${next} unlocked`;
+        selectTower(tw);
+        updateHUD();
+        return;
+      }
+      if (state.gold < cost) {
+        el.hint.textContent = `Cap L${next} unlocked — need ${cost}g to upgrade`;
+        selectTower(tw);
+        updateHUD();
+        return;
+      }
+      addGold(-cost);
+      applyTowerLevelUp(tw);
+      selectTower(tw);
+      updateHUD();
+      return;
+    }
+    if (state.gold < cost) {
+      el.hint.textContent = 'Not enough gold to upgrade';
+      flashGold();
+      return;
+    }
+    addGold(-cost);
+    applyTowerLevelUp(tw);
     selectTower(tw);
     updateHUD();
   }
@@ -4984,7 +5095,7 @@
     const type = btn.dataset.type;
     if (!type || !TOWER_DEFS[type]) return;
     if (!towerUnlocked(type)) {
-      el.hint.textContent = 'Tower locked — buy in Progression on Choose Map';
+      el.hint.textContent = 'Tower locked — buy in Upgrade Towers on Choose Map';
       showMetaToast('Tower locked');
       return;
     }
@@ -5016,7 +5127,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=131" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=132" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -5026,7 +5137,7 @@
     if (locked) {
       btn.classList.add('locked-tower');
       btn.disabled = true;
-      btn.title = `${def.name} — locked (Progression shop)`;
+      btn.title = `${def.name} — locked (Upgrade Towers)`;
     }
     btn.addEventListener('pointerdown', onTowerTypePointer);
     box.appendChild(btn);
@@ -5193,7 +5304,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=131" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=132" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -5619,7 +5730,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=131`;
+    return `./sprites/${spr}.png?v=132`;
   }
 
   function enemyChipHtml(kind, mode) {
