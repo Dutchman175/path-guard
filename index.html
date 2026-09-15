@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 132 -->
+<!-- path-guard-build: 133 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1042,12 +1042,12 @@
   #build-ver { text-align: center; font-size: 8px; opacity: 0.3; margin-top: 0; line-height: 1; }
   .map-tip { font-size: 11px; opacity: 0.9; margin: 0 0 6px; line-height: 1.35; color: #cbd5e1; }
   .hard-mode-row {
-    width: min(300px, 94%); margin: 0 0 8px; display: flex; align-items: center; gap: 10px;
-    font-size: 13px; color: #fde68a; font-weight: 800; justify-content: center;
-    background: rgba(234, 88, 12, 0.12); border: 1px solid rgba(251, 146, 60, 0.45);
-    border-radius: 10px; padding: 8px 12px;
+    width: min(300px, 94%); margin: 0 0 4px; display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: #fdba74; font-weight: 700; justify-content: flex-start;
+    background: rgba(234, 88, 12, 0.06); border: 1px solid rgba(251, 146, 60, 0.28);
+    border-radius: 8px; padding: 4px 10px;
   }
-  .hard-mode-row input { width: 18px; height: 18px; accent-color: #ea580c; flex-shrink: 0; }
+  .hard-mode-row input { width: 15px; height: 15px; accent-color: #ea580c; flex-shrink: 0; }
   /* Build 99: reserve preview row so Incoming:… lines don't resize the board */
   #wave-preview {
     text-align: center;
@@ -1291,20 +1291,21 @@
     gap: 8px;
   }
   #map-overlay {
-    gap: 7px;
+    gap: 5px;
     padding: 10px 12px 16px;
     justify-content: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
-  #map-overlay h2 { font-size: 1.2rem; flex-shrink: 0; margin: 2px 0 0; }
+  #map-overlay h2 { font-size: 1.15rem; flex-shrink: 0; margin: 2px 0 0; }
   #overlay h2 { font-size: 1.45rem; flex-shrink: 0; }
   #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.82rem; max-width: 300px; }
   #overlay-msg { line-height: 1.4; }
   #map-overlay p { margin-bottom: 2px; flex-shrink: 0; }
-  #map-overlay .map-tip { max-width: 300px; margin: 0 0 4px; flex-shrink: 0; }
-  #map-overlay .hard-mode-row { flex-shrink: 0; margin-bottom: 4px; }
+  #map-overlay .home-tagline { font-size: 0.72rem; margin: 0 0 2px; opacity: 0.9; }
+  #map-overlay .map-tip { max-width: 300px; margin: 0 0 2px; flex-shrink: 0; font-size: 10px; opacity: 0.85; }
+  #map-overlay .hard-mode-row { flex-shrink: 0; margin-bottom: 2px; }
   #overlay .win { color: #4ade80; }
   #overlay .lose { color: #f87171; }
   #overlay .rating { color: #fde68a; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
@@ -1443,7 +1444,7 @@
   .map-pick-btn.last { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2); }
 
 
-  /* Build 130: meta progression (Intel / unlocks) */
+  /* Build 133: Choose Map meta — Credits / Upgrade / Reset; tighter perks */
   #meta-bar {
     width: 100%;
     max-width: 300px;
@@ -1451,9 +1452,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    margin: 0 0 6px;
-    padding: 6px 10px;
+    gap: 6px;
+    margin: 0 0 4px;
+    padding: 5px 8px;
     border-radius: 10px;
     background: rgba(30, 41, 59, 0.85);
     border: 1px solid #334155;
@@ -1461,49 +1462,64 @@
   #meta-bar .intel-bal {
     color: #67e8f9;
     font-weight: 800;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
   }
   #meta-bar .intel-bal span { color: #fbbf24; }
+  #meta-bar .meta-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
   #meta-bar button {
     font: inherit;
-    font-size: 0.72rem;
+    font-size: 0.66rem;
     font-weight: 700;
-    padding: 5px 10px;
+    padding: 4px 8px;
     border-radius: 8px;
     border: 1px solid #475569;
     background: #1e293b;
     color: #e2e8f0;
     cursor: pointer;
+    white-space: nowrap;
   }
   #meta-bar button:active { transform: scale(0.97); }
+  #meta-bar button.meta-reset {
+    border-color: rgba(248, 113, 113, 0.45);
+    background: rgba(127, 29, 29, 0.28);
+    color: #fca5a5;
+  }
   #perk-equip {
     width: 100%;
     max-width: 300px;
     flex-shrink: 0;
-    margin: 0 0 6px;
-    padding: 6px 8px;
+    margin: 0 0 4px;
+    padding: 4px 6px;
     border-radius: 10px;
-    background: rgba(15, 23, 42, 0.7);
+    background: rgba(15, 23, 42, 0.55);
     border: 1px solid #334155;
   }
   #perk-equip .perk-label {
-    font-size: 0.68rem;
+    font-size: 0.6rem;
     font-weight: 700;
-    color: #94a3b8;
+    color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
   #perk-equip .perk-slots {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 3px;
   }
   #perk-equip .perk-chip {
     font: inherit;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    padding: 4px 8px;
+    padding: 2px 6px;
     border-radius: 999px;
     border: 1px solid #475569;
     background: #0f172a;
@@ -1714,23 +1730,26 @@
     <div id="map-overlay" class="show">
       <h2>Choose Map</h2>
       <button type="button" id="faq-map-btn" title="How to play">❓ FAQ</button>
-      <p>Build on green tiles · hold 50 waves.</p>
+      <p class="home-tagline">Build on green tiles · hold 50 waves.</p>
       <div id="meta-bar">
-        <div class="intel-bal">Intel <span id="intel-bal">0</span></div>
-        <button type="button" id="prog-toggle" title="Upgrade Towers">Upgrade Towers</button>
+        <div class="intel-bal">Credits <span id="intel-bal">0</span></div>
+        <div class="meta-actions">
+          <button type="button" id="prog-toggle" title="Upgrade Towers">Upgrade Towers</button>
+          <button type="button" id="meta-reset-btn" class="meta-reset" title="Reset career progress">Reset</button>
+        </div>
       </div>
       <div id="perk-equip">
-        <div class="perk-label">Perks · equip up to 2</div>
+        <div class="perk-label">Perks · up to 2</div>
         <div class="perk-slots" id="perk-slots"></div>
       </div>
       <div id="prog-panel" aria-hidden="true"></div>
-      <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · more spawns</label>
       <button type="button" id="daily-btn" title="Today's challenge">
         <span class="daily-title">Daily Challenge</span>
         <span class="daily-sub" id="daily-sub">Loading…</span>
         <span class="daily-status" id="daily-status"></span>
       </button>
-      <p class="map-tip">Stars: clear · 5♥ · perfect · Threat green → red · FAQ for counters</p>
+      <label class="hard-mode-row"><input type="checkbox" id="hard-mode"> Hard Mode · denser spawns</label>
+      <p class="map-tip">Stars: clear · 5♥ · perfect · FAQ for counters</p>
       <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         <span class="map-lock" id="lock-serpentine"></span>
@@ -1775,13 +1794,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=132" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=133" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -1801,7 +1820,7 @@
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
         <p><strong>Hard Mode</strong> — denser spawns (toggle on Choose Map). <strong>Aim</strong> on a placed tower cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
-        <p><strong>Upgrade Towers</strong> — Intel, map/tower unlocks, and perks are saved in this browser only (local). Progress is local; use <strong>Reset Progress</strong> in the Upgrade Towers panel to start over.</p>
+        <p><strong>Upgrade Towers</strong> — Credits, map/tower unlocks, and perks are saved in this browser only (local). Progress is local; use <strong>Reset</strong> on the Choose Map bar (or in Upgrade Towers → Career) to start over.</p>
       </div>
     </div>
     <div id="overlay">
@@ -1840,7 +1859,7 @@
     <div id="util-btns">
       <button type="button" class="util-btn" id="btn-speed">Speed 1x</button>
       <button type="button" class="util-btn" id="btn-pause">Pause</button>
-      <button type="button" class="util-btn" id="btn-change-map" disabled>Maps</button>
+      <button type="button" class="util-btn" id="btn-change-map" title="Menu · choose map" disabled>Menu</button>
       <button type="button" class="util-btn" id="btn-faq" title="FAQ">FAQ</button>
     </div>
     <div id="wave-btns">
@@ -1850,7 +1869,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 132</div>
+    <div id="build-ver">build 133</div>
   </div>
 </div>
 
@@ -1901,7 +1920,7 @@
   const LS_UX_TIP = 'pg-ux-tip-v42';
   const LS_ENEMY_INTRO = 'pg-enemy-intro-v1'; // seen enemy kinds (once per device)
 
-  // ===== Build 130: Path Guard meta progression (unlock ladder v3) =====
+  // ===== Build 130+: Path Guard meta progression (Credits / unlock ladder) =====
   const LS_PROFILE = 'pg-profile-v1';
   const START_TOWERS = ['archer', 'frost', 'cannon', 'barrier'];
   const MAP_ORDER = ['serpentine', 'crosscut', 'ridge', 'winding', 'gauntlet', 'crucible'];
@@ -2178,7 +2197,7 @@
     profile.intel += n;
     profile.intelEarned += n;
     saveProfile();
-    showMetaToast(`+${n} Intel${reason ? ` · ${reason}` : ''}`, 'intel');
+    showMetaToast(`+${n} Credits${reason ? ` · ${reason}` : ''}`, 'intel');
     refreshMetaUI();
     return n;
   }
@@ -2354,7 +2373,7 @@
       profile.intel += total;
       profile.intelEarned += total;
       saveProfile();
-      showMetaToast(`+${total} Intel · ${parts.join(', ')}`, 'intel');
+      showMetaToast(`+${total} Credits · ${parts.join(', ')}`, 'intel');
     }
     return { total, parts };
   }
@@ -2385,7 +2404,7 @@
       return false;
     }
     if (!spendIntel(row.cost)) {
-      showMetaToast('Not enough Intel');
+      showMetaToast('Not enough Credits');
       return false;
     }
     profile.towersUnlocked[type] = true;
@@ -2409,7 +2428,7 @@
     }
     const cost = capCostFor(type, next);
     if (!spendIntel(cost)) {
-      showMetaToast('Not enough Intel');
+      showMetaToast('Not enough Credits');
       return false;
     }
     profile.towerMaxLevel[type] = next;
@@ -2421,7 +2440,7 @@
   }
 
   function resetProgress() {
-    if (!confirm('Reset all career progress? Intel, unlocks, perks, and career stats will be wiped.')) return;
+    if (!confirm('Reset all career progress? Credits, unlocks, perks, and career stats will be wiped.')) return;
     if (!confirm('Really start over? This cannot be undone.')) return;
     const p = defaultProfile();
     p.flags.migrated = true;
@@ -2452,7 +2471,7 @@
       return false;
     }
     if (!spendIntel(def.cost)) {
-      showMetaToast('Not enough Intel');
+      showMetaToast('Not enough Credits');
       return false;
     }
     profile.perksOwned[id] = true;
@@ -2506,7 +2525,7 @@
         btn.textContent = owned
           ? `${eq ? '✓ ' : ''}${def.name}`
           : `🔒 ${def.name}`;
-        btn.title = `${def.desc} · ${towerGateHint(def.gate)} · ${def.cost} Intel`;
+        btn.title = `${def.desc} · ${towerGateHint(def.gate)} · ${def.cost} Credits`;
         btn.disabled = !owned;
         if (owned) btn.addEventListener('click', () => togglePerkEquip(id));
         slots.appendChild(btn);
@@ -2540,7 +2559,7 @@
       let btn;
       if (owned) btn = `<button type="button" class="shop-buy owned" disabled>Owned</button>`;
       else if (!gateOk) btn = `<button type="button" class="shop-buy" disabled>🔒</button>`;
-      else btn = `<button type="button" class="shop-buy" data-buy-tower="${row.id}">${row.cost} Intel</button>`;
+      else btn = `<button type="button" class="shop-buy" data-buy-tower="${row.id}">${row.cost} Credits</button>`;
       const why = owned ? '' : (!gateOk ? `<span class="locked-why">${towerGateHint(row.gate)}</span>` : '');
       rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${CAT_LABEL[def.category] || ''}</span>${why}</div>${btn}</div>`);
     }
@@ -2572,7 +2591,7 @@
       let btn;
       if (owned) btn = `<button type="button" class="shop-buy owned" disabled>Owned</button>`;
       else if (!gateOk) btn = `<button type="button" class="shop-buy" disabled>🔒</button>`;
-      else btn = `<button type="button" class="shop-buy" data-buy-perk="${id}">${def.cost} Intel</button>`;
+      else btn = `<button type="button" class="shop-buy" data-buy-perk="${id}">${def.cost} Credits</button>`;
       const why = owned ? '' : (!gateOk ? `<span class="locked-why">${towerGateHint(def.gate)}</span>` : '');
       rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${def.desc}</span>${why}</div>${btn}</div>`);
     }
@@ -2584,7 +2603,7 @@
       <div><strong>${formatPlayTime(s.playTimeMs)}</strong> play · <strong>${s.runs}</strong> runs · <strong>${s.wins}W</strong>/${s.losses}L (${wr}%)</div>
       <div>Highest wave <strong>${s.highestWave || 0}</strong> · Kills <strong>${s.kills || 0}</strong></div>
       <div>Damage <strong>${Math.floor(s.damage || 0)}</strong> · Gold earned <strong>${Math.floor(s.gold || 0)}</strong></div>
-      <div>Intel earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
+      <div>Credits earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
       <div class="muted" style="margin-top:4px">Progress is local to this browser.</div>
     </div>`);
     rows.push(`<div class="shop-row"><div class="shop-info"><strong>Reset Progress</strong> <span class="muted">Wipe career · Serpentine starter</span></div><button type="button" class="shop-buy danger" data-reset-progress>Reset</button></div>`);
@@ -2935,7 +2954,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=132`;
+    img.src = `./sprites/${name}.png?v=133`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3659,7 +3678,7 @@
     const atCap = up == null && (tw.level || 1) < MAX_TOWER_LEVEL;
     el.hint.textContent = up == null
       ? (atCap
-        ? `${st.name} at cap L${towerCap(tw.type)} — Unlock next level with Intel or Sell`
+        ? `${st.name} at cap L${towerCap(tw.type)} — Unlock next level with Credits or Sell`
         : `${st.name} maxed — Sell or pick another`)
       : `${st.name} selected — Upgrade, double-tap, or Sell`;
   }
@@ -3739,7 +3758,7 @@
           const ic = capCostFor(tw.type, next);
           const gateOk = capGateMet(tw.type, next);
           nextBit = gateOk
-            ? `<span class="next">Unlock L${next}: ${ic} Intel</span>`
+            ? `<span class="next">Unlock L${next}: ${ic} Credits</span>`
             : `<span class="muted">Cap L${towerCap(tw.type)} · ${capGateHint(tw.type, next)}</span>`;
         } else if (cost == null) {
           nextBit = '<span class="muted">MAX</span>';
@@ -3772,12 +3791,12 @@
         const intelCost = capCostFor(tw.type, next);
         const canAfford = !!(profile && profile.intel >= intelCost);
         el.btnUpgrade.disabled = !gateOk || !canAfford;
-        el.upgradeCost.textContent = `Unlock Lv ${next} — ${intelCost} Intel`;
+        el.upgradeCost.textContent = `Unlock Lv ${next} — ${intelCost} Credits`;
         el.btnUpgrade.title = !gateOk
           ? capGateHint(tw.type, next)
           : (!canAfford
-            ? `Need ${intelCost} Intel (have ${profile ? profile.intel : 0})`
-            : `Spend ${intelCost} Intel to raise ${TOWER_DEFS[tw.type].name} cap to L${next}`);
+            ? `Need ${intelCost} Credits (have ${profile ? profile.intel : 0})`
+            : `Spend ${intelCost} Credits to raise ${TOWER_DEFS[tw.type].name} cap to L${next}`);
       } else {
         el.btnUpgrade.disabled = maxed || state.gold < cost;
         el.upgradeCost.textContent = maxed ? 'MAX' : `${cost}g`;
@@ -4497,7 +4516,7 @@
       }
       const intelCost = capCostFor(tw.type, next);
       if (!profile || profile.intel < intelCost) {
-        el.hint.textContent = `Need ${intelCost} Intel (have ${profile ? profile.intel : 0})`;
+        el.hint.textContent = `Need ${intelCost} Credits (have ${profile ? profile.intel : 0})`;
         return;
       }
       if (!buyTowerCap(tw.type)) return;
@@ -4893,7 +4912,7 @@
         if (h) newly.push(h);
       }
       const intel = awardRunIntel(true);
-      if (intel.total) intelBit = ` · +${intel.total} Intel`;
+      if (intel.total) intelBit = ` · +${intel.total} Credits`;
       recordRunStats(true);
       // Titan may already unlock mid-wave; refresh summary either way
       const bestT = formatBestTime(loadMapStats()[state.mapId]?.bestMs);
@@ -4907,7 +4926,7 @@
     } else {
       saveDailyResult(false, 0);
       const intel = awardRunIntel(false);
-      if (intel.total) intelBit = ` · +${intel.total} Intel`;
+      if (intel.total) intelBit = ` · +${intel.total} Credits`;
       recordRunStats(false);
       el.overlayTitle.className = 'lose';
       el.overlayTitle.textContent = state.dailyRun ? 'Daily Failed' : 'Path Breached';
@@ -5127,7 +5146,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=132" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=133" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -5304,7 +5323,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=132" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=133" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -5730,7 +5749,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=132`;
+    return `./sprites/${spr}.png?v=133`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -7962,6 +7981,8 @@
   loadProfile();
   const progToggle = document.getElementById('prog-toggle');
   if (progToggle) progToggle.addEventListener('click', (e) => { e.preventDefault(); toggleProgPanel(); });
+  const metaReset = document.getElementById('meta-reset-btn');
+  if (metaReset) metaReset.addEventListener('click', (e) => { e.preventDefault(); resetProgress(); });
   showMapSelect();
   updateWaveButtons();
   renderTowerBar();
