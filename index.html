@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 144 -->
+<!-- path-guard-build: 145 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1762,27 +1762,38 @@
   #prog-panel h3:first-child { margin-top: 0; }
   #prog-panel .shop-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 6px;
-    padding: 5px 0;
+    gap: 8px;
+    padding: 10px 0;
+    min-height: 52px;
     border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-    font-size: 0.72rem;
-    line-height: 1.3;
+    font-size: 0.78rem;
+    line-height: 1.35;
   }
   #prog-panel .shop-row:last-child { border-bottom: none; }
   #prog-panel .shop-info { flex: 1; min-width: 0; color: #cbd5e1; }
+  #prog-panel .shop-info strong { font-size: 0.84rem; }
   #prog-panel .shop-info .muted { color: #64748b; font-weight: 600; }
-  #prog-panel .shop-info .locked-why { color: #fdba74; display: block; font-size: 0.66rem; }
+  #prog-panel .shop-info .shop-stats {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 0.68rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+  #prog-panel .shop-info .shop-stats .arrow { color: #67e8f9; font-weight: 800; }
+  #prog-panel .shop-info .locked-why { color: #fdba74; display: block; font-size: 0.66rem; margin-top: 2px; }
   #prog-panel .shop-buy {
     white-space: normal;
-    line-height: 1.15;
-    max-width: 58%;
+    line-height: 1.2;
+    max-width: 48%;
     flex-shrink: 0;
     font: inherit;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     font-weight: 800;
-    padding: 4px 8px;
+    padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid #ca8a04;
     background: #78350f;
@@ -2088,13 +2099,13 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=144" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/grunt.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Grunt</strong> — weakest fodder. L1 Archer one-shots; soft vs Marksman/Fire. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/scout.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Scout</strong> — fast, low HP. No immunities. <span class="faq-color-swatch" style="background:#eab308"></span><span class="muted">Yellow</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/skitter.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Skitter</strong> — quick pest, full damage from every tower. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Lime</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armored vehicle. Immune to Marksman and Elemental (use Gunnery). <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — high HP, slow. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/raider.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Raider</strong> — fast + tough. Sniper/Bazooka strong. <span class="faq-color-swatch" style="background:#e11d48"></span><span class="muted">Rose</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=145" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 finale (3). Bigger gray Tank. Immune to Marksman and Elemental — use Gunnery. Smashes through Barriers. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -2102,7 +2113,7 @@
         <div class="faq-item">Brute: Immune to Marksman — use Elemental or Gunnery (Elemental gate at wave 15).</div>
         <div class="faq-item">Tank / Titan (gray): Immune to Marksman and Elemental — Gunnery only (Tank at wave 30; nothing is immune to Gunnery).</div>
         <div class="faq-item">Damage is binary: a tower either deals full damage or is Immune — no partial resists, no bonus damage.</div>
-        <div class="faq-item">Support: Barrier halts enemies on its path tile (more at once as it levels); Bank pays gold each wave clear.</div>
+        <div class="faq-item">Support: Barrier briefly halts enemies on its path tile (more at once as it levels; Titans smash through); Bank pays gold each wave clear.</div>
       </div>
       <div class="faq-sec">
         <h3>How to play</h3>
@@ -2173,7 +2184,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 144</div>
+    <div id="build-ver">build 145</div>
   </div>
 </div>
 
@@ -2894,6 +2905,46 @@
     return TOWER_SHOP.find((t) => t.id === type) || null;
   }
 
+
+  function formatShotsPerSec(fireRate) {
+    const sps = 1 / Math.max(0.05, fireRate);
+    return Math.abs(sps - Math.round(sps)) < 0.05 ? String(Math.round(sps)) : sps.toFixed(1);
+  }
+
+  function progStatsLine(type, curLv, nextLv) {
+    const cur = towerStats({ type, level: curLv });
+    const next = nextLv ? towerStats({ type, level: nextLv }) : null;
+    const arrow = (a, b) => (next && a !== b) ? `${a} <span class="arrow">→</span> ${b}` : a;
+    if (type === 'barrier') {
+      const haltCur = cur.stunDur % 1 ? cur.stunDur.toFixed(1) : String(Math.round(cur.stunDur));
+      const stopsCur = String(cur.multi || 1);
+      if (!next) return `Halt ${haltCur}s · Stops ${stopsCur} at once`;
+      const haltNext = next.stunDur % 1 ? next.stunDur.toFixed(1) : String(Math.round(next.stunDur));
+      const stopsNext = String(next.multi || 1);
+      return `Halt ${arrow(haltCur + 's', haltNext + 's')} · Stops ${arrow(stopsCur, stopsNext)} at once`;
+    }
+    if (type === 'bank') {
+      const gCur = String(cur.incomePerWave || 0);
+      if (!next) return `${gCur} gold / wave clear`;
+      const gNext = String(next.incomePerWave || 0);
+      return `${arrow(gCur, gNext)} gold / wave clear`;
+    }
+    if (type === 'fire') {
+      const dpsCur = (cur.flameDps || (cur.damage / Math.max(0.05, cur.fireRate)));
+      const dpsCurS = Math.abs(dpsCur - Math.round(dpsCur)) < 0.05 ? String(Math.round(dpsCur)) : dpsCur.toFixed(1);
+      if (!next) return `DPS ~${dpsCurS}`;
+      const dpsNext = (next.flameDps || (next.damage / Math.max(0.05, next.fireRate)));
+      const dpsNextS = Math.abs(dpsNext - Math.round(dpsNext)) < 0.05 ? String(Math.round(dpsNext)) : dpsNext.toFixed(1);
+      return `DPS ~${arrow(dpsCurS, dpsNextS)}`;
+    }
+    const dmgCur = String(cur.damage);
+    const spsCur = formatShotsPerSec(cur.fireRate);
+    if (!next) return `Damage ${dmgCur} · Shots/sec ${spsCur}`;
+    const dmgNext = String(next.damage);
+    const spsNext = formatShotsPerSec(next.fireRate);
+    return `Damage ${arrow(dmgCur, dmgNext)} · Shots/sec ${arrow(spsCur, spsNext)}`;
+  }
+
   function renderProgPanel() {
     const panel = document.getElementById('prog-panel');
     if (!panel || !profile) return;
@@ -2945,7 +2996,15 @@
             }
           }
         }
-        rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${meta}</span>${why}</div>${btn}</div>`);
+        let statsHtml = '';
+        if (owned) {
+          const cur = towerCap(type);
+          const next = cur < MAX_TOWER_LEVEL ? cur + 1 : null;
+          statsHtml = `<span class="shop-stats">${progStatsLine(type, Math.max(1, cur), next)}</span>`;
+        } else {
+          statsHtml = `<span class="shop-stats">${progStatsLine(type, 1, null)}</span>`;
+        }
+        rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${meta}</span>${statsHtml}${why}</div>${btn}</div>`);
       }
     }
 
@@ -3273,12 +3332,12 @@
       name: 'Barrier', category: 'support', cost: 60, range: 0, fireRate: 99, damage: 0,
       color: '#f59e0b', projectileSpeed: 0, projectileColor: '#fde68a',
       upgradeCosts: [40, 68, 100, 145],
-      stunDur: 3,
+      stunDur: 2,
       pathOnly: true,
       supportOnly: true,
       haltOnly: true,
-      hits: 'Path tile halt (no damage) · stops more at once as it levels',
-      blocked: '—',
+      hits: 'Path tile halt (no damage) · short stop · more concurrent at higher levels',
+      blocked: 'Titans smash through',
     },
     crossbow: {
       name: 'Crossbow', category: 'marksman', cost: 95, range: 112, fireRate: 0.70, damage: 16,
@@ -3376,7 +3435,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=144`;
+    img.src = `./sprites/${name}.png?v=145`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -3940,9 +3999,9 @@
       color: def.color,
       slowMul: def.slowMul,
       slowDur: def.slowDur ? def.slowDur + (lv - 1) * 0.2 : 0,
-      // Barrier/Lightning: 1–4 by level; L5 Barrier capstone stops 6 (Lightning stays 5)
+      // Barrier: 1/1/2/2/3 concurrent stops by level; Lightning: 1–5 by level
       multi: tw.type === 'barrier'
-        ? Math.max(1, lv) + (lv >= 5 ? 1 : 0) // L5 bump = +1 stop (2× the usual +1/level step)
+        ? 1 + Math.floor((lv - 1) / 2)
         : tw.type === 'lightning'
           ? Math.max(1, Math.min(MAX_TOWER_LEVEL, lv))
           : def.multi
@@ -5574,7 +5633,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=144" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=145" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -5751,7 +5810,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=144" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=145" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -6200,7 +6259,7 @@
     if (type === 'crossbow') return 'Mid marksman — skips Brute/Tank/Titan';
     if (type === 'archer') return 'Cheap marksman — skips Brute/Tank/Titan';
     if (type === 'bank') return 'Pays gold each wave clear — no shots';
-    if (type === 'barrier') return 'Halts enemies on its path tile — more at once as it levels';
+    if (type === 'barrier') return 'Short path halt — more at once as it levels · Titans smash through';
     return 'Tower';
   }
 
@@ -6216,7 +6275,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'grunt';
-    return `./sprites/${spr}.png?v=144`;
+    return `./sprites/${spr}.png?v=145`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -6697,6 +6756,8 @@
         for (const en of state.enemies) {
           if (!en.barrierPassed) en.barrierPassed = {};
           if (!en.barrierHeld) en.barrierHeld = {};
+          // Titans are giant tanks — smash through Barriers
+          if (en.kind === 'titan') continue;
           if (enemyIsUnderBridge(en)) continue;
           const p = posOnPath(en.dist);
           const sameTile = Math.floor(p.x / TILE) === twCol && Math.floor(p.y / TILE) === twRow;
@@ -7503,7 +7564,7 @@
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Barrier: place ON path — halts that tile (more at once as it levels)', W / 2, 10);
+          ctx.fillText('Barrier: place ON path — short halt (Titans smash through)', W / 2, 10);
         }
       }
     }
