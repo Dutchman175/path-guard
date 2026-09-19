@@ -1068,6 +1068,26 @@
   #diff-pick-step { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
   #diff-pick-step[hidden] { display: none !important; }
   #map-pick-step[hidden] { display: none !important; }
+  #map-pick-step { width: 100%; }
+  #map-cap-note {
+    width: 100%;
+    max-width: none !important;
+    box-sizing: border-box;
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #f8fafc !important;
+    font-size: 0.95rem !important;
+    font-weight: 700;
+    line-height: 1.45;
+    opacity: 1 !important;
+    text-align: left;
+  }
+  #map-cap-note span { display: block; }
+  #map-cap-note .done { color: #86efac; font-weight: 650; }
+  #map-cap-note .next { color: #fde68a; }
   #diff-step-title {
     margin: 0; font-size: 1.5rem; font-weight: 800; color: #f8fafc; text-align: center; letter-spacing: 0.01em;
   }
@@ -2196,6 +2216,7 @@
         <span class="sub">Garden zig · ruin outcrops · densest spawns</span>
       </button>
         </div>
+        <p id="map-cap-note" class="map-cap-note">Beat Crosscut to unlock level 3.<br>Beat Ridge to unlock level 4.<br>Beat Winding to unlock level 5.</p>
         </div>
         <div id="diff-pick-step" hidden aria-hidden="true">
           <div class="diff-above">
@@ -2285,7 +2306,7 @@
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
         <p><strong>Difficulty</strong> — chosen per map after you pick it: Easy 40 / Medium 50 / Hard 60 waves. Clear Easy for Medium; clear Medium for Hard. Difficulty only adds later waves — Wave N has the same enemies on every difficulty. <strong>Daily</strong> is Hard length (60 waves) plus today’s modifier, and pays 25 Credits on clear. <strong>Aim</strong> cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
-        <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits, plus map and wave proof: Serpentine-only max L2; clear Crosscut and reach wave 20 for L3; Ridge and wave 30 for L4; Winding or later and wave 40 (or an Easy clear) for L5. Levels you already own stay. Use <strong>Account → Reset</strong> to wipe progress and start over.</p>
+        <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: Serpentine-only max L2; beat Crosscut for L3; Ridge for L4; Winding or later for L5. Levels you already own stay. Use <strong>Account → Reset</strong> to wipe progress and start over.</p>
       </div>
     </div>
     <div id="overlay">
@@ -2514,7 +2535,6 @@
         wave15: false,
         wave20: false,
         wave30: false,
-        wave40: false,
       },
     };
   }
@@ -2625,7 +2645,6 @@
       if (bestWave >= 15) p.milestones.wave15 = true;
       if (bestWave >= 20) p.milestones.wave20 = true;
       if (bestWave >= 30) p.milestones.wave30 = true;
-      if (bestWave >= 40) p.milestones.wave40 = true;
       // Assume veterans who reached wave 15 on some map also hit serpentine gate
       if (bestWave >= 15) {
         p.milestones.highestWaveByMap.serpentine = Math.max(
@@ -2766,20 +2785,6 @@
     return 'Locked';
   }
 
-  function highestCareerWave() {
-    if (!profile) return 0;
-    return Math.max(profile.milestones.highestWave || 0, profile.stats.highestWave || 0);
-  }
-
-  function anyEasyOrBetterClear() {
-    // Easy is 40 waves; any map clear already implies that proof.
-    if (profile && profile.milestones.anyMapCleared) return true;
-    for (const id of MAP_ORDER) {
-      if (mapIsCleared(id) || mapClearedOnEasy(id)) return true;
-    }
-    return false;
-  }
-
   // Map progress cap (owned levels above this are kept; only further Unlock Level is blocked).
   // Serpentine only → 2; Crosscut clear → 3; Ridge → 4; Winding or later → 5.
   function careerMapLevelCap() {
@@ -2789,49 +2794,27 @@
     return 2;
   }
 
-  function careerWaveProofMet(nextLv) {
-    const best = highestCareerWave();
-    if (nextLv <= 2) return true;
-    if (nextLv === 3) return best >= 20 || !!(profile && profile.milestones.wave20);
-    if (nextLv === 4) return best >= 30 || !!(profile && profile.milestones.wave30);
-    if (nextLv >= 5) {
-      return best >= 40 || !!(profile && profile.milestones.wave40) || anyEasyOrBetterClear();
-    }
-    return false;
-  }
-
-  function capGateReasons(nextLv) {
-    const reasons = [];
-    if (nextLv > careerMapLevelCap()) {
-      if (nextLv === 3) reasons.push('Clear Crosscut');
-      else if (nextLv === 4) reasons.push('Clear Ridge');
-      else if (nextLv >= 5) reasons.push('Clear Winding or a later map');
-    }
-    if (!careerWaveProofMet(nextLv)) {
-      if (nextLv === 3) reasons.push('reach wave 20 on any map');
-      else if (nextLv === 4) reasons.push('reach wave 30 on any map');
-      else if (nextLv >= 5) reasons.push('reach wave 40 on any map (or clear Easy)');
-    }
-    return reasons;
+  function capMapNeedForLevel(nextLv) {
+    if (nextLv === 3) return { name: 'Crosscut', level: 3 };
+    if (nextLv === 4) return { name: 'Ridge', level: 4 };
+    if (nextLv >= 5) return { name: 'Winding', level: 5 };
+    return null;
   }
 
   function capGateMet(type, nextLv) {
-    // Credits cost is checked at purchase; this is the stacked map + wave proof.
+    // Credits cost is checked at purchase; this is map-progress only.
     if (!profile || !type) return false;
     const cur = towerCap(type);
     if (nextLv !== cur + 1) return false;
     if (nextLv < 2 || nextLv > MAX_TOWER_LEVEL) return false;
-    return capGateReasons(nextLv).length === 0;
+    return nextLv <= careerMapLevelCap();
   }
 
   function capGateHint(type, nextLv) {
-    const reasons = capGateReasons(nextLv);
-    if (!reasons.length) return 'Spend Credits to unlock';
-    if (reasons.length === 1) {
-      const r = reasons[0];
-      return r.charAt(0).toUpperCase() + r.slice(1);
-    }
-    return reasons[0] + ' and ' + reasons.slice(1).join(' and ');
+    if (nextLv <= careerMapLevelCap()) return 'Spend Credits to unlock';
+    const need = capMapNeedForLevel(nextLv);
+    if (need) return `Beat ${need.name} to unlock level ${need.level}`;
+    return 'Locked';
   }
 
   function capCostFor(type, nextLv) {
@@ -2843,7 +2826,7 @@
 
   function grantEarlyBoostCredits(wave, mapId) {
     // First Serpentine clear only: keep feeding Credits through the whole run so
-    // new players can buy L2 caps (L3+ still needs later maps + wave proof).
+    // new players can buy L2 caps (L3+ still needs later map clears).
     if (!profile || mapId !== 'serpentine') return;
     if (profile.milestones.anyMapCleared) return; // after first clear, normal end-of-run pacing
     if (!profile.flags.earlyBoost) profile.flags.earlyBoost = {};
@@ -2885,7 +2868,6 @@
     if (wave >= 15 && !m.wave15) { m.wave15 = true; dirty = true; }
     if (wave >= 20 && !m.wave20) { m.wave20 = true; dirty = true; }
     if (wave >= 30 && !m.wave30) { m.wave30 = true; dirty = true; }
-    if (wave >= 40 && !m.wave40) { m.wave40 = true; dirty = true; }
     if (wave >= 15) {
       for (const tw of state.towers) {
         if (!m.towerWave15[tw.type]) { m.towerWave15[tw.type] = true; dirty = true; }
@@ -3141,6 +3123,22 @@
         lock.textContent = unlocked ? '' : `🔒 ${MAP_UNLOCK_HINT[id] || 'Locked'}`;
       }
     });
+    refreshMapCapNote();
+  }
+
+  function refreshMapCapNote() {
+    const note = document.getElementById('map-cap-note');
+    if (!note) return;
+    const cap = careerMapLevelCap();
+    const rows = [
+      { lv: 3, text: 'Beat Crosscut to unlock level 3' },
+      { lv: 4, text: 'Beat Ridge to unlock level 4' },
+      { lv: 5, text: 'Beat Winding to unlock level 5' },
+    ];
+    note.innerHTML = rows.map((r) => {
+      const cls = cap >= r.lv ? 'done' : (r.lv === cap + 1 ? 'next' : '');
+      return `<span class="${cls}">${r.text}</span>`;
+    }).join('');
   }
 
   function towerShopRow(type) {
