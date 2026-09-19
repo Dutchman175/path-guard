@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 163 -->
+<!-- path-guard-build: 164 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1068,11 +1068,30 @@
   #diff-pick-step { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
   #diff-pick-step[hidden] { display: none !important; }
   #map-pick-step[hidden] { display: none !important; }
-  #diff-step-map-name {
-    margin: 0; font-size: 1.05rem; font-weight: 800; color: #f8fafc; text-align: center;
+  #diff-step-title {
+    margin: 0; font-size: 1.5rem; font-weight: 800; color: #f8fafc; text-align: center; letter-spacing: 0.01em;
   }
-  #diff-pick-step .diff-pick-row { width: min(320px, 96%); margin: 4px 0 8px; flex-direction: column; }
-  #diff-pick-step .diff-pick-btn { min-height: 44px; font-size: 13px; padding: 8px 10px; }
+  #diff-step-hint {
+    margin: 0; font-size: 0.98rem; font-weight: 600; color: #e2e8f0; text-align: center;
+    opacity: 1; line-height: 1.35; max-width: 320px;
+  }
+  #diff-step-map-name {
+    margin: 0; font-size: 1.28rem; font-weight: 800; color: #ffffff; text-align: center;
+  }
+  #diff-pick-step .diff-pick-row { width: min(320px, 96%); margin: 8px 0 0; flex-direction: column; gap: 8px; }
+  #diff-pick-step .diff-pick-btn { min-height: 52px; font-size: 1.08rem; padding: 10px 12px; }
+  #diff-pick-step .diff-pick-btn .sub {
+    font-size: 0.84rem; font-weight: 700; opacity: 1; margin-top: 3px; color: #cbd5e1;
+  }
+  #diff-pick-step .diff-pick-btn.selected .sub { color: inherit; opacity: 0.92; }
+  #diff-pick-step .diff-pick-btn.locked { opacity: 0.78; }
+  #diff-pick-step .diff-pick-btn .lock-hint {
+    font-size: 0.78rem; font-weight: 800; opacity: 1; margin-top: 3px; color: #fde68a;
+  }
+  #diff-pick-step .diff-above {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%;
+  }
+  #diff-pick-step .diff-below { width: 100%; pointer-events: none; }
   /* Build 99: reserve preview row so Incoming:… lines don't resize the board */
   #wave-preview {
     text-align: center;
@@ -1334,7 +1353,7 @@
   #map-overlay:has(.hub-panel:not([hidden])) {
     justify-content: flex-start;
   }
-  /* Build 162: Difficulty stack centered in the board; ← Maps stays pinned */
+  /* Build 164: center Easy/Med/Hard buttons; labels sit above; ← Maps pinned */
   #play-pick-stack {
     width: 100%;
     display: flex;
@@ -1350,9 +1369,32 @@
   #hub-panel-play:has(#diff-pick-step:not([hidden])) #play-pick-stack {
     flex: 1 1 auto;
     min-height: 0;
-    justify-content: center;
+    justify-content: stretch;
+  }
+  #hub-panel-play:has(#diff-pick-step:not([hidden])) #diff-pick-step {
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 0;
+  }
+  #hub-panel-play:has(#diff-pick-step:not([hidden])) #diff-pick-step .diff-above {
+    flex: 1 1 0;
+    justify-content: flex-end;
+    min-height: 0;
+    padding-bottom: 10px;
+  }
+  #hub-panel-play:has(#diff-pick-step:not([hidden])) #diff-pick-step .diff-pick-row {
+    flex: 0 0 auto;
+  }
+  #hub-panel-play:has(#diff-pick-step:not([hidden])) #diff-pick-step .diff-below {
+    flex: 1 1 0;
+    min-height: 0;
   }
   #map-overlay h2 { font-size: 1.1rem; flex-shrink: 0; margin: 0; }
+  #map-overlay #diff-step-title { font-size: 1.5rem; color: #f8fafc; }
+  #map-overlay #diff-step-hint {
+    font-size: 0.98rem; color: #e2e8f0; opacity: 1; font-weight: 600;
+    max-width: 320px; margin: 0; line-height: 1.35;
+  }
   #overlay h2 { font-size: 1.45rem; flex-shrink: 0; }
   #overlay p, #map-overlay p { color: #94a3b8; font-size: 0.82rem; max-width: 300px; }
   #overlay-msg { line-height: 1.4; }
@@ -2119,8 +2161,8 @@
       <div id="hub-panel-play" class="hub-panel" hidden aria-hidden="true">
         <button type="button" class="hub-back" data-hub-back id="play-hub-back">← Back</button>
         <div id="play-pick-stack">
-        <h2 id="play-panel-title">Play Map</h2>
         <div id="map-pick-step">
+        <h2 id="play-panel-title">Play Map</h2>
         <p class="map-tip">Pick a map, then difficulty. Stars: clear · 5♥ · perfect</p>
         <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
@@ -2156,13 +2198,17 @@
         </div>
         </div>
         <div id="diff-pick-step" hidden aria-hidden="true">
-          <p class="map-tip" id="diff-step-hint">Choose difficulty for this map</p>
-          <h3 id="diff-step-map-name">Map</h3>
+          <div class="diff-above">
+            <h2 id="diff-step-title">Difficulty</h2>
+            <p class="map-tip" id="diff-step-hint">Choose difficulty for this map</p>
+            <h3 id="diff-step-map-name">Map</h3>
+          </div>
           <div class="diff-pick-row" id="diff-pick" role="group" aria-label="Difficulty">
             <button type="button" class="diff-pick-btn" data-diff="easy">Easy<span class="sub">40 waves</span></button>
             <button type="button" class="diff-pick-btn" data-diff="medium">Medium<span class="sub">50 waves</span></button>
             <button type="button" class="diff-pick-btn" data-diff="hard">Hard<span class="sub">60 waves</span></button>
           </div>
+          <div class="diff-below" aria-hidden="true"></div>
         </div>
         </div>
       </div>
@@ -2207,15 +2253,15 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots; no immunities. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. Packs 3 Droplets. No immunities. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — soft bosslet. Packs 3 Slimes (→ 9 Droplets). No immunities. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. Marksman Immune. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — orange heavy. Marksman Immune. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. Immune to Marksman and Elemental (Gunnery only). <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 (2). Armor. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — Wave 60. Near-black armor. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots; no immunities. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. Packs 3 Droplets. No immunities. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — soft bosslet. Packs 3 Slimes (→ 9 Droplets). No immunities. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. Marksman Immune. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — orange heavy. Marksman Immune. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. Immune to Marksman and Elemental (Gunnery only). <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 (2). Armor. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=164" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — Wave 60. Near-black armor. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -2295,7 +2341,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 163</div>
+    <div id="build-ver">build 164</div>
   </div>
 </div>
 
@@ -3573,7 +3619,7 @@
   const ENEMY_TYPES = {
     // 3 families × 3. Soft green (fast/weak) → orange tough (Marksman Immune) → gray armor (Gunnery only).
     // Packs: kill parent → children pop out. Parent HP trimmed because packs add content.
-    droplet:  { name: 'Droplet',  r: 12, hp: 6,   speed: 100, reward: 4,  color: '#4ade80', stroke: '#022c22' },
+    droplet:  { name: 'Droplet',  r: 10, hp: 6,   speed: 100, reward: 4,  color: '#4ade80', stroke: '#022c22' },
     slime:    { name: 'Slime',    r: 13, hp: 16,  speed: 82,  reward: 5,  color: '#22c55e', stroke: '#14532d' },
     goo:      { name: 'Goo King', r: 17, hp: 36,  speed: 68,  reward: 6,  color: '#166534', stroke: '#052e16' },
     brute:    { name: 'Brute',    r: 15, hp: 70,  speed: 50,  reward: 6,  color: '#fdba74', stroke: '#7c2d12' },
@@ -3612,7 +3658,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=163`;
+    img.src = `./sprites/${name}.png?v=164`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -5981,7 +6027,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=163" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=164" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -6158,7 +6204,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=163" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=164" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -6639,7 +6685,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'droplet';
-    return `./sprites/${spr}.png?v=163`;
+    return `./sprites/${spr}.png?v=164`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -8395,8 +8441,8 @@
       const sprName = ENEMY_SPRITE[en.kind] || 'droplet';
       ctx.save();
       if (spriteReady(sprName)) {
-        const bossScale = (en.kind === 'colossus') ? 2.2 : (en.kind === 'titan' ? 2.35 : (en.kind === 'droplet' ? 3.2 : 2.7));
-        const sz = Math.max(en.kind === 'droplet' ? 32 : 22, en.r * bossScale);
+        const bossScale = (en.kind === 'colossus') ? 2.2 : (en.kind === 'titan' ? 2.35 : (en.kind === 'droplet' ? 2.55 : 2.7));
+        const sz = Math.max(en.kind === 'droplet' ? 24 : 22, en.r * bossScale);
         if (under) ctx.globalAlpha = 0.45;
         else if (en.hitFlash > 0) ctx.globalAlpha = 0.85;
         else if (halted) ctx.globalAlpha = 0.9;
