@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 162 -->
+<!-- path-guard-build: 163 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -1612,47 +1612,80 @@
     text-align: left;
   }
   #account-panel .reset-zone {
-    margin-top: 8px;
-    padding: 8px 8px 6px;
+    margin-top: 10px;
+    padding: 8px 10px;
     border-radius: 10px;
     border: 1px solid rgba(248, 113, 113, 0.4);
     background: rgba(127, 29, 29, 0.18);
   }
-  #account-panel .reset-zone strong { color: #fca5a5; font-size: 0.74rem; display: block; margin-bottom: 2px; }
+  #account-panel .reset-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  #account-panel .reset-zone strong { color: #fca5a5; font-size: 0.78rem; margin: 0; }
+  #account-panel .reset-mini {
+    appearance: none;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 28px;
+    padding: 3px 10px;
+    border-radius: 7px;
+    border: 1px solid #f87171;
+    background: #7f1d1d;
+    color: #fecaca;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 800;
+    cursor: pointer;
+    line-height: 1.2;
+  }
+  #account-panel .reset-mini:active { transform: scale(0.96); }
+  #account-panel .reset-confirm[hidden] { display: none !important; }
   #account-panel .reset-zone .reset-lead {
     color: #94a3b8;
-    font-size: 0.64rem;
-    margin: 0 0 4px;
+    font-size: 0.68rem;
+    margin: 8px 0 6px;
     line-height: 1.35;
   }
   #account-panel .reset-wipe-list {
-    margin: 0 0 8px 1.1em;
+    margin: 0 0 10px 1.1em;
     padding: 0;
     color: #fecaca;
-    font-size: 0.62rem;
-    line-height: 1.4;
+    font-size: 0.7rem;
+    line-height: 1.45;
   }
-  #account-panel .reset-wipe-list li { margin: 0 0 2px; }
-  #account-panel .shop-row {
+  #account-panel .reset-wipe-list li { margin: 0 0 3px; }
+  #account-panel .reset-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
-    padding: 0;
-    border: none;
   }
-  #account-panel .shop-buy.danger {
+  #account-panel .reset-cancel,
+  #account-panel .reset-go {
     appearance: none;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 34px;
+  }
+  #account-panel .reset-cancel {
+    border: 1px solid #64748b;
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+  #account-panel .reset-go {
     border: 1px solid #f87171;
     background: #7f1d1d;
     color: #fecaca;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font: inherit;
-    font-size: 0.72rem;
-    font-weight: 800;
-    cursor: pointer;
   }
+  #account-panel .reset-cancel:active,
+  #account-panel .reset-go:active { transform: scale(0.97); }
   #meta-bar {
     width: 100%;
     max-width: 300px;
@@ -1881,11 +1914,18 @@
     color: #94a3b8;
   }
   #career-stats {
-    font-size: 0.68rem;
-    color: #94a3b8;
-    line-height: 1.4;
+    font-size: 0.98rem;
+    color: #cbd5e1;
+    line-height: 1.5;
   }
-  #career-stats strong { color: #e2e8f0; }
+  #career-stats strong { color: #f8fafc; font-weight: 800; }
+  #career-stats .local-note {
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+    line-height: 1.35;
+  }
   .map-pick-btn.locked {
     opacity: 0.72;
     border-style: dashed;
@@ -2167,15 +2207,15 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots; no immunities. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. Packs 3 Droplets. No immunities. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — soft bosslet. Packs 3 Slimes (→ 9 Droplets). No immunities. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. Marksman Immune. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — orange heavy. Marksman Immune. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. Immune to Marksman and Elemental (Gunnery only). <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 (2). Armor. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=162" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — Wave 60. Near-black armor. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots; no immunities. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. Packs 3 Droplets. No immunities. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — soft bosslet. Packs 3 Slimes (→ 9 Droplets). No immunities. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. <strong>Immune to Marksman</strong> — use Elemental or Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. Marksman Immune. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — orange heavy. Marksman Immune. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. Immune to Marksman and Elemental (Gunnery only). <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — Wave 40 (1) &amp; Wave 50 (2). Armor. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=163" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — Wave 60. Near-black armor. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -2255,7 +2295,7 @@
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
     <div id="hint">Pick a map, place towers, then Next Wave</div>
     <div id="wave-preview"></div>
-    <div id="build-ver">build 162</div>
+    <div id="build-ver">build 163</div>
   </div>
 </div>
 
@@ -2886,19 +2926,6 @@
   }
 
   function resetProgress() {
-    const wipeMsg =
-      'Reset all career progress?\n\n' +
-      'This will wipe:\n' +
-      '• Credits (balance and earned/spent career totals)\n' +
-      '• Map unlocks (back to Serpentine only)\n' +
-      '• Tower unlocks (back to Archer, Frost, Cannon, Barrier)\n' +
-      '• Tower level caps (back to level 1 on starters)\n' +
-      '• Owned and equipped perks\n' +
-      '• Career stats (wins, losses, hours, kills, damage, etc.)\n' +
-      '• Related map star/win records used for unlocks\n\n' +
-      'You cannot undo this.';
-    if (!confirm(wipeMsg)) return;
-    if (!confirm('Really start over? This cannot be undone.')) return;
     const p = defaultProfile();
     p.flags.migrated = true;
     p.flags.skipMigrate = true;
@@ -3153,25 +3180,47 @@
         <div>Highest wave <strong>${s.highestWave || 0}</strong> · Kills <strong>${s.kills || 0}</strong></div>
         <div>Damage <strong>${Math.floor(s.damage || 0)}</strong> · Gold earned <strong>${Math.floor(s.gold || 0)}</strong></div>
         <div>Credits earned <strong>${profile.intelEarned || 0}</strong> · spent <strong>${s.intelSpent || 0}</strong> · bal <strong>${profile.intel}</strong></div>
-        <div class="muted" style="margin-top:4px">Progress is local to this browser.</div>
+        <div class="local-note">Progress is local to this browser.</div>
       </div>
       <div class="reset-zone">
-        <strong>Reset Progress</strong>
-        <p class="reset-lead">Danger zone — wipes career progress in this browser. Starters stay: Serpentine + Archer, Frost, Cannon, Barrier (level 1).</p>
-        <ul class="reset-wipe-list">
-          <li>Credits (balance and earned/spent career totals)</li>
-          <li>Map unlocks (back to Serpentine only)</li>
-          <li>Tower unlocks (back to Archer, Frost, Cannon, Barrier)</li>
-          <li>Tower level caps (back to level 1 on starters)</li>
-          <li>Owned and equipped perks</li>
-          <li>Career stats (wins, losses, hours, kills, damage, etc.)</li>
-          <li>Related map star/win records used for unlocks</li>
-        </ul>
-        <div class="shop-row"><button type="button" class="shop-buy danger" data-reset-progress>Reset everything</button></div>
+        <div class="reset-head">
+          <strong>Reset Progress</strong>
+          <button type="button" class="reset-mini" id="reset-open">Reset</button>
+        </div>
+        <div class="reset-confirm" id="reset-confirm" hidden>
+          <p class="reset-lead">Danger zone — wipes career progress in this browser. Starters stay: Serpentine + Archer, Frost, Cannon, Barrier (level 1).</p>
+          <ul class="reset-wipe-list">
+            <li>Credits (balance and earned/spent career totals)</li>
+            <li>Map unlocks (back to Serpentine only)</li>
+            <li>Tower unlocks (back to Archer, Frost, Cannon, Barrier)</li>
+            <li>Tower level caps (back to level 1 on starters)</li>
+            <li>Owned and equipped perks</li>
+            <li>Career stats (wins, losses, hours, kills, damage, etc.)</li>
+            <li>Related map star/win records used for unlocks</li>
+          </ul>
+          <div class="reset-actions">
+            <button type="button" class="reset-cancel" id="reset-cancel">Cancel</button>
+            <button type="button" class="reset-go" id="reset-confirm-btn">Confirm reset</button>
+          </div>
+        </div>
       </div>`;
-    panel.querySelectorAll('[data-reset-progress]').forEach((b) => {
-      b.addEventListener('click', () => resetProgress());
-    });
+    const openBtn = document.getElementById('reset-open');
+    const confirmBox = document.getElementById('reset-confirm');
+    const cancelBtn = document.getElementById('reset-cancel');
+    const goBtn = document.getElementById('reset-confirm-btn');
+    if (openBtn && confirmBox) {
+      openBtn.addEventListener('click', () => {
+        confirmBox.hidden = false;
+        openBtn.hidden = true;
+      });
+    }
+    if (cancelBtn && confirmBox && openBtn) {
+      cancelBtn.addEventListener('click', () => {
+        confirmBox.hidden = true;
+        openBtn.hidden = false;
+      });
+    }
+    if (goBtn) goBtn.addEventListener('click', () => resetProgress());
   }
 
   const HUB_PANELS = ['play', 'daily', 'upgrades', 'account'];
@@ -3563,7 +3612,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=162`;
+    img.src = `./sprites/${name}.png?v=163`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -5932,7 +5981,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=162" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=163" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -6109,7 +6158,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=162" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=163" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -6590,7 +6639,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'droplet';
-    return `./sprites/${spr}.png?v=162`;
+    return `./sprites/${spr}.png?v=163`;
   }
 
   function enemyChipHtml(kind, mode) {
