@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 181 -->
+<!-- path-guard-build: 182 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -209,14 +209,14 @@
 
   #controls {
     flex-shrink: 0;
-    padding: 2px 8px 4px;
+    padding: 2px 8px 6px;
     display: flex;
     flex-direction: column;
     gap: 3px;
-    /* Build 177: room for selected-tower stats + wrapping incoming preview */
-    height: 252px;
-    max-height: 252px;
-    min-height: 252px;
+    /* Build 182: no hint / incoming / footer — shrink-wrap so the board grows */
+    height: auto;
+    max-height: none;
+    min-height: 0;
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
@@ -1079,21 +1079,16 @@
     color: #e2e8f0;
   }
   #btn-sell .cost { display: block; font-size: 0.62rem; font-weight: 600; color: #94a3b8; margin-top: 1px; }
-  /* Build 99: fixed hint box — long between-wave text was shrinking the flex canvas */
-  #hint {
-    text-align: center;
-    font-size: 0.62rem;
-    color: #94a3b8;
-    height: 2.4em;
-    min-height: 2.4em;
-    max-height: 2.4em;
-    line-height: 1.2;
-    padding: 0 2px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+  /* Build 182: hint / incoming / footer stripped — no reserved space */
+  #hint, #wave-preview, #build-ver {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
   }
   #onboard-tip {
     display: none;
@@ -1110,7 +1105,8 @@
     position: absolute;
     left: 8px;
     right: 8px;
-    bottom: 52px;
+    top: 4px;
+    bottom: auto;
     z-index: 5;
   }
   #onboard-tip.show { display: block; }
@@ -1119,7 +1115,19 @@
     color: #7dd3fc; font-weight: 800; font-size: 0.68rem;
     margin-left: 6px; cursor: pointer; text-decoration: underline;
   }
-  #build-ver { text-align: center; font-size: 8px; opacity: 0.3; margin-top: 0; line-height: 1; }
+  .faq-build {
+    display: block;
+    margin: 2px 0 0;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 0.02em;
+  }
+  .faq-build-foot {
+    margin: 10px 0 4px;
+    text-align: center;
+    color: #cbd5e1;
+  }
   .map-tip { font-size: 11px; opacity: 0.9; margin: 0 0 6px; line-height: 1.35; color: #cbd5e1; }
   .diff-pick-row {
     width: min(300px, 94%); margin: 0 0 6px; display: flex; align-items: stretch; gap: 6px;
@@ -1176,34 +1184,6 @@
     display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%;
   }
   #diff-pick-step .diff-below { width: 100%; pointer-events: none; }
-  /* Build 99: reserve preview row so Incoming:… lines don't resize the board */
-  #wave-preview {
-    text-align: left;
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: #e2e8f0;
-    height: 3.4em;
-    min-height: 3.4em;
-    max-height: 3.4em;
-    margin-top: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    white-space: normal;
-    line-height: 1.28;
-    padding: 2px 2px 0;
-    -webkit-overflow-scrolling: touch;
-  }
-  #wave-preview.hot { color: #fecaca; }
-  #wave-preview .wp-lead {
-    color: #f8fafc;
-    font-weight: 800;
-    margin-bottom: 1px;
-  }
-  #wave-preview .wp-item { color: #e2e8f0; }
-  #wave-preview .wp-tag { font-weight: 800; }
-  #wave-preview .wp-tag.fam-green { color: #86efac; }
-  #wave-preview .wp-tag.fam-orange { color: #fdba74; }
-  #wave-preview .wp-tag.fam-gray { color: #cbd5e1; }
   /* Build 66: FAQ overhaul — opaque overlay + tower cards for phone */
   #faq-overlay {
     position: absolute;
@@ -1232,6 +1212,7 @@
     flex-shrink: 0;
     margin-bottom: 8px;
   }
+  #faq-overlay .faq-head-text { min-width: 0; }
   #faq-overlay h2 { font-size: 1.15rem; margin: 0; color: #e8eef4; }
   #faq-close {
     appearance: none;
@@ -2266,7 +2247,7 @@
         </div>
         <p class="role" id="tower-detail-role"></p>
         <div id="tower-detail-stats" aria-label="Tower combat stats"></div>
-        <div class="sec-label bad" id="tower-detail-immune-label">Half damage</div>
+        <div class="sec-label bad" id="tower-detail-immune-label">One-third damage</div>
         <div class="row" id="tower-detail-immune"></div>
         <button type="button" class="close-btn" id="tower-detail-close">Got it</button>
       </div>
@@ -2392,7 +2373,10 @@
 
     <div id="faq-overlay" aria-hidden="true">
       <div class="faq-head">
-        <h2>Path Guard FAQ</h2>
+        <div class="faq-head-text">
+          <h2>Path Guard FAQ</h2>
+          <div class="faq-build">build 182</div>
+        </div>
         <button type="button" id="faq-close">Close</button>
       </div>
       <div class="faq-sec" id="faq-towers">
@@ -2401,26 +2385,26 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · half from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · half from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · half from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · half from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · half from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · half from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · half from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · half from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · half from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · half from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · half from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=181" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · half from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=182" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
         <div class="faq-item"><strong style="color:#fde68a">Packed foes</strong> — Goo King→3 Sludge→3 Slime→3 Droplet; Mauler→3 Wrecker→3 Crusher→3 Brute; Colossus→3 Titan→3 Bulwark→3 Tank. Kill them and the smaller ones pop out. Each leaked body costs 1 life, including children.</div>
-        <div class="faq-item">Soft (green): Droplet / Slime / Sludge / Goo King — full damage from Marksman · half from Elemental/Gunnery.</div>
-        <div class="faq-item">Orange (Brute / Crusher / Wrecker / Mauler): full damage from Elemental · half from Marksman/Gunnery (Brute first at wave 17).</div>
-        <div class="faq-item">Gray armor (Tank / Bulwark / Titan / Colossus): full damage from Gunnery · half from Marksman/Elemental (Tank first at wave 33). Cannon is full vs gray.</div>
-        <div class="faq-item">Color match: same-color tower vs enemy family deals 100%. Off-color deals 50%. Marksman↔green · Elemental↔orange · Gunnery↔gray. Nothing is Immune — off-color still hits for half.</div>
+        <div class="faq-item">Soft (green): Droplet / Slime / Sludge / Goo King — full damage from Marksman · one-third from Elemental/Gunnery.</div>
+        <div class="faq-item">Orange (Brute / Crusher / Wrecker / Mauler): full damage from Elemental · one-third from Marksman/Gunnery (Brute first at wave 17).</div>
+        <div class="faq-item">Gray armor (Tank / Bulwark / Titan / Colossus): full damage from Gunnery · one-third from Marksman/Elemental (Tank first at wave 33). Cannon is full vs gray.</div>
+        <div class="faq-item">Color match: same-color tower vs enemy family deals 100%. Off-color deals 33% (one-third). Marksman↔green · Elemental↔orange · Gunnery↔gray. Nothing is Immune — off-color still hits for one-third.</div>
         <div class="faq-item">Support: Barrier briefly halts enemies on its path tile (more at once as it levels; Bulwark, Titan, and Colossus walk through Barriers without destroying them); Bank pays gold each wave clear.</div>
       </div>
       <div class="faq-sec">
@@ -2435,6 +2419,7 @@
         <p><strong>Difficulty</strong> — chosen per map after you pick it: Easy 40 / Medium 50 / Hard 60 waves. Clear Easy for Medium; clear Medium for Hard. Difficulty only adds later waves — Wave N has the same enemies on every difficulty. <strong>Daily</strong> is Hard length (60 waves) plus today’s modifier, and pays 25 Credits on clear. <strong>Aim</strong> cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
         <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: Serpentine-only max L2; beat Crosscut for L3; Ridge for L4; Winding or later for L5. Levels you already own stay. Use <strong>Account → Reset</strong> to wipe progress and start over.</p>
       </div>
+      <div class="faq-build faq-build-foot">build 182</div>
     </div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
@@ -2490,9 +2475,7 @@
       <button type="button" class="wave-btn" id="btn-continuous">Auto: Off</button>
     </div>
     <div id="onboard-tip">Tip: green + tiles = build · double-tap tower to upgrade · Bank pays gold each wave clear<button type="button" id="onboard-dismiss">Got it</button></div>
-    <div id="hint">Pick a map, place towers, then Next Wave</div>
-    <div id="wave-preview"></div>
-    <div id="build-ver">build 181</div>
+    <div id="hint" hidden></div>
   </div>
 </div>
 
@@ -3735,7 +3718,7 @@
       color: '#34d399', projectileSpeed: 420, projectileColor: '#a7f3d0',
       upgradeCosts: [22, 42, 90, 130],
       hits: 'Full vs green',
-      blocked: 'Half vs orange/gray',
+      blocked: 'One-third vs orange/gray',
     },
     barrier: {
       name: 'Barrier', category: 'support', cost: 60, range: 0, fireRate: 99, damage: 0,
@@ -3753,7 +3736,7 @@
       color: '#f59e0b', projectileSpeed: 400, projectileColor: '#fcd34d',
       upgradeCosts: [65, 105, 155, 220],
       hits: 'Full vs green',
-      blocked: 'Half vs orange/gray',
+      blocked: 'One-third vs orange/gray',
     },
     frost: {
       name: 'Frost', category: 'elemental', cost: 210, range: 100, fireRate: 0.9, damage: 12,
@@ -3761,7 +3744,7 @@
       upgradeCosts: [75, 130, 270, 370],
       slowMul: 0.5, slowDur: 1.6,
       hits: 'Full vs orange + slow',
-      blocked: 'Half vs green/gray',
+      blocked: 'One-third vs green/gray',
     },
     bank: {
       name: 'Bank', category: 'support', cost: 130, range: 0, fireRate: 99, damage: 0,
@@ -3782,7 +3765,7 @@
       flameWidth: 20,
       burnTicks: 2, burnMul: 0.12,
       hits: 'Flame stream — full vs orange',
-      blocked: 'Half vs green/gray',
+      blocked: 'One-third vs green/gray',
     },
     cannon: {
       name: 'Cannon', category: 'gunnery', cost: 375, range: 80, fireRate: 1.55, damage: 40,
@@ -3790,7 +3773,7 @@
       upgradeCosts: [120, 200, 420, 585],
       splashRadius: 50, splashMul: 0.58,
       hits: 'AoE splash — full vs gray',
-      blocked: 'Half vs green/orange',
+      blocked: 'One-third vs green/orange',
     },
     lightning: {
       name: 'Lightning', category: 'elemental', cost: 340, range: 105, fireRate: 1.0, damage: 28,
@@ -3798,14 +3781,14 @@
       upgradeCosts: [180, 270, 380, 520],
       multi: 1, multiFalloff: 0.55,
       hits: 'Chains — full vs orange',
-      blocked: 'Half vs green/gray',
+      blocked: 'One-third vs green/gray',
     },
     sniper: {
       name: 'Sniper', category: 'gunnery', cost: 505, range: 720, fireRate: 3.1, damage: 58,
       color: '#2dd4bf', projectileSpeed: 820, projectileColor: '#99f6e4',
       upgradeCosts: [315, 480, 675, 900],
       hits: 'Map-wide — full vs gray',
-      blocked: 'Half vs green/orange',
+      blocked: 'One-third vs green/orange',
     },
     bazooka: {
       name: 'Bazooka', category: 'gunnery', cost: 780, range: 160, fireRate: 11.0, damage: 210,
@@ -3813,13 +3796,13 @@
       upgradeCosts: [390, 570, 780, 1050],
       splashRadius: 28, splashMul: 0.35,
       hits: 'Huge rocket — full vs gray',
-      blocked: 'Half vs green/orange',
+      blocked: 'One-third vs green/orange',
     },
   };
 
   // Fixed stats per type — never scale by wave or map
   const ENEMY_TYPES = {
-    // 3 families × 4. Color match: Marksman↔green · Elemental↔orange · Gunnery↔gray (100% / off-color 50%).
+    // 3 families × 4. Color match: Marksman↔green · Elemental↔orange · Gunnery↔gray (100% / off-color 33%).
     // Packs: kill parent → children pop out. Parent HP trimmed because packs add content.
     droplet:  { name: 'Droplet',  r: 10, hp: 6,   speed: 100, reward: 4,  color: '#4ade80', stroke: '#022c22' },
     slime:    { name: 'Slime',    r: 13, hp: 16,  speed: 82,  reward: 5,  color: '#22c55e', stroke: '#14532d' },
@@ -3888,7 +3871,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=181`;
+    img.src = `./sprites/${name}.png?v=182`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -5062,7 +5045,7 @@
     if (o.isDot) return;
     if (state.halfDmgTipShown) return;
     state.halfDmgTipShown = true;
-    if (el.hint) el.hint.textContent = 'Off-color hits deal half damage. FAQ has the color match.';
+    if (el.hint) el.hint.textContent = 'Off-color hits deal one-third damage. FAQ has the color match.';
   }
 
   function burst(x, y, color, n = 10, opts = {}) {
@@ -5971,22 +5954,22 @@
       setWavePreview(wavePreviewHtml(state.wave), true);
       addFloat(W / 2, H * 0.22, 'TITAN INCOMING', '#fecaca', 2.2);
     } else if (state.wave === 6) {
-      el.hint.textContent = 'Wave 6 — Slimes incoming! Soft green. Full from Marksman · half from Elemental/Gunnery.';
+      el.hint.textContent = 'Wave 6 — Slimes incoming! Soft green. Full from Marksman · one-third from Elemental/Gunnery.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 11) {
       el.hint.textContent = 'Wave 11 — Sludge incoming! Large green. Packs 3 Slimes each.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 17) {
-      el.hint.textContent = 'Wave 17 — Brutes incoming! Full damage from Elemental · half from Marksman/Gunnery.';
+      el.hint.textContent = 'Wave 17 — Brutes incoming! Full damage from Elemental · one-third from Marksman/Gunnery.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 23) {
-      el.hint.textContent = 'Wave 23 — Crushers incoming! Packs 3 Brutes. Full from Elemental · half from Marksman/Gunnery.';
+      el.hint.textContent = 'Wave 23 — Crushers incoming! Packs 3 Brutes. Full from Elemental · one-third from Marksman/Gunnery.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 28) {
-      el.hint.textContent = 'Wave 28 — Wreckers incoming! Packs 3 Crushers. Full from Elemental · half from Marksman/Gunnery.';
+      el.hint.textContent = 'Wave 28 — Wreckers incoming! Packs 3 Crushers. Full from Elemental · one-third from Marksman/Gunnery.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 33) {
-      el.hint.textContent = 'Wave 33 — Tanks incoming! Full damage from Gunnery · half from Marksman/Elemental.';
+      el.hint.textContent = 'Wave 33 — Tanks incoming! Full damage from Gunnery · one-third from Marksman/Elemental.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 38) {
       el.hint.textContent = 'Wave 38 — Bulwarks incoming! Heavy gray. Walk through Barriers. Pack 3 Tanks.';
@@ -5995,7 +5978,7 @@
       el.hint.textContent = 'Wave 44 — Goo Kings incoming! Biggest green. Packs 3 Sludges.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else if (state.wave === 49) {
-      el.hint.textContent = 'Wave 49 — Maulers incoming! Biggest orange. Full from Elemental · half from Marksman/Gunnery.';
+      el.hint.textContent = 'Wave 49 — Maulers incoming! Biggest orange. Full from Elemental · one-third from Marksman/Gunnery.';
       setWavePreview(wavePreviewHtml(state.wave), false);
     } else {
       const hot = DENSE_WAVES.has(state.wave);
@@ -6121,7 +6104,7 @@
       el.overlayTitle.textContent = state.dailyRun ? 'Daily Failed' : 'Path Breached';
       el.overlayRating.textContent = '';
       const dailyBit = state.dailyRun ? ` Daily ${state.dailyRun.mod.name}.` : '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}.${dailyBit}${intelBit} Tip: same-color hits 100% · off-color 50% · Marksman green · Elemental orange · Gunnery gray · double-tap to upgrade.`;
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}.${dailyBit}${intelBit} Tip: same-color hits 100% · off-color 33% · Marksman green · Elemental orange · Gunnery gray · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -6336,7 +6319,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=181" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=182" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -6515,7 +6498,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=181" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=182" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -6549,7 +6532,7 @@
       const vs = enemyKindsVsTower(type);
       if (vs.resisted && vs.resisted.length) {
         const names = vs.resisted.map((k) => (ENEMY_TYPES[k] && ENEMY_TYPES[k].name) || k).join(', ');
-        cant = `<div class="faq-tower-cant">Half vs: ${names}</div>`;
+        cant = `<div class="faq-tower-cant">One-third vs: ${names}</div>`;
       }
     }
     return `<button type="button" class="faq-tower-card" data-faq-tower="${type}" aria-expanded="false"><div class="faq-tower-card-head">${icon}<strong>${def.name}</strong></div><div class="faq-tower-cost">${def.cost}g</div><div class="faq-tower-role">${role}</div>${cant}<div class="faq-tower-tap">${tapHint}</div><div class="faq-tower-stats">${stats}</div></button>`;
@@ -6932,7 +6915,7 @@
     return best;
   }
 
-  // No hard immunities — off-color still hits (50%). Aim at anyone.
+  // No hard immunities — off-color still hits (33%). Aim at anyone.
   function towerSkipsImmuneTarget(tower, en) {
     return false;
   }
@@ -6966,14 +6949,14 @@
   }
 
   function towerRoleLine(type) {
-    if (type === 'cannon') return 'AoE splash — full vs gray · half vs green/orange';
-    if (type === 'sniper') return 'Map-wide pick — full vs gray · half vs green/orange';
-    if (type === 'bazooka') return 'Huge rocket — full vs gray · half vs green/orange';
-    if (type === 'lightning') return 'Chains — full vs orange · half vs green/gray';
-    if (type === 'frost') return 'Damage + slow — full vs orange · half vs green/gray';
-    if (type === 'fire') return 'Flame stream — full vs orange · half vs green/gray';
-    if (type === 'crossbow') return 'Mid marksman — full vs green · half vs orange/gray';
-    if (type === 'archer') return 'Cheap marksman — full vs green · half vs orange/gray';
+    if (type === 'cannon') return 'AoE splash — full vs gray · one-third vs green/orange';
+    if (type === 'sniper') return 'Map-wide pick — full vs gray · one-third vs green/orange';
+    if (type === 'bazooka') return 'Huge rocket — full vs gray · one-third vs green/orange';
+    if (type === 'lightning') return 'Chains — full vs orange · one-third vs green/gray';
+    if (type === 'frost') return 'Damage + slow — full vs orange · one-third vs green/gray';
+    if (type === 'fire') return 'Flame stream — full vs orange · one-third vs green/gray';
+    if (type === 'crossbow') return 'Mid marksman — full vs green · one-third vs orange/gray';
+    if (type === 'archer') return 'Cheap marksman — full vs green · one-third vs orange/gray';
     if (type === 'bank') return 'Pays gold each wave clear — no shots';
     if (type === 'barrier') return 'Short path halt — more at once as it levels · Bulwark/Titan/Colossus walk through (Barrier stays)';
     return 'Tower';
@@ -6996,7 +6979,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'droplet';
-    return `./sprites/${spr}.png?v=181`;
+    return `./sprites/${spr}.png?v=182`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -7120,7 +7103,7 @@
         el.towerDetailImmune.innerHTML = '';
         if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = 'none';
       } else if (!vs.resisted.length) {
-        el.towerDetailImmune.innerHTML = '<p class="empty-note">Full damage vs matching color · half vs others.</p>';
+        el.towerDetailImmune.innerHTML = '<p class="empty-note">Full damage vs matching color · one-third vs others.</p>';
         if (el.towerDetailImmuneLabel) el.towerDetailImmuneLabel.style.display = '';
       } else {
         el.towerDetailImmune.innerHTML = vs.resisted.map((k) => enemyChipHtml(k, 'bad')).join('');
@@ -7221,12 +7204,12 @@
 
   function familyDamageLine(kind) {
     const fam = enemyFamily(kind);
-    if (fam === 'orange') return 'Full damage from Elemental · half from Marksman/Gunnery';
-    if (fam === 'gray') return 'Full damage from Gunnery · half from Marksman/Elemental';
-    return 'Full damage from Marksman · half from Elemental/Gunnery';
+    if (fam === 'orange') return 'Full damage from Elemental · one-third from Marksman/Gunnery';
+    if (fam === 'gray') return 'Full damage from Gunnery · one-third from Marksman/Elemental';
+    return 'Full damage from Marksman · one-third from Elemental/Gunnery';
   }
 
-  // Color match: same family 100%, off-color 50%. Support does not deal damage.
+  // Color match: same family 100%, off-color 33% (one-third). Support does not deal damage.
   function categoryDamageInfo(towerType, category, en, opts) {
     const kind = en && en.kind;
     const info = { mul: 1, immune: false, resisted: false, ignoreArmor: false };
@@ -7236,7 +7219,7 @@
     const want = categoryFamily(cat);
     const have = enemyFamily(kind);
     if (want && have && want !== have) {
-      info.mul = 0.5;
+      info.mul = 1 / 3;
       info.resisted = true;
     }
     return info;
@@ -8277,13 +8260,13 @@
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Frost: ice slow · full vs orange · half vs green/gray', W / 2, 10);
+          ctx.fillText('Frost: ice slow · full vs orange · one-third vs green/gray', W / 2, 10);
         } else if (state.selected === 'fire') {
           ctx.fillStyle = 'rgba(251, 146, 60, 0.95)';
           ctx.font = 'bold 11px system-ui';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText('Fire: flame stream · full vs orange · half vs green/gray', W / 2, 10);
+          ctx.fillText('Fire: flame stream · full vs orange · one-third vs green/gray', W / 2, 10);
         } else if (state.selected === 'bank') {
           ctx.fillStyle = 'rgba(251, 191, 36, 0.95)';
           ctx.font = 'bold 11px system-ui';
