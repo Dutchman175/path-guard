@@ -403,12 +403,12 @@
   }
   .tower-btn.cat-btn .cat-icon {
     display: block;
-    font-size: 1.95rem;
+    font-size: 2.35rem;
     line-height: 1;
     pointer-events: none;
   }
   .tower-btn.cat-btn .tname {
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     font-weight: 900;
     margin-top: 0;
     letter-spacing: 0.01em;
@@ -473,7 +473,7 @@
     padding: 4px 2px 3px;
   }
   #tower-btns.mode-categories .tower-btn.cat-btn .tname {
-    font-size: 0.52rem;
+    font-size: 0.62rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -485,7 +485,7 @@
     background: #334155;
   }
   .tower-btn.back-btn .tname { font-size: 0.5rem; color: #cbd5e1; }
-  .tower-btn.cat-btn.dim { opacity: 0.5; }
+  .tower-btn.cat-btn.dim { opacity: 1; filter: none; }
   .tower-btn .ticon {
     display: block;
     margin: 0 auto;
@@ -885,7 +885,7 @@
     min-height: 72px;
     max-height: 72px;
   }
-  #app.pg-land .tower-btn.cat-btn .cat-icon { font-size: 1.7rem; }
+  #app.pg-land .tower-btn.cat-btn .cat-icon { font-size: 2rem; }
   #app.pg-land #onboard-tip {
     bottom: auto;
     top: 8px;
@@ -898,8 +898,8 @@
     #tower-btns.mode-categories .tower-btn.cat-btn {
       flex: 1 1 0; width: auto; min-width: 0; font-size: 0.98rem;
     }
-    #tower-btns.mode-categories .tower-btn.cat-btn .cat-icon { font-size: 1.75rem; }
-    #tower-btns.mode-categories .tower-btn.cat-btn .tname { font-size: 0.52rem; }
+    #tower-btns.mode-categories .tower-btn.cat-btn .cat-icon { font-size: 2.15rem; }
+    #tower-btns.mode-categories .tower-btn.cat-btn .tname { font-size: 0.56rem; }
     #tower-btns.mode-towers .tower-btn.in-cat {
       flex: 1 1 0; width: auto; min-width: 90px; min-height: 72px; font-size: 1.2rem;
     }
@@ -4709,13 +4709,10 @@
       }
       b.classList.toggle('selected', b.dataset.type === state.selected);
     });
-    // Refresh category dim when gold changes (categories view only)
+    // Category buttons stay at full family color (affordability is inside the drill-down).
     if (!showActions && (state.towerMenuMode || 'categories') === 'categories') {
       document.querySelectorAll('.tower-btn.cat-btn').forEach((btn) => {
-        const cat = btn.dataset.category;
-        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === cat && towerUnlocked(t));
-        const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
-        btn.classList.toggle('dim', !!(allUnaffordable && state.mapPicked && !state.gameOver));
+        btn.classList.remove('dim');
       });
     }
     el.towerActions.classList.toggle('show', showActions && !showConfirm);
@@ -6380,9 +6377,6 @@
         btn.dataset.category = c.id;
         btn.title = `${c.label} towers`;
         btn.innerHTML = `<span class="cat-icon" aria-hidden="true">${c.icon}</span><span class="tname">${c.label}</span>`;
-        const types = TOWER_ORDER.filter((t) => TOWER_DEFS[t] && TOWER_DEFS[t].category === c.id && towerUnlocked(t));
-        const allUnaffordable = types.length > 0 && types.every((t) => state.gold < TOWER_DEFS[t].cost);
-        if (allUnaffordable && state.mapPicked && !state.gameOver) btn.classList.add('dim');
         btn.addEventListener('pointerdown', (ev) => {
           ev.preventDefault();
           if (state.gameOver || !state.mapPicked) return;
