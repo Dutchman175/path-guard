@@ -1,4 +1,4 @@
-const CACHE = 'path-guard-v186';
+const CACHE = 'path-guard-v187';
 const ASSETS = [
   './manifest.webmanifest',
   './icon.svg',
