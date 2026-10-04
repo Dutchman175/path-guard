@@ -2583,6 +2583,10 @@
     display: none !important;
   }
   #app.map-maker-on #canvas-wrap {
+    container-type: size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 1 1 auto;
     min-height: 0;
     width: 100%;
@@ -2590,14 +2594,16 @@
     grid-column: auto !important;
     grid-row: auto !important;
   }
+  /* Fit the real 400×560 playfield inside the phone without stretching tiles. */
   #app.map-maker-on #canvas-stage {
-    aspect-ratio: 400 / 560 !important;
-    height: 100%;
-    width: auto;
+    width: min(100cqw, calc(100cqh * 400 / 560));
+    height: min(100cqh, calc(100cqw * 560 / 400));
+    aspect-ratio: 400 / 560;
     max-width: 100%;
     max-height: 100%;
     container-type: normal;
     overflow: visible;
+    flex: 0 0 auto;
   }
   #app.map-maker-on #canvas-stage canvas {
     position: static !important;
@@ -2610,6 +2616,7 @@
     transform: none !important;
     border-radius: 0;
     border: none;
+    display: block;
   }
   #app.map-maker-on.maker-chrome-off #map-maker { display: none !important; }
 
@@ -10054,7 +10061,10 @@
     const has = mapMaker.tiles.length > 0;
     if (undoBtn) undoBtn.disabled = mapMaker.undoMarks.length === 0;
     if (clearBtn) clearBtn.disabled = !has;
-    if (copyBtn && copyBtn.textContent !== 'Copied') copyBtn.disabled = !has;
+    if (copyBtn) {
+      if (!has && copyBtn.textContent === 'Copied') copyBtn.textContent = 'Copy path';
+      copyBtn.disabled = !has;
+    }
   }
 
   function extendMakerTo(col, row) {
