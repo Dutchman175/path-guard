@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 198 -->
+<!-- path-guard-build: 199 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -2619,7 +2619,7 @@
         <div id="play-pick-stack">
         <div id="map-pick-step">
         <h2 id="play-panel-title">Play Map</h2>
-        <p class="map-tip">Pick a map, then difficulty. Filled chips = beaten on Easy / Medium / Hard.</p>
+        <p class="map-tip">Pick a map, then difficulty. Filled chips = beaten on Easy / Medium / Hard. Clear the previous map to unlock the next. Maps 7–22 are built for a Hard clear (15 Credits), in twist order.</p>
         <div id="map-list">
       <button type="button" class="map-pick-btn" id="map-serpentine" data-map="serpentine">
         <span class="map-lock" id="lock-serpentine"></span>
@@ -2653,6 +2653,86 @@
         <span class="map-lock" id="lock-crucible"></span>
         <span class="map-title">Map 6: Crucible</span>
         <span class="sub">Garden zig · ruin outcrops</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-shortlane" data-map="shortlane">
+        <span class="map-lock" id="lock-shortlane"></span>
+        <span class="map-title">Map 7: Short Lane <span class="diff hard">Hard</span></span>
+        <span class="sub">Straight short road. Enemies exit fast.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-longlane" data-map="longlane">
+        <span class="map-lock" id="lock-longlane"></span>
+        <span class="map-title">Map 8: Long Lane <span class="diff hard">Hard</span></span>
+        <span class="sub">The road runs every row, so enemies stay out a long time.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-doubleback" data-map="doubleback">
+        <span class="map-lock" id="lock-doubleback"></span>
+        <span class="map-title">Map 9: Double Back <span class="diff hard">Hard</span></span>
+        <span class="sub">The road reverses beside itself, so a tower in the middle hits both passes.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-loop" data-map="loop">
+        <span class="map-lock" id="lock-loop"></span>
+        <span class="map-title">Map 10: Loop <span class="diff hard">Hard</span></span>
+        <span class="sub">Enemies walk the outside edge once, then turn in to the exit.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-crossing" data-map="crossing">
+        <span class="map-lock" id="lock-crossing"></span>
+        <span class="map-title">Map 11: Crossing <span class="diff hard">Hard</span></span>
+        <span class="sub">The road crosses itself on one bridge.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-splitpath" data-map="splitpath">
+        <span class="map-lock" id="lock-splitpath"></span>
+        <span class="map-title">Map 12: Split Path <span class="diff hard">Hard</span></span>
+        <span class="sub">Enemies alternate between a left road and a right road.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-earlyjoin" data-map="earlyjoin">
+        <span class="map-lock" id="lock-earlyjoin"></span>
+        <span class="map-title">Map 13: Early Join <span class="diff hard">Hard</span></span>
+        <span class="sub">Two entrances merge near the start into one road.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-forkjoin" data-map="forkjoin">
+        <span class="map-lock" id="lock-forkjoin"></span>
+        <span class="map-title">Map 14: Fork and Join <span class="diff hard">Hard</span></span>
+        <span class="sub">The road splits to the top and the bottom, then both merge into one exit.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-latesplit" data-map="latesplit">
+        <span class="map-lock" id="lock-latesplit"></span>
+        <span class="map-title">Map 15: Late Split <span class="diff hard">Hard</span></span>
+        <span class="sub">Enemies share one road, then split into two exits.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-spiral" data-map="spiral">
+        <span class="map-lock" id="lock-spiral"></span>
+        <span class="map-title">Map 16: Spiral <span class="diff hard">Hard</span></span>
+        <span class="sub">The road coils inward and the exit is in the center.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-switchbacks" data-map="switchbacks">
+        <span class="map-lock" id="lock-switchbacks"></span>
+        <span class="map-title">Map 17: Switchbacks <span class="diff hard">Hard</span></span>
+        <span class="sub">The road makes a U-turn on every other row, with room to build between each pass.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-roundabout" data-map="roundabout">
+        <span class="map-lock" id="lock-roundabout"></span>
+        <span class="map-title">Map 18: Roundabout <span class="diff hard">Hard</span></span>
+        <span class="sub">Enemies circle a square in the middle, then leave beside the entrance.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-figureeight" data-map="figureeight">
+        <span class="map-lock" id="lock-figureeight"></span>
+        <span class="map-title">Map 19: Figure Eight <span class="diff hard">Hard</span></span>
+        <span class="sub">The road loops across the top, crosses that loop on a bridge, then loops across the bottom.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-twoloops" data-map="twoloops">
+        <span class="map-lock" id="lock-twoloops"></span>
+        <span class="map-title">Map 20: Two Loops <span class="diff hard">Hard</span></span>
+        <span class="sub">Enemies lap the outside, then lap a smaller loop inside.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-doublecross" data-map="doublecross">
+        <span class="map-lock" id="lock-doublecross"></span>
+        <span class="map-title">Map 21: Double Crossing <span class="diff hard">Hard</span></span>
+        <span class="sub">The road crosses itself on two bridges.</span>
+      </button>
+      <button type="button" class="map-pick-btn" id="map-threelanes" data-map="threelanes">
+        <span class="map-lock" id="lock-threelanes"></span>
+        <span class="map-title">Map 22: Three Lanes <span class="diff hard">Hard</span></span>
+        <span class="sub">Enemies cycle across three separate roads.</span>
       </button>
         </div>
         </div>
@@ -2720,7 +2800,7 @@
       <div class="faq-head">
         <div class="faq-head-text">
           <h2>Path Guard FAQ</h2>
-          <div class="faq-build">build 198</div>
+          <div class="faq-build">build 199</div>
         </div>
         <button type="button" id="faq-close">Close</button>
       </div>
@@ -2730,18 +2810,18 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=198" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=199" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -2764,7 +2844,7 @@
         <p><strong>Difficulty</strong> — chosen per map after you pick it: Easy 40 / Medium 50 / Hard 60 waves. Clear Easy for Medium; clear Medium for Hard. Wave N has the same enemies and the same spawn spacing on every map and every difficulty. <strong>Daily</strong> is 60 waves like Hard, plus today’s named modifier, and pays 25 Credits on clear. Swarm adds 4 enemies per wave. Veterans adds 2 and may swap some for a stronger type. Fog, Budget, and Haste do not add enemies. <strong>Aim</strong> cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
         <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: Serpentine-only max L2; beat Crosscut for L3; Ridge for L4; Winding or later for L5. Levels you already own stay. <strong>Reset Credits</strong> on the Upgrades page refunds shop purchases and returns towers and perks to starters (Archer, Frost, Cannon, Barrier at level 1). Map clears, Daily, and Account stats stay. Use <strong>Account → Reset</strong> to wipe all progress.</p>
       </div>
-      <div class="faq-build faq-build-foot">build 198</div>
+      <div class="faq-build faq-build-foot">build 199</div>
     </div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
@@ -2879,7 +2959,12 @@
   // ===== Build 130+: Path Guard meta progression (Credits / unlock ladder) =====
   const LS_PROFILE = 'pg-profile-v1';
   const START_TOWERS = ['archer', 'frost', 'cannon', 'barrier'];
-  const MAP_ORDER = ['serpentine', 'crosscut', 'ridge', 'winding', 'gauntlet', 'crucible'];
+  const MAP_ORDER = [
+    'serpentine', 'crosscut', 'ridge', 'winding', 'gauntlet', 'crucible',
+    'shortlane', 'longlane', 'doubleback', 'loop', 'crossing', 'splitpath',
+    'earlyjoin', 'forkjoin', 'latesplit', 'spiral', 'switchbacks', 'roundabout',
+    'figureeight', 'twoloops', 'doublecross', 'threelanes',
+  ];
   const MAX_PERK_EQUIP = 2;
 
   const TOWER_CAT_TIER = {
@@ -2936,6 +3021,22 @@
     winding: 'Clear Ridge',
     gauntlet: 'Clear Winding',
     crucible: 'Clear Gauntlet',
+    shortlane: 'Clear Crucible',
+    longlane: 'Clear Short Lane',
+    doubleback: 'Clear Long Lane',
+    loop: 'Clear Double Back',
+    crossing: 'Clear Loop',
+    splitpath: 'Clear Crossing',
+    earlyjoin: 'Clear Split Path',
+    forkjoin: 'Clear Early Join',
+    latesplit: 'Clear Fork and Join',
+    spiral: 'Clear Late Split',
+    switchbacks: 'Clear Spiral',
+    roundabout: 'Clear Switchbacks',
+    figureeight: 'Clear Roundabout',
+    twoloops: 'Clear Figure Eight',
+    doublecross: 'Clear Two Loops',
+    threelanes: 'Clear Double Crossing',
   };
 
   let profile = null;
@@ -3223,12 +3324,10 @@
       newly.push(MAPS[id] ? MAPS[id].name : id);
     };
     // One clear of the previous map unlocks the next (any difficulty clear counts).
-    unlock('serpentine', true);
-    unlock('crosscut', mapIsCleared('serpentine'));
-    unlock('ridge', mapIsCleared('crosscut'));
-    unlock('winding', mapIsCleared('ridge'));
-    unlock('gauntlet', mapIsCleared('winding'));
-    unlock('crucible', mapIsCleared('gauntlet'));
+    unlock(MAP_ORDER[0], true);
+    for (let i = 1; i < MAP_ORDER.length; i++) {
+      unlock(MAP_ORDER[i], mapIsCleared(MAP_ORDER[i - 1]));
+    }
     if (newly.length) {
       saveProfile();
       if (doToast) showMetaToast(`Map unlocked: ${newly.join(', ')}`);
@@ -3269,7 +3368,12 @@
   // Map progress cap (owned levels above this are kept; only further Unlock Level is blocked).
   // Serpentine only → 2; Crosscut clear → 3; Ridge → 4; Winding or later → 5.
   function careerMapLevelCap() {
-    if (mapIsCleared('winding') || mapIsCleared('gauntlet') || mapIsCleared('crucible')) return 5;
+    const windAt = MAP_ORDER.indexOf('winding');
+    if (windAt >= 0) {
+      for (let i = windAt; i < MAP_ORDER.length; i++) {
+        if (mapIsCleared(MAP_ORDER[i])) return 5;
+      }
+    }
     if (mapIsCleared('ridge')) return 4;
     if (mapIsCleared('crosscut')) return 3;
     return 2;
@@ -4209,6 +4313,300 @@
         deco: 'garden',
       },
     },
+    // Build 199: Hard-clear maps (15 Credits each). One twist per map. No extra enemies.
+    shortlane: {
+      id: 'shortlane',
+      name: 'Short Lane',
+      difficulty: 7,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Straight short road. Enemies exit fast.',
+      path: [tc(1, 6), tc(8, 6)],
+      scenery: [],
+      theme: {
+        sky: '#bae6fd', mid: '#86efac', ground: '#4ade80',
+        pathDeep: '#14532d', pathMid: '#22c55e', pathTop: '#bbf7d0',
+        deco: 'meadow',
+      },
+    },
+    longlane: {
+      id: 'longlane',
+      name: 'Long Lane',
+      difficulty: 8,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road runs every row, so enemies stay out a long time.',
+      path: [
+        tc(0, 0), tc(7, 0), tc(7, 1), tc(0, 1),
+        tc(0, 2), tc(7, 2), tc(7, 3), tc(0, 3),
+        tc(0, 4), tc(7, 4), tc(7, 5), tc(0, 5),
+        tc(0, 6), tc(7, 6), tc(7, 7), tc(0, 7),
+        tc(0, 8), tc(7, 8), tc(7, 9), tc(0, 9),
+        tc(0, 10), tc(7, 10), tc(7, 11), tc(0, 11),
+        tc(0, 12), tc(7, 12), tc(7, 13), tc(0, 13),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#7dd3fc', mid: '#a3e635', ground: '#65a30d',
+        pathDeep: '#1e3a8a', pathMid: '#2563eb', pathTop: '#bfdbfe',
+        deco: 'hills',
+      },
+    },
+    doubleback: {
+      id: 'doubleback',
+      name: 'Double Back',
+      difficulty: 9,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road reverses beside itself, so a tower in the middle hits both passes.',
+      path: [tc(0, 5), tc(9, 5), tc(9, 7), tc(0, 7)],
+      scenery: [],
+      theme: {
+        sky: '#93c5fd', mid: '#fde68a', ground: '#fbbf24',
+        pathDeep: '#92400e', pathMid: '#d97706', pathTop: '#fde68a',
+        deco: 'meadow',
+      },
+    },
+    loop: {
+      id: 'loop',
+      name: 'Loop',
+      difficulty: 10,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Enemies walk the outside edge once, then turn in to the exit.',
+      path: [tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13), tc(0, 2), tc(5, 2)],
+      scenery: [],
+      theme: {
+        sky: '#67e8f9', mid: '#86efac', ground: '#34d399',
+        pathDeep: '#155e75', pathMid: '#0891b2', pathTop: '#a5f3fc',
+        deco: 'lake',
+      },
+    },
+    crossing: {
+      id: 'crossing',
+      name: 'Crossing',
+      difficulty: 11,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road crosses itself on one bridge.',
+      path: [tc(0, 6), tc(9, 6), tc(9, 2), tc(4, 2), tc(4, 11), tc(0, 11)],
+      scenery: [],
+      theme: {
+        sky: '#a5b4fc', mid: '#c4b5fd', ground: '#a78bfa',
+        pathDeep: '#4c1d95', pathMid: '#7c3aed', pathTop: '#ddd6fe',
+        deco: 'stone',
+      },
+    },
+    splitpath: {
+      id: 'splitpath',
+      name: 'Split Path',
+      difficulty: 12,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Enemies alternate between a left road and a right road.',
+      path: [tc(2, 0), tc(2, 13)],
+      lanes: [
+        [tc(2, 0), tc(2, 13)],
+        [tc(7, 0), tc(7, 13)],
+      ],
+      scenery: [],
+      theme: {
+        sky: '#fde68a', mid: '#fcd34d', ground: '#fbbf24',
+        pathDeep: '#9a3412', pathMid: '#ea580c', pathTop: '#ffedd5',
+        deco: 'hills',
+      },
+    },
+    earlyjoin: {
+      id: 'earlyjoin',
+      name: 'Early Join',
+      difficulty: 13,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Two entrances merge near the start into one road.',
+      path: [tc(0, 1), tc(4, 1), tc(4, 12), tc(8, 12)],
+      lanes: [
+        [tc(0, 1), tc(4, 1), tc(4, 12), tc(8, 12)],
+        [tc(9, 1), tc(4, 1), tc(4, 12), tc(8, 12)],
+      ],
+      scenery: [],
+      theme: {
+        sky: '#99f6e4', mid: '#5eead4', ground: '#2dd4bf',
+        pathDeep: '#115e59', pathMid: '#0f766e', pathTop: '#ccfbf1',
+        deco: 'lake',
+      },
+    },
+    forkjoin: {
+      id: 'forkjoin',
+      name: 'Fork and Join',
+      difficulty: 14,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road splits to the top and the bottom, then both merge into one exit.',
+      path: [tc(0, 1), tc(6, 1), tc(6, 6), tc(9, 6)],
+      lanes: [
+        [tc(0, 1), tc(6, 1), tc(6, 6), tc(9, 6)],
+        [tc(0, 12), tc(6, 12), tc(6, 6), tc(9, 6)],
+      ],
+      scenery: [],
+      theme: {
+        sky: '#fecdd3', mid: '#fda4af', ground: '#fb7185',
+        pathDeep: '#9f1239', pathMid: '#e11d48', pathTop: '#ffe4e6',
+        deco: 'garden',
+      },
+    },
+    latesplit: {
+      id: 'latesplit',
+      name: 'Late Split',
+      difficulty: 15,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Enemies share one road, then split into two exits.',
+      path: [tc(0, 6), tc(6, 6), tc(6, 2), tc(2, 2)],
+      lanes: [
+        [tc(0, 6), tc(6, 6), tc(6, 2), tc(2, 2)],
+        [tc(0, 6), tc(6, 6), tc(6, 11), tc(2, 11)],
+      ],
+      scenery: [],
+      theme: {
+        sky: '#fde68a', mid: '#fdba74', ground: '#fb923c',
+        pathDeep: '#7c2d12', pathMid: '#c2410c', pathTop: '#ffedd5',
+        deco: 'orchard',
+      },
+    },
+    spiral: {
+      id: 'spiral',
+      name: 'Spiral',
+      difficulty: 16,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road coils inward and the exit is in the center.',
+      path: [
+        tc(0, 0), tc(9, 0), tc(9, 13), tc(1, 13),
+        tc(1, 1), tc(8, 1), tc(8, 12), tc(2, 12),
+        tc(2, 2), tc(7, 2), tc(7, 11), tc(3, 11),
+        tc(3, 3), tc(6, 3), tc(6, 8), tc(5, 8),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#ddd6fe', mid: '#c4b5fd', ground: '#a78bfa',
+        pathDeep: '#312e81', pathMid: '#4338ca', pathTop: '#e0e7ff',
+        deco: 'stone',
+      },
+    },
+    switchbacks: {
+      id: 'switchbacks',
+      name: 'Switchbacks',
+      difficulty: 17,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road makes a U-turn on every other row, with room to build between each pass.',
+      path: [
+        tc(0, 1), tc(9, 1), tc(9, 3), tc(0, 3),
+        tc(0, 5), tc(9, 5), tc(9, 7), tc(0, 7),
+        tc(0, 9), tc(9, 9), tc(9, 11), tc(0, 11),
+        tc(0, 13), tc(6, 13),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#bbf7d0', mid: '#86efac', ground: '#4ade80',
+        pathDeep: '#3f6212', pathMid: '#65a30d', pathTop: '#ecfccb',
+        deco: 'orchard',
+      },
+    },
+    roundabout: {
+      id: 'roundabout',
+      name: 'Roundabout',
+      difficulty: 18,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Enemies circle a square in the middle, then leave beside the entrance.',
+      path: [
+        tc(0, 5), tc(2, 5), tc(2, 3), tc(7, 3),
+        tc(7, 8), tc(2, 8), tc(2, 6), tc(0, 6),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#e9d5ff', mid: '#d8b4fe', ground: '#c084fc',
+        pathDeep: '#581c87', pathMid: '#9333ea', pathTop: '#f3e8ff',
+        deco: 'garden',
+      },
+    },
+    figureeight: {
+      id: 'figureeight',
+      name: 'Figure Eight',
+      difficulty: 19,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road loops across the top, crosses that loop on a bridge, then loops across the bottom.',
+      path: [
+        tc(1, 1), tc(8, 1), tc(8, 6), tc(1, 6),
+        tc(1, 3), tc(4, 3), tc(4, 8), tc(8, 8),
+        tc(8, 12), tc(1, 12), tc(1, 9), tc(3, 9),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#fecaca', mid: '#fca5a5', ground: '#f87171',
+        pathDeep: '#7f1d1d', pathMid: '#b91c1c', pathTop: '#fee2e2',
+        deco: 'stone',
+      },
+    },
+    twoloops: {
+      id: 'twoloops',
+      name: 'Two Loops',
+      difficulty: 20,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Enemies lap the outside, then lap a smaller loop inside.',
+      path: [
+        tc(0, 0), tc(9, 0), tc(9, 13), tc(0, 13),
+        tc(0, 2), tc(7, 2), tc(7, 11), tc(2, 11),
+        tc(2, 4), tc(5, 4), tc(5, 7),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#a5f3fc', mid: '#67e8f9', ground: '#22d3ee',
+        pathDeep: '#164e63', pathMid: '#0e7490', pathTop: '#cffafe',
+        deco: 'lake',
+      },
+    },
+    doublecross: {
+      id: 'doublecross',
+      name: 'Double Crossing',
+      difficulty: 21,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'The road crosses itself on two bridges.',
+      path: [
+        tc(0, 3), tc(9, 3), tc(9, 9), tc(0, 9),
+        tc(0, 12), tc(5, 12), tc(5, 1), tc(2, 1),
+      ],
+      scenery: [],
+      theme: {
+        sky: '#fed7aa', mid: '#fdba74', ground: '#fb923c',
+        pathDeep: '#431407', pathMid: '#9a3412', pathTop: '#ffedd5',
+        deco: 'hills',
+      },
+    },
+    threelanes: {
+      id: 'threelanes',
+      name: 'Three Lanes',
+      difficulty: 22,
+      clearDifficulty: 'hard',
+      startGoldBonus: 0,
+      blurb: 'Enemies cycle across three separate roads.',
+      path: [tc(1, 0), tc(1, 13)],
+      lanes: [
+        [tc(1, 0), tc(1, 13)],
+        [tc(4, 0), tc(4, 13)],
+        [tc(8, 0), tc(8, 13)],
+      ],
+      scenery: [],
+      theme: {
+        sky: '#f5d0fe', mid: '#f0abfc', ground: '#e879f9',
+        pathDeep: '#701a75', pathMid: '#a21caf', pathTop: '#fae8ff',
+        deco: 'garden',
+      },
+    },
   };
 
   const CAT_LABEL = { marksman: 'Marksman', elemental: 'Elemental', gunnery: 'Gunnery', support: 'Support' };
@@ -4382,7 +4780,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=198`;
+    img.src = `./sprites/${name}.png?v=199`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -4390,7 +4788,10 @@
   }
 
   let PATH = MAPS.serpentine.path;
+  let LANES = [PATH];
+  let LANE_LENS = [0];
   let PATH_LEN = 0;
+  let nextSpawnLane = 0;
   let pathTileSet = new Set(); // tile indices occupied by the road
   let blockedTileSet = new Set(); // no-build rocks / water / ruins
   let bridgeSpans = []; // { key, c, r, under:{a,b}, over:{a,b}, overHoriz }
@@ -4543,11 +4944,19 @@
     return len;
   }
 
+  function mapLanesOf(map) {
+    if (map && Array.isArray(map.lanes) && map.lanes.length) return map.lanes;
+    return [map.path];
+  }
+
   function applyMap(mapId) {
     const map = MAPS[mapId] || MAPS.serpentine;
     state.mapId = map.id;
-    PATH = map.path;
-    PATH_LEN = pathLength(PATH);
+    LANES = mapLanesOf(map);
+    PATH = LANES[0];
+    LANE_LENS = LANES.map((p) => pathLength(p));
+    PATH_LEN = LANE_LENS[0] || 0;
+    nextSpawnLane = 0;
     rebuildBuildable();
     try { localStorage.setItem(LS_MAP, map.id); } catch (_) {}
   }
@@ -5263,10 +5672,29 @@
       : `${st.name} selected — Upgrade, double-tap, or Sell`;
   }
 
-  function posOnPath(dist) {
-    let d = Math.max(0, Math.min(dist, PATH_LEN));
-    for (let i = 1; i < PATH.length; i++) {
-      const a = PATH[i - 1], b = PATH[i];
+  function laneIndex(lane) {
+    const i = lane | 0;
+    if (!LANES || !LANES.length) return 0;
+    return (i >= 0 && i < LANES.length) ? i : 0;
+  }
+
+  function pathForLane(lane) {
+    const i = laneIndex(lane);
+    return (LANES && LANES[i]) || PATH;
+  }
+
+  function lenForLane(lane) {
+    const i = laneIndex(lane);
+    if (LANE_LENS && LANE_LENS[i] != null) return LANE_LENS[i];
+    return PATH_LEN;
+  }
+
+  function posOnPath(dist, lane) {
+    const path = pathForLane(lane);
+    const maxLen = lenForLane(lane);
+    let d = Math.max(0, Math.min(dist, maxLen));
+    for (let i = 1; i < path.length; i++) {
+      const a = path[i - 1], b = path[i];
       const seg = Math.hypot(b.x - a.x, b.y - a.y);
       if (d <= seg) {
         const t = seg === 0 ? 0 : d / seg;
@@ -5274,7 +5702,7 @@
       }
       d -= seg;
     }
-    const last = PATH[PATH.length - 1];
+    const last = path[path.length - 1];
     return { x: last.x, y: last.y };
   }
 
@@ -5537,11 +5965,12 @@
   }
 
   function scoreEnemyForTarget(tower, en, mode) {
-    const p = posOnPath(en.dist);
+    const p = posOnPath(en.dist, en.lane);
     const d = Math.hypot(p.x - tower.x, p.y - tower.y);
     if (mode === 'closest') return { score: -d, d };
     if (mode === 'strongest') return { score: en.maxHp * 10 + en.hp, d };
-    return { score: en.dist, d };
+    // Progress toward that lane's exit. One lane keeps the same order as raw distance.
+    return { score: en.dist / Math.max(1, lenForLane(en.lane)), d };
   }
 
   function addFloat(x, y, text, color, life = 0.9, opts) {
@@ -5631,15 +6060,18 @@
 
   function distToPath(x, y) {
     let best = Infinity;
-    for (let i = 1; i < PATH.length; i++) {
-      const a = PATH[i - 1], b = PATH[i];
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const len2 = dx * dx + dy * dy;
-      let t = len2 === 0 ? 0 : ((x - a.x) * dx + (y - a.y) * dy) / len2;
-      t = Math.max(0, Math.min(1, t));
-      const px = a.x + dx * t, py = a.y + dy * t;
-      const d = Math.hypot(x - px, y - py);
-      if (d < best) best = d;
+    const lanes = (LANES && LANES.length) ? LANES : [PATH];
+    for (const path of lanes) {
+      for (let i = 1; i < path.length; i++) {
+        const a = path[i - 1], b = path[i];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const len2 = dx * dx + dy * dy;
+        let t = len2 === 0 ? 0 : ((x - a.x) * dx + (y - a.y) * dy) / len2;
+        t = Math.max(0, Math.min(1, t));
+        const px = a.x + dx * t, py = a.y + dy * t;
+        const d = Math.hypot(x - px, y - py);
+        if (d < best) best = d;
+      }
     }
     return best;
   }
@@ -5702,7 +6134,11 @@
   }
 
   function rebuildBuildable() {
-    pathTileSet = collectPathTiles(PATH);
+    pathTileSet = new Set();
+    const lanePaths = (LANES && LANES.length) ? LANES : [PATH];
+    for (const lanePath of lanePaths) {
+      for (const idx of collectPathTiles(lanePath)) pathTileSet.add(idx);
+    }
     rebuildBridgeSpans();
     blockedTileSet = new Set();
     const map = activeMap();
@@ -5754,9 +6190,14 @@
 
   function rebuildBridgeSpans() {
     bridgeSpans = [];
-    const cells = expandPathCells(PATH);
+    const lanes = (LANES && LANES.length) ? LANES : [PATH];
+    for (let li = 0; li < lanes.length; li++) addBridgeSpansForPath(lanes[li], li);
+  }
+
+  function addBridgeSpansForPath(path, lane) {
+    const cells = expandPathCells(path);
     if (!cells.length) return;
-    const starts = pathSegStarts(PATH);
+    const starts = pathSegStarts(path);
     const first = new Map();
     const second = new Map();
     for (let i = 0; i < cells.length; i++) {
@@ -5765,7 +6206,7 @@
       else if (!second.has(key) && i - first.get(key) >= 3) second.set(key, i);
     }
     function visitDist(cell) {
-      const a = PATH[cell.seg];
+      const a = path[cell.seg];
       const cx = cell.c * TILE + TILE * 0.5;
       const cy = cell.r * TILE + TILE * 0.5;
       return starts[cell.seg] + Math.hypot(cx - a.x, cy - a.y);
@@ -5779,6 +6220,7 @@
       const half = TILE * 0.55;
       bridgeSpans.push({
         key,
+        lane,
         c: c1.c,
         r: c1.r,
         under: { a: Math.max(0, d0 - half), b: d0 + half },
@@ -5792,7 +6234,9 @@
   function enemyIsUnderBridge(en) {
     if (!en || !bridgeSpans.length) return false;
     const d = en.dist;
+    const lane = en.lane | 0;
     for (const b of bridgeSpans) {
+      if ((b.lane | 0) !== lane) continue;
       if (d >= b.under.a && d <= b.under.b) return true;
     }
     return false;
@@ -5801,7 +6245,9 @@
   function enemyIsOnOverpass(en) {
     if (!en || !bridgeSpans.length) return false;
     const d = en.dist;
+    const lane = en.lane | 0;
     for (const b of bridgeSpans) {
+      if ((b.lane | 0) !== lane) continue;
       if (d >= b.over.a && d <= b.over.b) return true;
     }
     return false;
@@ -6400,6 +6846,7 @@
     state.waveLivesStart = state.lives;
     state.spawnQueue = buildSpawnQueue(state.wave);
     state.spawnLeft = state.spawnQueue.length;
+    nextSpawnLane = 0;
     enqueueEnemyIntros([...new Set(state.spawnQueue)]);
     const sched = buildSpawnGaps(state.spawnQueue.length, state.wave);
     state.spawnGaps = sched.gaps;
@@ -6463,12 +6910,13 @@
     return n;
   }
 
-  function spawnEnemyAt(kind, dist) {
+  function spawnEnemyAt(kind, dist, lane) {
     enqueueEnemyIntros([kind]);
     const et = ENEMY_TYPES[kind] || ENEMY_TYPES.droplet;
     const hp = et.hp;
     const en = {
       kind,
+      lane: laneIndex(lane),
       dist: Math.max(0, dist || 0),
       baseSpeed: et.speed * (state.dailySpeedMul || 1),
       speed: 0,
@@ -6489,7 +6937,9 @@
   }
 
   function spawnEnemy(kind) {
-    spawnEnemyAt(kind, 0);
+    const n = (LANES && LANES.length) || 1;
+    const lane = n > 1 ? (nextSpawnLane++ % n) : 0;
+    spawnEnemyAt(kind, 0, lane);
   }
 
   function spillPackedEnemy(parent) {
@@ -6497,7 +6947,7 @@
     const kids = ENEMY_CHILDREN[parent.kind] || [];
     if (!kids.length) return;
     const base = parent.dist || 0;
-    const p = posOnPath(base);
+    const p = posOnPath(base, parent.lane);
     const kid0 = ENEMY_TYPES[kids[0]];
     const gap = Math.max(28, ((kid0 && kid0.r) || 10) * 2.5);
     const mid = (kids.length - 1) / 2;
@@ -6505,7 +6955,7 @@
     const minD = Math.min.apply(null, dists);
     if (minD < 0) dists = dists.map((d) => d - minD);
     for (let i = 0; i < kids.length; i++) {
-      spawnEnemyAt(kids[i], dists[i]);
+      spawnEnemyAt(kids[i], dists[i], parent.lane);
     }
     if (state.juice !== false) {
       burst(p.x, p.y, '#fde68a', 14, {
@@ -6851,7 +7301,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=198" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=199" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -7042,7 +7492,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=198" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=199" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -7460,7 +7910,7 @@
     for (const en of state.enemies) {
       if (enemyIsUnderBridge(en)) continue;
       if (towerSkipsImmuneTarget(tower, en)) continue;
-      const p = posOnPath(en.dist);
+      const p = posOnPath(en.dist, en.lane);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
       if (d > st.range) continue;
       const scored = scoreEnemyForTarget(tower, en, mode);
@@ -7536,7 +7986,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'droplet';
-    return `./sprites/${spr}.png?v=198`;
+    return `./sprites/${spr}.png?v=199`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -7786,7 +8236,7 @@
     if (!en || !state.enemies.includes(en)) return false;
     const o = opts || {};
     if (enemyIsUnderBridge(en) && !o.ignoreBridge) return false;
-    const p = posOnPath(en.dist);
+    const p = posOnPath(en.dist, en.lane);
     let raw = amount;
     let halfHit = false;
     if (o.towerType || o.category) {
@@ -7863,7 +8313,7 @@
       tw.flameOn = false;
       return;
     }
-    const aim = posOnPath(tgt.dist);
+    const aim = posOnPath(tgt.dist, tgt.lane);
     tw.flameAngle = Math.atan2(aim.y - tw.y, aim.x - tw.x);
     tw.flameOn = true;
     tw.pulse = Math.max(tw.pulse || 0, 0.1);
@@ -7886,7 +8336,7 @@
       if (!state.enemies.includes(en)) continue;
       if (enemyIsUnderBridge(en)) continue;
       if (towerSkipsImmuneTarget(tw, en)) continue;
-      const p = posOnPath(en.dist);
+      const p = posOnPath(en.dist, en.lane);
       if (distPointToSegment(p.x, p.y, tw.x, tw.y, x2, y2) > halfW + en.r) continue;
       en._flameTouch = true;
       en._flameExitDmg = Math.max(1, Math.round(st.damage * (st.burnMul || 0.12)));
@@ -7920,7 +8370,7 @@
     for (const en of state.enemies) {
       if (enemyIsUnderBridge(en)) continue;
       if (towerSkipsImmuneTarget(tower, en)) continue;
-      const p = posOnPath(en.dist);
+      const p = posOnPath(en.dist, en.lane);
       const d = Math.hypot(p.x - tower.x, p.y - tower.y);
       if (d > st.range) continue;
       const scored = scoreEnemyForTarget(tower, en, mode);
@@ -7936,7 +8386,7 @@
     for (let i = 0; i < targets.length; i++) {
       const en = targets[i];
       if (!state.enemies.includes(en)) continue;
-      const p = posOnPath(en.dist);
+      const p = posOnPath(en.dist, en.lane);
       const hitDmg = i === 0
         ? st.damage
         : Math.max(1, Math.round(st.damage * Math.pow(st.multiFalloff || 0.7, i)));
@@ -7970,7 +8420,7 @@
       if (en === primary) continue;
       if (!state.enemies.includes(en)) continue;
       if (enemyIsUnderBridge(en)) continue;
-      const p = posOnPath(en.dist);
+      const p = posOnPath(en.dist, en.lane);
       if (Math.hypot(p.x - impactX, p.y - impactY) <= splashRadius) {
         applyDamage(en, secondary, color, {
           towerType: tType, category: cat, isSplash: true,
@@ -8028,7 +8478,7 @@
           // Titans / Colossus walk through Barriers (Barrier stays on the path)
           if (WALKS_BARRIER.has(en.kind)) continue;
           if (enemyIsUnderBridge(en)) continue;
-          const p = posOnPath(en.dist);
+          const p = posOnPath(en.dist, en.lane);
           const sameTile = Math.floor(p.x / TILE) === twCol && Math.floor(p.y / TILE) === twRow;
           if (!sameTile) {
             delete en.barrierPassed[tid];
@@ -8055,7 +8505,7 @@
           .sort((a, b) => b.dist - a.dist);
         for (const en of candidates) {
           if (free <= 0) break;
-          const p = posOnPath(en.dist);
+          const p = posOnPath(en.dist, en.lane);
           applySlow(en, 0, stB.stunDur || 3);
           en.barrierHeld[tid] = true;
           free--;
@@ -8093,15 +8543,17 @@
             if (killedByBurn || !state.enemies.includes(en)) continue;
           }
         }
-        if (en.dist >= PATH_LEN) {
+        if (en.dist >= lenForLane(en.lane)) {
           state.enemies.splice(i, 1);
           const cost = nestLeakCost(en.kind);
           state.lives = Math.max(0, state.lives - cost);
           flashLives();
           shakeScreen();
-          burst(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y, '#f87171', 16);
+          const exitPath = pathForLane(en.lane);
+          const exitAt = exitPath[exitPath.length - 1];
+          burst(exitAt.x, exitAt.y, '#f87171', 16);
           const lifeTxt = cost === 1 ? '-1 life' : `-${cost} lives`;
-          addFloat(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y - 20, lifeTxt, '#fca5a5');
+          addFloat(exitAt.x, exitAt.y - 20, lifeTxt, '#fca5a5');
           updateHUD();
           if (state.lives <= 0) endGame(false);
         }
@@ -8127,7 +8579,7 @@
             const tgt = findTarget(tw);
             if (tgt) {
               const lead = Math.min(40, tgt.baseSpeed * 0.15);
-              const aim = posOnPath(Math.min(PATH_LEN, tgt.dist + lead));
+              const aim = posOnPath(Math.min(lenForLane(tgt.lane), tgt.dist + lead), tgt.lane);
               state.projectiles.push({
                 x: tw.x, y: tw.y,
                 tx: aim.x, ty: aim.y,
@@ -8157,7 +8609,7 @@
         const pr = state.projectiles[i];
         let aimX = pr.tx, aimY = pr.ty;
         if (pr.target && state.enemies.includes(pr.target)) {
-          const p = posOnPath(pr.target.dist);
+          const p = posOnPath(pr.target.dist, pr.target.lane);
           aimX = p.x; aimY = p.y;
         }
         const dx = aimX - pr.x, dy = aimY - pr.y;
@@ -8166,13 +8618,13 @@
         if (dist <= step || dist < 8) {
           const en = pr.target;
           if (en && state.enemies.includes(en) && enemyIsUnderBridge(en)) {
-            const p = posOnPath(en.dist);
+            const p = posOnPath(en.dist, en.lane);
             burst(p.x, p.y, pr.color, 3);
             state.projectiles.splice(i, 1);
             continue;
           }
           if (en && state.enemies.includes(en)) {
-            const p = posOnPath(en.dist);
+            const p = posOnPath(en.dist, en.lane);
             const cat = pr.category || (TOWER_DEFS[pr.type] && TOWER_DEFS[pr.type].category);
             const killed = applyDamage(en, pr.damage, pr.color, {
               burstN: 6,
@@ -8623,9 +9075,10 @@
     drawMapDeco(theme, null);
     drawMapScenery(theme);
 
-    // Path only: difficulty-colored ribbon
-    strokePathPolyline(PATH, theme.pathDeep, TILE);
-    strokePathPolyline(PATH, theme.pathMid, TILE - 10);
+    // Path only: difficulty-colored ribbon. Extra lanes are the same road rules.
+    const drawLanes = (LANES && LANES.length) ? LANES : [PATH];
+    for (const lane of drawLanes) strokePathPolyline(lane, theme.pathDeep, TILE);
+    for (const lane of drawLanes) strokePathPolyline(lane, theme.pathMid, TILE - 10);
 
     // Dark tunnel mouths where the road goes UNDER a bridge
     for (const b of bridgeSpans) {
@@ -8651,16 +9104,18 @@
       ctx.restore();
     }
 
-    strokePathPolyline(PATH, theme.pathTop, TILE - 18);
+    for (const lane of drawLanes) strokePathPolyline(lane, theme.pathTop, TILE - 18);
 
-    ctx.fillStyle = '#22c55e';
-    ctx.beginPath();
-    ctx.arc(PATH[0].x, PATH[0].y, 10, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ef4444';
-    ctx.beginPath();
-    ctx.arc(PATH[PATH.length - 1].x, PATH[PATH.length - 1].y, 10, 0, Math.PI * 2);
-    ctx.fill();
+    for (const lane of drawLanes) {
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath();
+      ctx.arc(lane[0].x, lane[0].y, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(lane[lane.length - 1].x, lane[lane.length - 1].y, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   function drawBridgeDecks(theme) {
@@ -9276,7 +9731,7 @@
       const under = enemyIsUnderBridge(en);
       if (mode === 'under' && !under) continue;
       if (mode === 'over' && under) continue;
-      const p = posOnPath(en.dist);
+      const p = posOnPath(en.dist, en.lane);
       en.x = p.x; en.y = p.y;
       const halted = (en.slowTimer || 0) > 0 && (en.slowMul != null && en.slowMul <= 0.001);
       const slowed = (en.slowTimer || 0) > 0 && !halted;
@@ -9551,7 +10006,7 @@
       if (pr.type === 'bazooka') {
         let ang = 0;
         if (pr.target && state.enemies.includes(pr.target)) {
-          const tp = posOnPath(pr.target.dist);
+          const tp = posOnPath(pr.target.dist, pr.target.lane);
           ang = Math.atan2(tp.y - pr.y, tp.x - pr.x);
         } else {
           ang = Math.atan2(pr.ty - pr.y, pr.tx - pr.x);
