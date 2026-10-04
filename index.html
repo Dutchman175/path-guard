@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 206 -->
+<!-- path-guard-build: 207 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -2564,6 +2564,11 @@
     transform: none;
   }
   #map-maker-copy { grid-column: 1 / -1; border-color: #4ade80; }
+  #map-maker-move.on,
+  #map-maker-remove.on {
+    background: #155e75;
+    border-color: #67e8f9;
+  }
   #map-maker-hide { border-color: #fbbf24; }
   #map-maker-back { border-color: #94a3b8; }
   #map-maker-pick[hidden],
@@ -2911,7 +2916,7 @@
       <div class="faq-head">
         <div class="faq-head-text">
           <h2>Path Guard FAQ</h2>
-          <div class="faq-build">build 206</div>
+          <div class="faq-build">build 207</div>
         </div>
         <button type="button" id="faq-close">Close</button>
       </div>
@@ -2921,18 +2926,18 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=206" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=207" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -2955,7 +2960,7 @@
         <p><strong>Difficulty</strong> — chosen per map after you pick it: Easy 40 / Medium 50 / Hard 60 waves. Clear Easy for Medium; clear Medium for Hard. Wave N has the same enemies and the same spawn spacing on every map and every difficulty. <strong>Daily</strong> is 60 waves like Hard, plus today’s named modifier, and pays 25 Credits on clear. Swarm adds 4 enemies per wave. Veterans adds 2 and may swap some for a stronger type. Fog, Budget, and Haste do not add enemies. <strong>Aim</strong> cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
         <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: Serpentine-only max L2; beat Crosscut for L3; Ridge for L4; Winding or later for L5. Levels you already own stay. <strong>Reset Credits</strong> on the Upgrades page refunds shop purchases and returns towers and perks to starters (Archer, Frost, Cannon, Barrier at level 1). Map clears, Daily, and Account stats stay. Use <strong>Account → Reset</strong> to wipe all progress.</p>
       </div>
-      <div class="faq-build faq-build-foot">build 206</div>
+      <div class="faq-build faq-build-foot">build 207</div>
     </div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
@@ -3028,6 +3033,8 @@
       <div id="map-maker-actions">
         <button type="button" id="map-maker-undo">Undo</button>
         <button type="button" id="map-maker-clear">Clear road</button>
+        <button type="button" id="map-maker-move" aria-pressed="false">Move stretch</button>
+        <button type="button" id="map-maker-remove" aria-pressed="false">Remove stretch</button>
         <button type="button" id="map-maker-copy">Copy path</button>
         <button type="button" id="map-maker-hide">Hide buttons</button>
         <button type="button" id="map-maker-back">Back</button>
@@ -4656,7 +4663,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=206`;
+    img.src = `./sprites/${name}.png?v=207`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -7185,7 +7192,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=206" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=207" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -7376,7 +7383,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=206" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=207" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -7870,7 +7877,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'droplet';
-    return `./sprites/${spr}.png?v=206`;
+    return `./sprites/${spr}.png?v=207`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -10061,10 +10068,13 @@
     open: false,
     chromeHidden: false,
     tiles: [],
-    undoMarks: [],
+    undoStack: [],
     gestureAt: null,
+    gestureLoaded: null,
     loadedText: null,
     picking: false,
+    mode: 'draw',
+    drag: null,
     copyTimer: 0,
     look: {
       scenery: [],
@@ -10111,6 +10121,7 @@
       ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
       ctx.fill();
     }
+    drawMakerStretchGuides();
   }
 
   function makerCorners(tiles) {
@@ -10120,8 +10131,14 @@
       const prev = tiles[i - 1];
       const cur = tiles[i];
       const next = tiles[i + 1];
-      const straight = (prev.c === cur.c && cur.c === next.c) || (prev.r === cur.r && cur.r === next.r);
-      if (!straight) corners.push({ c: cur.c, r: cur.r });
+      const dc1 = cur.c - prev.c;
+      const dr1 = cur.r - prev.r;
+      const dc2 = next.c - cur.c;
+      const dr2 = next.r - cur.r;
+      // A same-direction run is one stretch. A turn or a there-and-back stays a corner
+      // so a moved or removed stretch can be copied back exactly.
+      const continues = (dc1 * dc2 + dr1 * dr2) > 0;
+      if (!continues) corners.push({ c: cur.c, r: cur.r });
     }
     const lastTile = tiles[tiles.length - 1];
     const head = corners[corners.length - 1];
@@ -10178,17 +10195,194 @@
     return marks;
   }
 
+  function copyMakerTiles(tiles) {
+    return tiles.map((t) => ({ c: t.c, r: t.r }));
+  }
+
+  function makerTilesDiffer(a, b) {
+    if (a.length !== b.length) return true;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i].c !== b[i].c || a[i].r !== b[i].r) return true;
+    }
+    return false;
+  }
+
+  const MAKER_HINTS = {
+    draw: 'Drag one road. Undo takes back the last step. Hide buttons for a picture — tap the map to show them.',
+    move: 'Drag one straight stretch. The rest of the road stays joined.',
+    remove: 'Tap one straight stretch to remove it.',
+  };
+
   function refreshMakerButtons() {
     const undoBtn = document.getElementById('map-maker-undo');
     const clearBtn = document.getElementById('map-maker-clear');
     const copyBtn = document.getElementById('map-maker-copy');
     const has = mapMaker.tiles.length > 0;
-    if (undoBtn) undoBtn.disabled = mapMaker.undoMarks.length === 0;
+    if (undoBtn) undoBtn.disabled = mapMaker.undoStack.length === 0;
     if (clearBtn) clearBtn.disabled = !has;
     if (copyBtn) {
       if (!has && copyBtn.textContent === 'Copied') copyBtn.textContent = 'Copy path';
       copyBtn.disabled = !has;
     }
+  }
+
+  function setMakerMode(mode) {
+    finishMakerPointer();
+    mapMaker.mode = mode === 'move' || mode === 'remove' ? mode : 'draw';
+    const hint = document.getElementById('map-maker-hint');
+    if (hint) hint.textContent = MAKER_HINTS[mapMaker.mode];
+    const moveBtn = document.getElementById('map-maker-move');
+    const removeBtn = document.getElementById('map-maker-remove');
+    if (moveBtn) {
+      const on = mapMaker.mode === 'move';
+      moveBtn.classList.toggle('on', on);
+      moveBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    if (removeBtn) {
+      const on = mapMaker.mode === 'remove';
+      removeBtn.classList.toggle('on', on);
+      removeBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  }
+
+  function roadStretches(corners) {
+    const list = [];
+    for (let i = 0; i < corners.length - 1; i++) {
+      const a = corners[i];
+      const b = corners[i + 1];
+      if (a.c === b.c && a.r === b.r) continue;
+      const horizontal = a.r === b.r;
+      if (!horizontal && a.c !== b.c) continue;
+      const tiles = [];
+      if (horizontal) {
+        const step = b.c >= a.c ? 1 : -1;
+        for (let c = a.c; c !== b.c + step; c += step) tiles.push({ c, r: a.r });
+      } else {
+        const step = b.r >= a.r ? 1 : -1;
+        for (let r = a.r; r !== b.r + step; r += step) tiles.push({ c: a.c, r });
+      }
+      list.push({
+        index: i,
+        horizontal,
+        a: { c: a.c, r: a.r },
+        b: { c: b.c, r: b.r },
+        tiles,
+      });
+    }
+    return list;
+  }
+
+  function stretchAt(col, row) {
+    const stretches = roadStretches(makerCorners(mapMaker.tiles));
+    let best = null;
+    let bestScore = Infinity;
+    for (const stretch of stretches) {
+      for (let t = 0; t < stretch.tiles.length; t++) {
+        const tile = stretch.tiles[t];
+        if (tile.c !== col || tile.r !== row) continue;
+        const endpoint = t === 0 || t === stretch.tiles.length - 1;
+        const score = endpoint ? 1 : 0;
+        if (score < bestScore) {
+          bestScore = score;
+          best = stretch;
+        }
+      }
+    }
+    return best;
+  }
+
+  function dropDuplicateCorners(corners) {
+    const out = [];
+    for (const p of corners) {
+      if (p.c < 0 || p.r < 0 || p.c >= COLS || p.r >= ROWS) continue;
+      const prev = out[out.length - 1];
+      if (prev && prev.c === p.c && prev.r === p.r) continue;
+      out.push({ c: p.c, r: p.r });
+    }
+    if (out.length < 2) return out;
+    return makerCorners(tilesAlongCorners(out));
+  }
+
+  function shiftStretch(corners, index, delta) {
+    const next = corners.map((p) => ({ c: p.c, r: p.r }));
+    const a = next[index];
+    const b = next[index + 1];
+    if (!a || !b) return { corners: next, a, b };
+    if (a.r === b.r && a.c !== b.c) {
+      const row = Math.max(0, Math.min(ROWS - 1, a.r + delta));
+      a.r = row;
+      b.r = row;
+    } else if (a.c === b.c && a.r !== b.r) {
+      const col = Math.max(0, Math.min(COLS - 1, a.c + delta));
+      a.c = col;
+      b.c = col;
+    }
+    return { corners: next, a: a ? { c: a.c, r: a.r } : null, b: b ? { c: b.c, r: b.r } : null };
+  }
+
+  function dropReversalCorners(tiles) {
+    if (!tiles.length) return [];
+    const corners = [{ c: tiles[0].c, r: tiles[0].r }];
+    for (let i = 1; i < tiles.length - 1; i++) {
+      const prev = tiles[i - 1];
+      const cur = tiles[i];
+      const next = tiles[i + 1];
+      const straight = (prev.c === cur.c && cur.c === next.c) || (prev.r === cur.r && cur.r === next.r);
+      if (!straight) corners.push({ c: cur.c, r: cur.r });
+    }
+    const lastTile = tiles[tiles.length - 1];
+    const head = corners[corners.length - 1];
+    if (head.c !== lastTile.c || head.r !== lastTile.r) corners.push({ c: lastTile.c, r: lastTile.r });
+    return corners;
+  }
+
+  function cornersWithoutStretch(corners, index) {
+    const stretches = roadStretches(corners);
+    const stretch = stretches.find((s) => s.index === index);
+    if (!stretch) return corners.map((p) => ({ c: p.c, r: p.r }));
+    if (corners.length <= 2) return [];
+    if (stretch.index === 0) return dropDuplicateCorners(corners.slice(1));
+    if (stretch.index === stretches[stretches.length - 1].index) return dropDuplicateCorners(corners.slice(0, -1));
+    const start = corners[stretch.index];
+    const next = corners[stretch.index + 2];
+    const head = corners.slice(0, stretch.index + 1).map((p) => ({ c: p.c, r: p.r }));
+    const tail = corners.slice(stretch.index + 2).map((p) => ({ c: p.c, r: p.r }));
+    if (!next) return dropDuplicateCorners(head);
+    // Leave the deleted line immediately, then meet the following corner.
+    // The road before this stretch, and the road after the next corner, stay put.
+    const elbow = stretch.horizontal
+      ? { c: start.c, r: next.r }
+      : { c: next.c, r: start.r };
+    return dropDuplicateCorners(head.concat([elbow], tail));
+  }
+
+  function drawMakerStretchGuides() {
+    if (!mapMaker || mapMaker.chromeHidden) return;
+    if (mapMaker.mode !== 'move' && mapMaker.mode !== 'remove') return;
+    const stretches = roadStretches(makerCorners(mapMaker.tiles));
+    if (!stretches.length) return;
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    for (const stretch of stretches) {
+      const mid = stretch.tiles[Math.floor((stretch.tiles.length - 1) / 2)];
+      const p = tileCenter(mid.c, mid.r);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const active = mapMaker.drag && mapMaker.drag.mark;
+    if (active && active.a && active.b) {
+      const a = tileCenter(active.a.c, active.a.r);
+      const b = tileCenter(active.b.c, active.b.r);
+      ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   function extendMakerTo(col, row) {
@@ -10237,24 +10431,48 @@
 
   function commitMakerGesture() {
     if (mapMaker.gestureAt == null) return;
-    if (mapMaker.tiles.length > mapMaker.gestureAt) mapMaker.undoMarks.push(mapMaker.gestureAt);
+    if (mapMaker.tiles.length > mapMaker.gestureAt) {
+      mapMaker.undoStack.push({ length: mapMaker.gestureAt, loadedText: mapMaker.gestureLoaded });
+    }
     mapMaker.gestureAt = null;
+    mapMaker.gestureLoaded = null;
     refreshMakerButtons();
   }
 
+  function endMakerDrag() {
+    const drag = mapMaker.drag;
+    mapMaker.drag = null;
+    if (!drag) return;
+    if (makerTilesDiffer(mapMaker.tiles, drag.tiles)) {
+      mapMaker.undoStack.push({ tiles: drag.tiles, loadedText: drag.loadedText });
+    } else {
+      mapMaker.loadedText = drag.loadedText;
+    }
+    refreshMakerButtons();
+  }
+
+  function finishMakerPointer() {
+    if (mapMaker.drag) endMakerDrag();
+    commitMakerGesture();
+    mapMakerPointer = null;
+  }
+
   function undoMakerStep() {
-    if (!mapMaker.undoMarks.length) return;
-    noteMakerEdit();
-    const n = mapMaker.undoMarks.pop();
-    mapMaker.tiles.length = n;
+    finishMakerPointer();
+    if (!mapMaker.undoStack.length) return;
+    const step = mapMaker.undoStack.pop();
+    if (step.tiles) mapMaker.tiles = copyMakerTiles(step.tiles);
+    else mapMaker.tiles.length = step.length;
+    mapMaker.loadedText = step.loadedText;
     syncMakerPath();
     refreshMakerButtons();
   }
 
   function clearMakerRoad() {
+    finishMakerPointer();
     noteMakerEdit();
-    mapMaker.tiles.length = 0;
-    mapMaker.undoMarks.length = 0;
+    mapMaker.tiles = [];
+    mapMaker.undoStack = [];
     syncMakerPath();
     refreshMakerButtons();
   }
@@ -10266,7 +10484,7 @@
   }
 
   function hideMakerButtons() {
-    commitMakerGesture();
+    finishMakerPointer();
     mapMaker.chromeHidden = true;
     mapMakerPointer = null;
     if (appEl) appEl.classList.add('maker-chrome-off');
@@ -10295,6 +10513,8 @@
 
   function showMakerDraw() {
     mapMaker.picking = false;
+    mapMaker.mode = 'draw';
+    mapMaker.drag = null;
     if (appEl) appEl.classList.remove('map-maker-picking');
     const pick = document.getElementById('map-maker-pick');
     const draw = document.getElementById('map-maker-draw');
@@ -10302,6 +10522,18 @@
     if (draw) draw.hidden = false;
     const copyBtn = document.getElementById('map-maker-copy');
     if (copyBtn) copyBtn.textContent = 'Copy path';
+    const hint = document.getElementById('map-maker-hint');
+    if (hint) hint.textContent = MAKER_HINTS.draw;
+    const moveBtn = document.getElementById('map-maker-move');
+    const removeBtn = document.getElementById('map-maker-remove');
+    if (moveBtn) {
+      moveBtn.classList.remove('on');
+      moveBtn.setAttribute('aria-pressed', 'false');
+    }
+    if (removeBtn) {
+      removeBtn.classList.remove('on');
+      removeBtn.setAttribute('aria-pressed', 'false');
+    }
     showMakerButtons();
     syncMakerPath();
     refreshMakerButtons();
@@ -10327,8 +10559,10 @@
 
   function startMakerBlank() {
     mapMaker.tiles = [];
-    mapMaker.undoMarks = [];
+    mapMaker.undoStack = [];
     mapMaker.gestureAt = null;
+    mapMaker.gestureLoaded = null;
+    mapMaker.drag = null;
     mapMaker.loadedText = null;
     mapMakerPointer = null;
     showMakerDraw();
@@ -10347,8 +10581,10 @@
     }
     mapMaker.loadedText = corners.map((p) => `tc(${p.c}, ${p.r})`).join(', ');
     mapMaker.tiles = tilesAlongCorners(corners);
-    mapMaker.undoMarks = undoMarksForTiles(mapMaker.tiles);
+    mapMaker.undoStack = undoMarksForTiles(mapMaker.tiles).map((length) => ({ length, loadedText: null }));
     mapMaker.gestureAt = null;
+    mapMaker.gestureLoaded = null;
+    mapMaker.drag = null;
     mapMakerPointer = null;
     showMakerDraw();
   }
@@ -10368,7 +10604,7 @@
 
   function closeMapMaker() {
     if (!mapMaker.open) return;
-    commitMakerGesture();
+    finishMakerPointer();
     mapMaker.open = false;
     mapMaker.picking = false;
     mapMaker.chromeHidden = false;
@@ -10432,6 +10668,50 @@
     finish(legacyCopyText(text));
   }
 
+  function beginMakerMove(tile, pointerId) {
+    const stretch = stretchAt(tile.c, tile.r);
+    if (!stretch) return false;
+    const corners = makerCorners(mapMaker.tiles).map((p) => ({ c: p.c, r: p.r }));
+    mapMaker.drag = {
+      index: stretch.index,
+      horizontal: stretch.horizontal,
+      finger: stretch.horizontal ? tile.r : tile.c,
+      corners,
+      tiles: copyMakerTiles(mapMaker.tiles),
+      loadedText: mapMaker.loadedText,
+      mark: { a: stretch.a, b: stretch.b },
+    };
+    mapMakerPointer = pointerId;
+    try { canvas.setPointerCapture(pointerId); } catch (_) {}
+    return true;
+  }
+
+  function dragMakerMove(tile) {
+    const drag = mapMaker.drag;
+    if (!drag) return;
+    const finger = drag.horizontal ? tile.r : tile.c;
+    const shifted = shiftStretch(drag.corners, drag.index, finger - drag.finger);
+    mapMaker.tiles = tilesAlongCorners(dropDuplicateCorners(shifted.corners));
+    drag.mark = shifted;
+    if (makerTilesDiffer(mapMaker.tiles, drag.tiles)) noteMakerEdit();
+    syncMakerPath();
+    refreshMakerButtons();
+  }
+
+  function removeMakerStretchAt(tile) {
+    const stretch = stretchAt(tile.c, tile.r);
+    if (!stretch) return;
+    const corners = makerCorners(mapMaker.tiles).map((p) => ({ c: p.c, r: p.r }));
+    const next = cornersWithoutStretch(corners, stretch.index);
+    const nextTiles = tilesAlongCorners(dropReversalCorners(tilesAlongCorners(next)));
+    if (!makerTilesDiffer(nextTiles, mapMaker.tiles)) return;
+    mapMaker.undoStack.push({ tiles: copyMakerTiles(mapMaker.tiles), loadedText: mapMaker.loadedText });
+    noteMakerEdit();
+    mapMaker.tiles = nextTiles;
+    syncMakerPath();
+    refreshMakerButtons();
+  }
+
   function onMakerPointerDown(e) {
     if (!mapMaker || !mapMaker.open || mapMaker.picking || mapMaker.chromeHidden) return;
     if (mapMakerPointer != null) return;
@@ -10439,8 +10719,18 @@
     e.preventDefault();
     const tile = makerTileFromCanvas(canvasCoords(e).x, canvasCoords(e).y);
     if (!tile) return;
+    if (mapMaker.mode === 'remove') {
+      mapMakerPointer = e.pointerId;
+      removeMakerStretchAt(tile);
+      return;
+    }
+    if (mapMaker.mode === 'move') {
+      beginMakerMove(tile, e.pointerId);
+      return;
+    }
     mapMakerPointer = e.pointerId;
     mapMaker.gestureAt = mapMaker.tiles.length;
+    mapMaker.gestureLoaded = mapMaker.loadedText;
     try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
     extendMakerTo(tile.c, tile.r);
   }
@@ -10451,14 +10741,16 @@
     e.preventDefault();
     const tile = makerTileFromCanvas(canvasCoords(e).x, canvasCoords(e).y);
     if (!tile) return;
-    extendMakerTo(tile.c, tile.r);
+    if (mapMaker.mode === 'move' && mapMaker.drag) dragMakerMove(tile);
+    else if (mapMaker.mode !== 'remove') extendMakerTo(tile.c, tile.r);
   }
 
   function onMakerPointerUp(e) {
     if (mapMakerPointer == null) return;
     if (e && e.pointerId != null && e.pointerId !== mapMakerPointer) return;
     mapMakerPointer = null;
-    commitMakerGesture();
+    if (mapMaker.drag) endMakerDrag();
+    else commitMakerGesture();
   }
 
   if (el.canvasWrap) {
@@ -10485,16 +10777,26 @@
   }
   const mapMakerUndoBtn = document.getElementById('map-maker-undo');
   const mapMakerClearBtn = document.getElementById('map-maker-clear');
+  const mapMakerMoveBtn = document.getElementById('map-maker-move');
+  const mapMakerRemoveBtn = document.getElementById('map-maker-remove');
   const mapMakerCopyBtn = document.getElementById('map-maker-copy');
   const mapMakerHideBtn = document.getElementById('map-maker-hide');
   const mapMakerBackBtn = document.getElementById('map-maker-back');
   if (mapMakerUndoBtn) mapMakerUndoBtn.addEventListener('click', (e) => { e.preventDefault(); undoMakerStep(); });
   if (mapMakerClearBtn) mapMakerClearBtn.addEventListener('click', (e) => { e.preventDefault(); clearMakerRoad(); });
+  if (mapMakerMoveBtn) mapMakerMoveBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    setMakerMode(mapMaker.mode === 'move' ? 'draw' : 'move');
+  });
+  if (mapMakerRemoveBtn) mapMakerRemoveBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    setMakerMode(mapMaker.mode === 'remove' ? 'draw' : 'remove');
+  });
   if (mapMakerCopyBtn) mapMakerCopyBtn.addEventListener('click', (e) => { e.preventDefault(); copyMapMakerPath(); });
   if (mapMakerHideBtn) mapMakerHideBtn.addEventListener('click', (e) => { e.preventDefault(); hideMakerButtons(); });
   if (mapMakerBackBtn) mapMakerBackBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    commitMakerGesture();
+    finishMakerPointer();
     showMakerPick();
   });
   const mapMakerPickBackBtn = document.getElementById('map-maker-pick-back');
