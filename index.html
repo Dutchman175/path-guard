@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Path Guard</title>
-<!-- path-guard-build: 216 -->
+<!-- path-guard-build: 217 -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html {
@@ -2641,10 +2641,13 @@
   }
   #map-maker-copy { grid-column: 1 / -1; border-color: #4ade80; }
   #map-maker-move.on,
-  #map-maker-remove.on {
+  #map-maker-remove.on,
+  #map-maker-rock.on,
+  #map-maker-water.on {
     background: #155e75;
     border-color: #67e8f9;
   }
+  #map-maker-test { grid-column: 1 / -1; border-color: #fbbf24; }
   #map-maker-hide { border-color: #fbbf24; }
   #map-maker-back { border-color: #94a3b8; }
   #map-maker-pick[hidden],
@@ -2990,7 +2993,7 @@
       <div class="faq-head">
         <div class="faq-head-text">
           <h2>Path Guard FAQ</h2>
-          <div class="faq-build">build 216</div>
+          <div class="faq-build">build 217</div>
         </div>
         <button type="button" id="faq-close">Close</button>
       </div>
@@ -3000,18 +3003,18 @@
       </div>
       <div class="faq-sec">
         <h3>Enemies</h3>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
-        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=216" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/droplet.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Droplet</strong> — smallest soft fodder. L1 Archer one-shots. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#4ade80"></span><span class="muted">Mint green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/slime.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Slime</strong> — soft mid. First at wave 6. Packs 3 Droplets. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#22c55e"></span><span class="muted">Green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/sludge.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Sludge</strong> — large soft. First at wave 11. Packs 3 Slimes (→ 9 Droplets). Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#166534"></span><span class="muted">Deep green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/goo.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Goo King</strong> — biggest green. First at wave 44. Packs 3 Sludges. Full damage from Marksman · one-third from Elemental/Gunnery. <span class="faq-color-swatch" style="background:#052e16"></span><span class="muted">Forest green</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/brute.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Brute</strong> — orange tough. First at wave 17. Full damage from Elemental · one-third from Marksman/Gunnery. <span class="faq-color-swatch" style="background:#fdba74"></span><span class="muted">Light orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/crusher.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Crusher</strong> — orange mid. First at wave 23. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Brutes. <span class="faq-color-swatch" style="background:#ea580c"></span><span class="muted">Orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/wrecker.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Wrecker</strong> — orange heavy (white spikes). First at wave 28. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Crushers. <span class="faq-color-swatch" style="background:#9a3412"></span><span class="muted">Deep orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/mauler.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Mauler</strong> — biggest orange (most white spikes). First at wave 49. Full damage from Elemental · one-third from Marksman/Gunnery. Packs 3 Wreckers. <span class="faq-color-swatch" style="background:#7c2d12"></span><span class="muted">Rust orange</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/shell.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Tank</strong> — gray armor. First at wave 33. Full damage from Gunnery · one-third from Marksman/Elemental. <span class="faq-color-swatch" style="background:#d1d5db"></span><span class="muted">Light gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/bulwark.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Bulwark</strong> — boxy steel IFV. First at wave 38. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Tanks. <span class="faq-color-swatch" style="background:#9ca3af"></span><span class="muted">Steel gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/titan.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Titan</strong> — long-gun assault armor. Wave 40 (1) &amp; Wave 50 (2). Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Bulwarks. <span class="faq-color-swatch" style="background:#6b7280"></span><span class="muted">Gray</span></div></div>
+        <div class="faq-item"><img class="faq-enemy-icon" src="./sprites/colossus.png?v=217" alt="" width="44" height="44"><div class="faq-enemy-text"><strong style="color:#f8fafc">Colossus</strong> — dozer fortress. Wave 60. Full damage from Gunnery · one-third from Marksman/Elemental. Walks through Barriers (Barrier stays). Packs 3 Titans. <span class="faq-color-swatch" style="background:#1f2937"></span><span class="muted">Near-black</span></div></div>
       </div>
       <div class="faq-sec">
         <h3>What to build vs enemies</h3>
@@ -3034,7 +3037,7 @@
         <p><strong>Difficulty</strong> — chosen per map after you pick it: Easy 40 / Medium 50 / Hard 60 waves. Clear Easy for Medium; clear Medium for Hard. Wave N has the same enemies and the same spawn spacing on every map and every difficulty. <strong>Daily</strong> is 60 waves like Hard, plus today’s named modifier, and pays 25 Credits on clear. Swarm adds 4 enemies per wave. Veterans adds 2 and may swap some for a stronger type. Fog, Budget, and Haste do not add enemies. <strong>Aim</strong> cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
         <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: Serpentine-only max L2; beat Crosscut for L3; Ridge for L4; Winding or later for L5. Levels you already own stay. <strong>Reset Credits</strong> on the Upgrades page refunds shop purchases and returns towers and perks to starters (Archer, Frost, Cannon, Barrier at level 1). Map clears, Daily, and Account stats stay. Use <strong>Account → Reset</strong> to wipe all progress.</p>
       </div>
-      <div class="faq-build faq-build-foot">build 216</div>
+      <div class="faq-build faq-build-foot">build 217</div>
     </div>
     <div id="overlay">
       <h2 id="overlay-title"></h2>
@@ -3109,6 +3112,9 @@
         <button type="button" id="map-maker-clear">Clear road</button>
         <button type="button" id="map-maker-move" aria-pressed="false">Move stretch</button>
         <button type="button" id="map-maker-remove" aria-pressed="false">Remove stretch</button>
+        <button type="button" id="map-maker-rock" aria-pressed="false">Rocks</button>
+        <button type="button" id="map-maker-water" aria-pressed="false">Water</button>
+        <button type="button" id="map-maker-test">Test</button>
         <button type="button" id="map-maker-copy">Copy path</button>
         <button type="button" id="map-maker-hide">Hide buttons</button>
         <button type="button" id="map-maker-back">Back</button>
@@ -3339,6 +3345,7 @@
   }
 
   function saveProfile() {
+    if (state.makerTest) return;
     if (!profile) return;
     try { localStorage.setItem(LS_PROFILE, JSON.stringify(profile)); } catch (_) {}
   }
@@ -3672,6 +3679,7 @@
   }
 
   function noteWaveMilestone(wave, mapId) {
+    if (state.makerTest) return;
     if (!profile || !wave) return;
     const m = profile.milestones;
     let dirty = false;
@@ -3697,6 +3705,7 @@
   }
 
   function noteTowerPlaced(type) {
+    if (state.makerTest) return;
     if (!profile || !type) return;
     if (!profile.milestones.towersPlaced[type]) {
       profile.milestones.towersPlaced[type] = true;
@@ -3706,6 +3715,7 @@
   }
 
   function noteRunClear(mapId, livesLeft) {
+    if (state.makerTest) return;
     if (!profile) return;
     profile.milestones.mapsCleared[mapId] = true;
     profile.milestones.anyMapCleared = true;
@@ -3719,7 +3729,7 @@
   }
 
   function awardRunIntel(won) {
-    if (!profile) return { total: 0, parts: [] };
+    if (state.makerTest || !profile) return { total: 0, parts: [] };
     const parts = [];
     let total = 0;
     if (won) {
@@ -3769,7 +3779,7 @@
   }
 
   function recordRunStats(won) {
-    if (!profile) return;
+    if (state.makerTest || !profile) return;
     const s = profile.stats;
     s.runs = (s.runs || 0) + 1;
     if (won) s.wins = (s.wins || 0) + 1;
@@ -4785,7 +4795,7 @@
     SPRITE_OK[name] = false;
     img.onload = () => { SPRITE_OK[name] = true; };
     img.onerror = () => { SPRITE_OK[name] = false; };
-    img.src = `./sprites/${name}.png?v=216`;
+    img.src = `./sprites/${name}.png?v=217`;
     SPRITES[name] = img;
   }
   function spriteReady(name) {
@@ -4955,7 +4965,9 @@
   }
 
   function applyMap(mapId) {
-    const map = MAPS[mapId] || MAPS.serpentine;
+    const map = (state.makerTest && mapMaker && mapMaker.testMap && mapId === 'maker-test')
+      ? mapMaker.testMap
+      : (MAPS[mapId] || MAPS.serpentine);
     state.mapId = map.id;
     LANES = mapLanesOf(map);
     PATH = LANES[0];
@@ -4963,15 +4975,18 @@
     PATH_LEN = LANE_LENS[0] || 0;
     nextSpawnLane = 0;
     rebuildBuildable();
-    try { localStorage.setItem(LS_MAP, map.id); } catch (_) {}
+    if (!state.makerTest) {
+      try { localStorage.setItem(LS_MAP, map.id); } catch (_) {}
+    }
   }
 
   function activeMap() {
+    if (state.makerTest && mapMaker && mapMaker.testMap) return mapMaker.testMap;
     return MAPS[state.mapId] || MAPS.serpentine;
   }
 
   function startGoldForMap(mapId) {
-    const map = MAPS[mapId] || MAPS.serpentine;
+    const map = (state.makerTest && mapMaker && mapMaker.testMap) ? mapMaker.testMap : (MAPS[mapId] || MAPS.serpentine);
     let g = START_GOLD + (map.startGoldBonus || 0);
     if (perkEquipped('seedMoney')) g += 25;
     return g;
@@ -4991,6 +5006,7 @@
   }
 
   function saveBestWave(w) {
+    if (state.makerTest) return;
     try {
       const cur = parseInt(localStorage.getItem(LS_BEST_WAVE) || '0', 10) || 0;
       if (w > cur) localStorage.setItem(LS_BEST_WAVE, String(w));
@@ -4999,6 +5015,7 @@
   }
 
   function saveBestWin(livesLeft) {
+    if (state.makerTest) return;
     try {
       const cur = parseInt(localStorage.getItem(LS_BEST_WIN) || '0', 10) || 0;
       if (livesLeft > cur) localStorage.setItem(LS_BEST_WIN, String(livesLeft));
@@ -5158,6 +5175,7 @@
   }
 
   function saveMapWin(mapId, elapsedMs, livesLeft) {
+    if (state.makerTest) return;
     try {
       const all = loadMapStats();
       const cur = all[mapId] || { wins: 0, bestMs: 0, stars: 0, starsMedium: 0, starsHard: 0 };
@@ -5226,6 +5244,7 @@
   }
 
   function saveDailyResult(won, elapsedMs) {
+    if (state.makerTest) return;
     if (!state.dailyRun) return;
     const today = todaysDaily();
     if (state.dailyRun.day !== today.day) return;
@@ -5305,10 +5324,12 @@
   }
 
   function saveAchievements(ach) {
+    if (state.makerTest) return;
     try { localStorage.setItem(LS_ACH, JSON.stringify(ach)); } catch (_) {}
   }
 
   function unlockAchievement(kind, mapId) {
+    if (state.makerTest) return null;
     const ach = loadAchievements();
     let unlocked = null;
     if (kind === 'map' && mapId) {
@@ -7024,7 +7045,8 @@
       el.overlayRating.innerHTML = `<span class="stars">${formatStars(rating.stars)}</span> · ${rating.label}`;
       const timeBit = elapsed ? ` Time: ${formatBestTime(elapsed)}${bestT ? ` (PB ${bestT})` : ''}.` : '';
       const hardBit = state.dailyRun ? ` · Daily ${state.dailyRun.mod.name}` : (state.runDifficulty && state.runDifficulty !== 'medium' ? ` ${DIFFICULTY[state.runDifficulty].label.toUpperCase()}` : '');
-      el.overlayMsg.textContent = `${MAPS[state.mapId].name}${hardBit} · ${state.lives}♥ left · ${Math.floor(state.gold)}g.${timeBit}${intelBit}`;
+      const mapName = activeMap().name || 'Map';
+      el.overlayMsg.textContent = `${mapName}${hardBit} · ${state.lives}♥ left · ${Math.floor(state.gold)}g.${timeBit}${intelBit}`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(newly);
     } else {
       saveDailyResult(false, 0);
@@ -7035,7 +7057,8 @@
       el.overlayTitle.textContent = state.dailyRun ? 'Daily Failed' : 'Path Breached';
       el.overlayRating.textContent = '';
       const dailyBit = state.dailyRun ? ` Daily ${state.dailyRun.mod.name}.` : '';
-      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${MAPS[state.mapId].name}.${dailyBit}${intelBit} Tip: same-color hits 100% · off-color 33% · Marksman green · Elemental orange · Gunnery gray · double-tap to upgrade.`;
+      const mapName = activeMap().name || 'Map';
+      el.overlayMsg.textContent = `Wave ${state.wave}/${state.maxWaves} on ${mapName}.${dailyBit}${intelBit} Tip: same-color hits 100% · off-color 33% · Marksman green · Elemental orange · Gunnery gray · double-tap to upgrade.`;
       if (el.overlayAch) el.overlayAch.innerHTML = achievementSummary(null);
     }
     const rb = document.getElementById('replay-btn');
@@ -7175,6 +7198,10 @@
   }
 
   function resetGame() {
+    if (state.makerTest) {
+      endMakerTest();
+      return;
+    }
     clearDailyMods();
     state.gold = START_GOLD;
     state.lives = START_LIVES;
@@ -7212,6 +7239,10 @@
   }
 
   function replayMap() {
+    if (state.makerTest) {
+      startMakerTest({ keepSnap: true });
+      return;
+    }
     const mapId = state.mapId || 'serpentine';
     // Keep difficulty + targeting (or daily mods); skip map picker
     el.overlay.classList.remove('show');
@@ -7314,7 +7345,7 @@
     btn.title = towerBtnTitle(type);
     let iconHtml;
     if (TOWER_BAR_SPRITES.includes(type)) {
-      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=216" alt="" width="48" height="48">`;
+      iconHtml = `<img class="ticon" src="./sprites/${type}.png?v=217" alt="" width="48" height="48">`;
     } else {
       iconHtml = `<span class="temoji">${TOWER_EMOJI[type] || '◆'}</span>`;
     }
@@ -7505,7 +7536,7 @@
   function towerFaqBlurb(type) {
     const def = TOWER_DEFS[type];
     if (!def) return '';
-    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=216" alt="" width="26" height="26">`;
+    const icon = `<img class="faq-tower-icon" src="./sprites/${type}.png?v=217" alt="" width="26" height="26">`;
     const role = type === 'cannon' ? 'AoE punch'
       : type === 'sniper' ? 'Map-wide pick'
       : type === 'bazooka' ? 'Huge rocket nuke'
@@ -7702,6 +7733,10 @@
   }
 
   function leaveRunToMenu() {
+    if (state.makerTest) {
+      endMakerTest();
+      return;
+    }
     hideQuitConfirm();
     // Soft-reset the run, then return to the home hub
     state.paused = true;
@@ -8107,7 +8142,7 @@
 
   function spriteUrlForEnemy(kind) {
     const spr = ENEMY_SPRITE[kind] || 'droplet';
-    return `./sprites/${spr}.png?v=216`;
+    return `./sprites/${spr}.png?v=217`;
   }
 
   function enemyChipHtml(kind, mode) {
@@ -9020,7 +9055,7 @@
   }
 
   function drawMapScenery(theme) {
-    const map = activeMap();
+    const map = (mapMaker && mapMaker.open && mapMaker.look) ? mapMaker.look : activeMap();
     const scenery = (map && map.scenery) || [];
     if (!scenery.length) return;
     const t = performance.now() / 1000;
@@ -10306,6 +10341,14 @@
     mode: 'draw',
     drag: null,
     copyTimer: 0,
+    rocks: [],
+    water: [],
+    testing: false,
+    testMap: null,
+    progressSnap: null,
+    savedDiff: null,
+    savedMapId: null,
+    featureChanged: false,
     look: {
       scenery: [],
       theme: {
@@ -10328,6 +10371,7 @@
     blockedTileSet = new Set();
     bridgeSpans = [];
     if (pts.length >= 2) addBridgeSpansForPath(pts, 0);
+    evictMakerSceneryOnRoad();
   }
 
   function restorePlayfieldFromMap() {
@@ -10343,6 +10387,7 @@
   function drawMapMakerFrame() {
     syncMakerPath();
     drawPath();
+    drawMakerScenery();
     drawBridgeDecks((mapMaker.look && mapMaker.look.theme) || {});
     if (mapMaker.tiles.length === 1) {
       const p = tileCenter(mapMaker.tiles[0].c, mapMaker.tiles[0].r);
@@ -10376,9 +10421,58 @@
     return corners;
   }
 
+  function copyMakerFeat(list) {
+    return (list || []).map((t) => ({ c: t.c, r: t.r }));
+  }
+
+  function makerTileKey(c, r) {
+    return c + ',' + r;
+  }
+
+  function evictMakerSceneryOnRoad() {
+    const road = new Set((mapMaker.tiles || []).map((t) => makerTileKey(t.c, t.r)));
+    const keep = (list) => (list || []).filter((t) => !road.has(makerTileKey(t.c, t.r)));
+    mapMaker.rocks = keep(mapMaker.rocks);
+    mapMaker.water = keep(mapMaker.water);
+  }
+
+  function makerSceneryFeat(tile, kind) {
+    const p = tileCenter(tile.c, tile.r);
+    return { kind, x: p.x, y: p.y, rx: 16, ry: 14 };
+  }
+
+  function drawMakerScenery() {
+    const rocks = mapMaker.rocks || [];
+    const water = mapMaker.water || [];
+    if (!rocks.length && !water.length) return;
+    const t = performance.now() / 1000;
+    for (const tile of water) {
+      ctx.save();
+      drawSceneryPond(makerSceneryFeat(tile, 'pond'), t);
+      ctx.restore();
+    }
+    for (const tile of rocks) {
+      ctx.save();
+      drawSceneryRocks(makerSceneryFeat(tile, 'rocks'));
+      ctx.restore();
+    }
+  }
+
   function mapMakerPathText() {
-    if (mapMaker.loadedText) return mapMaker.loadedText;
-    return makerCorners(mapMaker.tiles).map((p) => `tc(${p.c}, ${p.r})`).join(', ');
+    const path = mapMaker.loadedText || makerCorners(mapMaker.tiles).map((p) => `tc(${p.c}, ${p.r})`).join(', ');
+    const rocks = (mapMaker.rocks || []).map((p) => `tc(${p.c}, ${p.r})`).join(', ');
+    const water = (mapMaker.water || []).map((p) => `tc(${p.c}, ${p.r})`).join(', ');
+    if (!path && !rocks && !water) return '';
+    // Copy form for a later build. path is the road corners in order.
+    // rocks and water are one empty tile each. They block tower spots and cannot sit on the road.
+    return [
+      `path: ${path}`,
+      `rocks: ${rocks}`,
+      `water: ${water}`,
+      '# path: road corners, in order, as tc(col, row).',
+      '# rocks: one rock per tc(), on an empty tile. water: one water tile per tc().',
+      '# Rocks and water block tower spots. Drop any tc() the road covers.',
+    ].join('\n');
   }
 
   function noteMakerEdit() {
@@ -10438,40 +10532,41 @@
   }
 
   const MAKER_HINTS = {
-    draw: 'Drag one road. Undo takes back the last step. Hide buttons for a picture — tap the map to show them.',
+    draw: 'Drag one road. Rocks and Water go on empty tiles. Undo takes back the last step.',
     move: 'Drag one straight stretch. The rest of the road stays joined.',
     remove: 'Tap one straight stretch to remove it.',
+    rock: 'Tap an empty tile to place a rock. Tap that rock to remove it. Rocks cannot sit on the road.',
+    water: 'Tap an empty tile to place water. Tap that water to remove it. Water cannot sit on the road.',
   };
 
   function refreshMakerButtons() {
     const undoBtn = document.getElementById('map-maker-undo');
     const clearBtn = document.getElementById('map-maker-clear');
     const copyBtn = document.getElementById('map-maker-copy');
-    const has = mapMaker.tiles.length > 0;
+    const hasRoad = mapMaker.tiles.length >= 2;
+    const hasAny = mapMaker.tiles.length > 0 || (mapMaker.rocks && mapMaker.rocks.length) || (mapMaker.water && mapMaker.water.length);
     if (undoBtn) undoBtn.disabled = mapMaker.undoStack.length === 0;
-    if (clearBtn) clearBtn.disabled = !has;
+    if (clearBtn) clearBtn.disabled = mapMaker.tiles.length === 0;
     if (copyBtn) {
-      if (!has && copyBtn.textContent === 'Copied') copyBtn.textContent = 'Copy path';
-      copyBtn.disabled = !has;
+      if (!hasAny && copyBtn.textContent === 'Copied') copyBtn.textContent = 'Copy path';
+      copyBtn.disabled = !hasAny;
     }
+    const testBtn = document.getElementById('map-maker-test');
+    if (testBtn) testBtn.disabled = !hasRoad;
   }
 
   function setMakerMode(mode) {
     finishMakerPointer();
-    mapMaker.mode = mode === 'move' || mode === 'remove' ? mode : 'draw';
+    const allowed = mode === 'move' || mode === 'remove' || mode === 'rock' || mode === 'water';
+    mapMaker.mode = allowed ? mode : 'draw';
     const hint = document.getElementById('map-maker-hint');
     if (hint) hint.textContent = MAKER_HINTS[mapMaker.mode];
-    const moveBtn = document.getElementById('map-maker-move');
-    const removeBtn = document.getElementById('map-maker-remove');
-    if (moveBtn) {
-      const on = mapMaker.mode === 'move';
-      moveBtn.classList.toggle('on', on);
-      moveBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    }
-    if (removeBtn) {
-      const on = mapMaker.mode === 'remove';
-      removeBtn.classList.toggle('on', on);
-      removeBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    for (const [id, name] of [['map-maker-move', 'move'], ['map-maker-remove', 'remove'], ['map-maker-rock', 'rock'], ['map-maker-water', 'water']]) {
+      const btn = document.getElementById(id);
+      if (!btn) continue;
+      const on = mapMaker.mode === name;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
   }
 
@@ -10661,28 +10756,54 @@
 
   function commitMakerGesture() {
     if (mapMaker.gestureAt == null) return;
-    if (mapMaker.tiles.length > mapMaker.gestureAt) {
-      mapMaker.undoStack.push({ length: mapMaker.gestureAt, loadedText: mapMaker.gestureLoaded });
+    const grew = mapMaker.tiles.length > mapMaker.gestureAt;
+    const sceneryChanged = makerFeatDiffer(mapMaker.rocks, mapMaker.gestureRocks) || makerFeatDiffer(mapMaker.water, mapMaker.gestureWater);
+    if (grew || sceneryChanged) {
+      mapMaker.undoStack.push({
+        length: mapMaker.gestureAt,
+        loadedText: mapMaker.gestureLoaded,
+        rocks: mapMaker.gestureRocks || [],
+        water: mapMaker.gestureWater || [],
+      });
     }
     mapMaker.gestureAt = null;
     mapMaker.gestureLoaded = null;
+    mapMaker.gestureRocks = null;
+    mapMaker.gestureWater = null;
     refreshMakerButtons();
+  }
+
+  function makerFeatDiffer(a, b) {
+    const left = a || [];
+    const right = b || [];
+    if (left.length !== right.length) return true;
+    for (let i = 0; i < left.length; i++) {
+      if (left[i].c !== right[i].c || left[i].r !== right[i].r) return true;
+    }
+    return false;
   }
 
   function endMakerDrag() {
     const drag = mapMaker.drag;
     mapMaker.drag = null;
     if (!drag) return;
-    if (makerTilesDiffer(mapMaker.tiles, drag.tiles)) {
-      mapMaker.undoStack.push({ tiles: drag.tiles, loadedText: drag.loadedText });
-    } else {
-      mapMaker.loadedText = drag.loadedText;
+    const tilesChanged = makerTilesDiffer(mapMaker.tiles, drag.tiles);
+    const sceneryChanged = makerFeatDiffer(mapMaker.rocks, drag.rocks) || makerFeatDiffer(mapMaker.water, drag.water);
+    if (tilesChanged || sceneryChanged) {
+      mapMaker.undoStack.push({
+        tiles: drag.tiles,
+        loadedText: drag.loadedText,
+        rocks: drag.rocks || [],
+        water: drag.water || [],
+      });
     }
+    if (!tilesChanged) mapMaker.loadedText = drag.loadedText;
     refreshMakerButtons();
   }
 
   function finishMakerPointer() {
     if (mapMaker.drag) endMakerDrag();
+    if (mapMaker.featureChanged) commitMakerFeatureStroke();
     commitMakerGesture();
     mapMakerPointer = null;
   }
@@ -10692,7 +10813,9 @@
     if (!mapMaker.undoStack.length) return;
     const step = mapMaker.undoStack.pop();
     if (step.tiles) mapMaker.tiles = copyMakerTiles(step.tiles);
-    else mapMaker.tiles.length = step.length;
+    else if (typeof step.length === 'number') mapMaker.tiles.length = step.length;
+    if (Array.isArray(step.rocks)) mapMaker.rocks = copyMakerFeat(step.rocks);
+    if (Array.isArray(step.water)) mapMaker.water = copyMakerFeat(step.water);
     mapMaker.loadedText = step.loadedText;
     syncMakerPath();
     refreshMakerButtons();
@@ -10754,15 +10877,11 @@
     if (copyBtn) copyBtn.textContent = 'Copy path';
     const hint = document.getElementById('map-maker-hint');
     if (hint) hint.textContent = MAKER_HINTS.draw;
-    const moveBtn = document.getElementById('map-maker-move');
-    const removeBtn = document.getElementById('map-maker-remove');
-    if (moveBtn) {
-      moveBtn.classList.remove('on');
-      moveBtn.setAttribute('aria-pressed', 'false');
-    }
-    if (removeBtn) {
-      removeBtn.classList.remove('on');
-      removeBtn.setAttribute('aria-pressed', 'false');
+    for (const id of ['map-maker-move', 'map-maker-remove', 'map-maker-rock', 'map-maker-water']) {
+      const btn = document.getElementById(id);
+      if (!btn) continue;
+      btn.classList.remove('on');
+      btn.setAttribute('aria-pressed', 'false');
     }
     showMakerButtons();
     syncMakerPath();
@@ -10789,6 +10908,8 @@
 
   function startMakerBlank() {
     mapMaker.tiles = [];
+    mapMaker.rocks = [];
+    mapMaker.water = [];
     mapMaker.undoStack = [];
     mapMaker.gestureAt = null;
     mapMaker.gestureLoaded = null;
@@ -10811,6 +10932,8 @@
     }
     mapMaker.loadedText = corners.map((p) => `tc(${p.c}, ${p.r})`).join(', ');
     mapMaker.tiles = tilesAlongCorners(corners);
+    mapMaker.rocks = [];
+    mapMaker.water = [];
     mapMaker.undoStack = undoMarksForTiles(mapMaker.tiles).map((length) => ({ length, loadedText: null }));
     mapMaker.gestureAt = null;
     mapMaker.gestureLoaded = null;
@@ -10909,6 +11032,8 @@
       corners,
       tiles: copyMakerTiles(mapMaker.tiles),
       loadedText: mapMaker.loadedText,
+      rocks: copyMakerFeat(mapMaker.rocks),
+      water: copyMakerFeat(mapMaker.water),
       mark: { a: stretch.a, b: stretch.b },
     };
     mapMakerPointer = pointerId;
@@ -10935,10 +11060,44 @@
     const next = cornersWithoutStretch(corners, stretch.index);
     const nextTiles = tilesAlongCorners(dropReversalCorners(tilesAlongCorners(next)));
     if (!makerTilesDiffer(nextTiles, mapMaker.tiles)) return;
-    mapMaker.undoStack.push({ tiles: copyMakerTiles(mapMaker.tiles), loadedText: mapMaker.loadedText });
+    mapMaker.undoStack.push({
+      tiles: copyMakerTiles(mapMaker.tiles),
+      loadedText: mapMaker.loadedText,
+      rocks: copyMakerFeat(mapMaker.rocks),
+      water: copyMakerFeat(mapMaker.water),
+    });
     noteMakerEdit();
     mapMaker.tiles = nextTiles;
     syncMakerPath();
+    refreshMakerButtons();
+  }
+
+  function paintMakerFeature(kind, c, r, toggle) {
+    if (c < 0 || r < 0 || c >= COLS || r >= ROWS) return;
+    if (mapMaker.tiles.some((t) => t.c === c && t.r === r)) return;
+    const list = kind === 'water' ? mapMaker.water : mapMaker.rocks;
+    const other = kind === 'water' ? mapMaker.rocks : mapMaker.water;
+    const idx = list.findIndex((t) => t.c === c && t.r === r);
+    if (idx >= 0) {
+      if (!toggle) return;
+      list.splice(idx, 1);
+      mapMaker.featureChanged = true;
+      return;
+    }
+    if (other.some((t) => t.c === c && t.r === r)) return;
+    list.push({ c, r });
+    mapMaker.featureChanged = true;
+  }
+
+  function commitMakerFeatureStroke() {
+    if (!mapMaker.featureChanged) return;
+    mapMaker.undoStack.push({
+      tiles: copyMakerTiles(mapMaker.tiles),
+      loadedText: mapMaker.loadedText,
+      rocks: mapMaker.gestureRocks || [],
+      water: mapMaker.gestureWater || [],
+    });
+    mapMaker.featureChanged = false;
     refreshMakerButtons();
   }
 
@@ -10958,9 +11117,20 @@
       beginMakerMove(tile, e.pointerId);
       return;
     }
+    if (mapMaker.mode === 'rock' || mapMaker.mode === 'water') {
+      mapMakerPointer = e.pointerId;
+      mapMaker.gestureRocks = copyMakerFeat(mapMaker.rocks);
+      mapMaker.gestureWater = copyMakerFeat(mapMaker.water);
+      mapMaker.featureChanged = false;
+      paintMakerFeature(mapMaker.mode, tile.c, tile.r, true);
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+      return;
+    }
     mapMakerPointer = e.pointerId;
     mapMaker.gestureAt = mapMaker.tiles.length;
     mapMaker.gestureLoaded = mapMaker.loadedText;
+    mapMaker.gestureRocks = copyMakerFeat(mapMaker.rocks);
+    mapMaker.gestureWater = copyMakerFeat(mapMaker.water);
     try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
     extendMakerTo(tile.c, tile.r);
   }
@@ -10972,6 +11142,7 @@
     const tile = makerTileFromCanvas(canvasCoords(e).x, canvasCoords(e).y);
     if (!tile) return;
     if (mapMaker.mode === 'move' && mapMaker.drag) dragMakerMove(tile);
+    else if (mapMaker.mode === 'rock' || mapMaker.mode === 'water') paintMakerFeature(mapMaker.mode, tile.c, tile.r, false);
     else if (mapMaker.mode !== 'remove') extendMakerTo(tile.c, tile.r);
   }
 
@@ -10980,6 +11151,7 @@
     if (e && e.pointerId != null && e.pointerId !== mapMakerPointer) return;
     mapMakerPointer = null;
     if (mapMaker.drag) endMakerDrag();
+    else if (mapMaker.mode === 'rock' || mapMaker.mode === 'water') commitMakerFeatureStroke();
     else commitMakerGesture();
   }
 
@@ -10998,6 +11170,192 @@
   window.addEventListener('pointerup', onMakerPointerUp);
   window.addEventListener('pointercancel', onMakerPointerUp);
 
+  function makerTestMap() {
+    const corners = makerCorners(mapMaker.tiles);
+    const path = corners.map((p) => tc(p.c, p.r));
+    const scenery = [];
+    for (const tile of mapMaker.rocks) scenery.push(makerSceneryFeat(tile, 'rocks'));
+    for (const tile of mapMaker.water) scenery.push(makerSceneryFeat(tile, 'pond'));
+    return {
+      id: 'maker-test',
+      name: 'Map test',
+      difficulty: 1,
+      score: 0,
+      startGoldBonus: 0,
+      path,
+      scenery,
+      blocked: mapMaker.rocks.concat(mapMaker.water).map((t) => [t.c, t.r]),
+      theme: (mapMaker.look && mapMaker.look.theme) || {},
+    };
+  }
+
+  function captureMakerProgress() {
+    const bag = {};
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        bag[k] = localStorage.getItem(k);
+      }
+    } catch (_) {}
+    let profileCopy = null;
+    try { profileCopy = profile ? JSON.parse(JSON.stringify(profile)) : null; } catch (_) {}
+    return { bag, profile: profileCopy };
+  }
+
+  function restoreMakerProgress(snap) {
+    if (!snap) return;
+    try {
+      const now = [];
+      for (let i = 0; i < localStorage.length; i++) now.push(localStorage.key(i));
+      for (const k of now) {
+        if (!Object.prototype.hasOwnProperty.call(snap.bag, k)) localStorage.removeItem(k);
+      }
+      for (const k of Object.keys(snap.bag)) localStorage.setItem(k, snap.bag[k]);
+    } catch (_) {}
+    if (snap.profile) profile = snap.profile;
+  }
+
+  function syncMakerTestLabels() {
+    if (el.quitConfirmYes) el.quitConfirmYes.textContent = state.makerTest ? 'Back to drawing' : 'Quit to menu';
+    const title = document.getElementById('quit-confirm-title');
+    if (title) title.textContent = state.makerTest ? 'Back to the drawing?' : 'Quit this run?';
+    const sub = document.querySelector('#quit-confirm .quit-sub');
+    if (sub) {
+      sub.textContent = state.makerTest
+        ? 'The road, rocks, and water stay. This test is not saved.'
+        : 'You will lose this run and return to the menu.';
+    }
+    const restart = document.getElementById('restart-btn');
+    if (restart) restart.textContent = state.makerTest ? 'Back to drawing' : 'Menu';
+  }
+
+  function startMakerTest(opts) {
+    finishMakerPointer();
+    evictMakerSceneryOnRoad();
+    if (mapMaker.tiles.length < 2) {
+      const hint = document.getElementById('map-maker-hint');
+      if (hint) hint.textContent = 'Draw a road with at least two tiles, then Test.';
+      return;
+    }
+    const keep = !!(opts && opts.keepSnap && mapMaker.progressSnap);
+    if (!keep) {
+      mapMaker.progressSnap = captureMakerProgress();
+      mapMaker.savedDiff = state.runDifficulty;
+      mapMaker.savedMapId = state.mapId && MAPS[state.mapId] ? state.mapId : 'loops';
+    }
+    mapMaker.testMap = makerTestMap();
+    mapMaker.testing = true;
+    state.makerTest = true;
+    mapMaker.open = false;
+    mapMaker.chromeHidden = false;
+    if (appEl) appEl.classList.remove('map-maker-on', 'map-maker-picking', 'maker-chrome-off');
+    const bar = document.getElementById('map-maker');
+    if (bar) bar.hidden = true;
+    applyRunDifficulty('easy', { persist: false });
+    state.gold = START_GOLD + (perkEquipped('seedMoney') ? 25 : 0);
+    state.lives = startLivesForRun();
+    state.runKills = 0;
+    state.runDamage = 0;
+    state.runGoldEarned = 0;
+    state.wave = 0;
+    state.selected = null;
+    if (typeof clearTowerSelection === 'function') clearTowerSelection();
+    state.selectedTower = null;
+    closeTowerTip();
+    closeTowerDetail();
+    state.towers = [];
+    state.enemies = [];
+    state.projectiles = [];
+    state.particles = [];
+    state.floatingTexts = [];
+    state.counterToastLast = Object.create(null);
+    resetHalfDamageCues();
+    state.bolts = [];
+    state.rings = [];
+    state.started = false;
+    state.gameOver = false;
+    state.won = false;
+    state.spawnLeft = 0;
+    state.spawnQueue = [];
+    state.spawnGaps = [];
+    state.spawnCD = 0;
+    state.betweenWaves = false;
+    state.nextWaveIn = 0;
+    state.awaitingNextWave = false;
+    state.sellConfirming = false;
+    state.paused = false;
+    state.waveLivesStart = state.lives;
+    state.runStartedAt = 0;
+    state.changingMap = false;
+    clearDailyMods();
+    applyMap('maker-test');
+    state.mapPicked = true;
+    if (el.mapOverlay) el.mapOverlay.classList.remove('show');
+    if (el.overlay) el.overlay.classList.remove('show');
+    closeDailyBrief();
+    hideQuitConfirm();
+    if (el.hint) el.hint.textContent = `Map test · ${state.maxWaves} waves`;
+    setWavePreview('', false);
+    maybeShowOnboardTip();
+    syncMakerTestLabels();
+    updateWaveButtons();
+    updateHUD();
+    refreshMetaUI();
+  }
+
+  function endMakerTest() {
+    const snap = mapMaker.progressSnap;
+    const diff = mapMaker.savedDiff;
+    const mapId = mapMaker.savedMapId || 'loops';
+    hideQuitConfirm();
+    restoreMakerProgress(snap);
+    mapMaker.progressSnap = null;
+    mapMaker.savedDiff = null;
+    mapMaker.savedMapId = null;
+    mapMaker.testMap = null;
+    mapMaker.testing = false;
+    state.mapId = MAPS[mapId] ? mapId : 'loops';
+    state.makerTest = false;
+    state.mapPicked = false;
+    state.gameOver = false;
+    state.won = false;
+    state.paused = false;
+    state.started = false;
+    state.changingMap = false;
+    state.selected = null;
+    state.selectedTower = null;
+    if (typeof clearTowerSelection === 'function') clearTowerSelection();
+    closeTowerTip();
+    closeTowerDetail();
+    state.enemyIntroQueue = [];
+    state.enemyIntroOpen = false;
+    if (el.enemyIntro) {
+      el.enemyIntro.classList.remove('show');
+      el.enemyIntro.setAttribute('aria-hidden', 'true');
+    }
+    state.towers = [];
+    state.enemies = [];
+    state.projectiles = [];
+    state.particles = [];
+    state.floatingTexts = [];
+    state.bolts = [];
+    state.rings = [];
+    state.spawnQueue = [];
+    state.betweenWaves = false;
+    state.awaitingNextWave = false;
+    if (el.overlay) el.overlay.classList.remove('show');
+    if (el.mapOverlay) el.mapOverlay.classList.remove('show');
+    syncMakerTestLabels();
+    if (diff) applyRunDifficulty(diff, { persist: false });
+    mapMaker.open = true;
+    if (appEl) appEl.classList.add('map-maker-on');
+    const bar = document.getElementById('map-maker');
+    if (bar) bar.hidden = false;
+    showMakerDraw();
+    refreshMetaUI();
+    updateHUD();
+  }
+
   const mapMakerMenuBtn = document.getElementById('hub-btn-map-maker');
   if (mapMakerMenuBtn) {
     mapMakerMenuBtn.addEventListener('click', (e) => {
@@ -11009,6 +11367,9 @@
   const mapMakerClearBtn = document.getElementById('map-maker-clear');
   const mapMakerMoveBtn = document.getElementById('map-maker-move');
   const mapMakerRemoveBtn = document.getElementById('map-maker-remove');
+  const mapMakerRockBtn = document.getElementById('map-maker-rock');
+  const mapMakerWaterBtn = document.getElementById('map-maker-water');
+  const mapMakerTestBtn = document.getElementById('map-maker-test');
   const mapMakerCopyBtn = document.getElementById('map-maker-copy');
   const mapMakerHideBtn = document.getElementById('map-maker-hide');
   const mapMakerBackBtn = document.getElementById('map-maker-back');
@@ -11021,6 +11382,18 @@
   if (mapMakerRemoveBtn) mapMakerRemoveBtn.addEventListener('click', (e) => {
     e.preventDefault();
     setMakerMode(mapMaker.mode === 'remove' ? 'draw' : 'remove');
+  });
+  if (mapMakerRockBtn) mapMakerRockBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    setMakerMode(mapMaker.mode === 'rock' ? 'draw' : 'rock');
+  });
+  if (mapMakerWaterBtn) mapMakerWaterBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    setMakerMode(mapMaker.mode === 'water' ? 'draw' : 'water');
+  });
+  if (mapMakerTestBtn) mapMakerTestBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    startMakerTest();
   });
   if (mapMakerCopyBtn) mapMakerCopyBtn.addEventListener('click', (e) => { e.preventDefault(); copyMapMakerPath(); });
   if (mapMakerHideBtn) mapMakerHideBtn.addEventListener('click', (e) => { e.preventDefault(); hideMakerButtons(); });
