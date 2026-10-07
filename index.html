@@ -2929,19 +2929,16 @@
         <span class="map-lock" id="lock-crosscut"></span>
         <span class="map-title">Map 5: Crosscut</span>
         <span class="sub">Doglegs · ponds & rocks block farm lanes</span>
-        <span class="map-cap-line" data-cap-lv="3">Beat Crosscut to unlock level 3</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-ridge" data-map="ridge">
         <span class="map-lock" id="lock-ridge"></span>
         <span class="map-title">Map 6: Ridge</span>
         <span class="sub">Hills plateau · rock outcrops · +5g</span>
-        <span class="map-cap-line" data-cap-lv="4">Beat Ridge to unlock level 4</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-winding" data-map="winding">
         <span class="map-lock" id="lock-winding"></span>
         <span class="map-title">Map 7: Winding</span>
         <span class="sub">Orchard zig · grove blocks</span>
-        <span class="map-cap-line" data-cap-lv="5">Beat Winding to unlock level 5</span>
       </button>
       <button type="button" class="map-pick-btn" id="map-crucible" data-map="crucible">
         <span class="map-lock" id="lock-crucible"></span>
@@ -3061,7 +3058,7 @@
       <div class="faq-sec">
         <h3>Tips &amp; extras</h3>
         <p><strong>Difficulty</strong> — chosen per map after you pick it: Easy 40 / Medium 50 / Hard 60 waves. Clear Easy for Medium; clear Medium for Hard. Wave N has the same enemies and the same spawn spacing on every map and every difficulty. <strong>Daily</strong> is 60 waves like Hard, plus today’s named modifier, and pays 25 Credits on clear. Swarm adds 4 enemies per wave. Veterans adds 2 and may swap some for a stronger type. Fog, Budget, and Haste do not add enemies. <strong>Aim</strong> cycles First / Strong / Close. <strong>Speed</strong> 1x→2x→3x→5x.</p>
-        <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: Serpentine-only max L2; beat Crosscut for L3; Ridge for L4; Winding or later for L5. Levels you already own stay. <strong>Reset Credits</strong> on the Upgrades page refunds shop purchases and returns towers and perks to starters (Archer, Frost, Cannon, Barrier at level 1). Map clears, Daily, and Account stats stay. Use <strong>Account → Reset</strong> to wipe all progress.</p>
+        <p><strong>Upgrades</strong> — Credits, tower unlocks/caps, and perks (buy + equip) are saved in this browser only (local). Unlock Level still costs Credits. Map clears raise the career cap: <span id="faq-career-cap">Map 1 stays at max L2; beat Map 2 for L3; Map 3 for L4; Map 4 or a later map for L5</span>. Levels you already own stay. <strong>Reset Credits</strong> on the Upgrades page refunds shop purchases and returns towers and perks to starters (Archer, Frost, Cannon, Barrier at level 1). Map clears, Daily, and Account stats stay. Use <strong>Account → Reset</strong> to wipe all progress.</p>
       </div>
       <div class="faq-build faq-build-foot">build 224</div>
     </div>
@@ -3613,6 +3610,43 @@
     }
   }
 
+  // Career pacing and map-tied shop gates use the menu slot (1-based index in
+  // MAP_ORDER), never a map id. Reordering the list moves the gates with it.
+  // Level cap: default 2; clear slot 2 → 3; slot 3 → 4; slot 4 or later → 5.
+  // Shop maps are the original early-ladder slots: 1 lightning, 2 fire,
+  // 3 sniper, 4 bazooka. Fire still needs Lightning; Bazooka still needs Sniper.
+  function mapIdAtSlot(slot) {
+    const i = (slot | 0) - 1;
+    return i >= 0 && i < MAP_ORDER.length ? MAP_ORDER[i] : null;
+  }
+
+  function mapNameAtSlot(slot) {
+    const id = mapIdAtSlot(slot);
+    if (!id) return 'Map ' + slot;
+    const map = MAPS[id];
+    return (map && map.name) || id;
+  }
+
+  function mapSlotCleared(slot) {
+    const id = mapIdAtSlot(slot);
+    return !!(id && mapIsCleared(id));
+  }
+
+  function highestClearedMapSlot() {
+    let best = 0;
+    for (let i = 0; i < MAP_ORDER.length; i++) {
+      if (mapIsCleared(MAP_ORDER[i])) best = i + 1;
+    }
+    return best;
+  }
+
+  function careerCapLevelForSlot(slot) {
+    if (slot === 2) return 3;
+    if (slot === 3) return 4;
+    if (slot === 4) return 5;
+    return 0;
+  }
+
   function towerGateMet(gate) {
     const m = profile.milestones;
     if (gate === 'wave10') return !!m.wave10;
@@ -3620,10 +3654,10 @@
     if (gate === 'wave15') return !!m.wave15;
     if (gate === 'wave20') return !!m.wave20;
     if (gate === 'wave30') return !!m.wave30;
-    if (gate === 'lightning') return mapIsCleared('serpentine') || !!m.wave20;
-    if (gate === 'fire') return !!profile.towersUnlocked.lightning && mapIsCleared('crosscut');
-    if (gate === 'sniper') return mapIsCleared('ridge');
-    if (gate === 'bazooka') return !!profile.towersUnlocked.sniper && mapIsCleared('winding');
+    if (gate === 'lightning') return mapSlotCleared(1) || !!m.wave20;
+    if (gate === 'fire') return !!profile.towersUnlocked.lightning && mapSlotCleared(2);
+    if (gate === 'sniper') return mapSlotCleared(3);
+    if (gate === 'bazooka') return !!profile.towersUnlocked.sniper && mapSlotCleared(4);
     if (gate === 'firstClear') return !!m.anyMapCleared;
     if (gate === 'bankOwned') return !!profile.towersUnlocked.bank;
     return false;
@@ -3635,30 +3669,37 @@
     if (gate === 'wave15') return 'Reach wave 15 once';
     if (gate === 'wave20') return 'Reach wave 20 once';
     if (gate === 'wave30') return 'Reach wave 30 once';
-    if (gate === 'lightning') return 'Clear Serpentine or reach wave 20';
-    if (gate === 'fire') return 'Unlock Lightning · clear Crosscut';
-    if (gate === 'sniper') return 'Clear Ridge';
-    if (gate === 'bazooka') return 'Unlock Sniper · clear Winding';
+    if (gate === 'lightning') return `Clear ${mapNameAtSlot(1)} or reach wave 20`;
+    if (gate === 'fire') return `Unlock Lightning · clear ${mapNameAtSlot(2)}`;
+    if (gate === 'sniper') return `Clear ${mapNameAtSlot(3)}`;
+    if (gate === 'bazooka') return `Unlock Sniper · clear ${mapNameAtSlot(4)}`;
     if (gate === 'firstClear') return 'Clear any map once';
     if (gate === 'bankOwned') return 'Unlock Bank first';
     return 'Locked';
   }
 
-  // Map progress cap (owned levels above this are kept; only further Unlock Level is blocked).
-  // Serpentine only → 2; Crosscut clear → 3; Ridge → 4; Winding or any map that used to follow it → 5.
-  // Listed by map, not menu position, so the score order does not change the cap.
+  // Owned levels above this stay; only further Unlock Level is blocked.
+  // Slot 2 clear → 3; slot 3 → 4; slot 4 or any later slot → 5. Else 2.
   function careerMapLevelCap() {
-    if (mapIsCleared('winding') || mapIsCleared('gauntlet') || mapIsCleared('crucible') || mapIsCleared('figureeight') || mapIsCleared('loops')) return 5;
-    if (mapIsCleared('ridge')) return 4;
-    if (mapIsCleared('crosscut')) return 3;
+    const slot = highestClearedMapSlot();
+    if (slot >= 4) return 5;
+    if (slot >= 3) return 4;
+    if (slot >= 2) return 3;
     return 2;
   }
 
+  function capSlotForLevel(nextLv) {
+    if (nextLv === 3) return 2;
+    if (nextLv === 4) return 3;
+    if (nextLv >= 5) return 4;
+    return 0;
+  }
+
   function capMapNeedForLevel(nextLv) {
-    if (nextLv === 3) return { name: 'Crosscut', level: 3 };
-    if (nextLv === 4) return { name: 'Ridge', level: 4 };
-    if (nextLv >= 5) return { name: 'Winding', level: 5 };
-    return null;
+    const slot = capSlotForLevel(nextLv);
+    if (!slot) return null;
+    const level = nextLv >= 5 ? 5 : nextLv;
+    return { name: mapNameAtSlot(slot), level, slot };
   }
 
   function capGateMet(type, nextLv) {
@@ -4078,19 +4119,49 @@
     refreshMapCapNote();
   }
 
+  function refreshFaqCareerCap() {
+    const el = document.getElementById('faq-career-cap');
+    if (!el) return;
+    el.textContent = `Map 1 stays at max L2; beat ${mapNameAtSlot(2)} for L3; ${mapNameAtSlot(3)} for L4; ${mapNameAtSlot(4)} or a later map for L5`;
+  }
+
   function refreshMapCapNote() {
+    const list = document.getElementById('map-list');
     const cap = careerMapLevelCap();
-    document.querySelectorAll('.map-pick-btn .map-cap-line').forEach((el) => {
-      const lv = parseInt(el.getAttribute('data-cap-lv'), 10);
-      if (!lv) return;
-      const btn = el.closest('.map-pick-btn');
-      const mapId = btn && btn.dataset.map;
-      // Hide once this map has a clear on Easy, Medium, or Hard. Unbeaten maps keep the note.
-      const beaten = mapBeatenOnAnyDifficulty(mapId);
-      el.hidden = beaten;
-      el.classList.toggle('done', !beaten && cap >= lv);
-      el.classList.toggle('next', !beaten && cap + 1 === lv);
-    });
+    if (list) {
+      for (let i = 0; i < MAP_ORDER.length; i++) {
+        const id = MAP_ORDER[i];
+        const slot = i + 1;
+        const btn = list.querySelector(`.map-pick-btn[data-map="${id}"]`);
+        if (!btn) continue;
+        const node = btn.closest('.map-pick') || btn;
+        list.appendChild(node);
+        const name = mapNameAtSlot(slot);
+        const title = btn.querySelector('.map-title');
+        if (title) title.textContent = `Map ${slot}: ${name}`;
+        const lv = careerCapLevelForSlot(slot);
+        let line = btn.querySelector('.map-cap-line');
+        if (!lv) {
+          if (line) line.remove();
+          continue;
+        }
+        if (!line) {
+          line = document.createElement('span');
+          line.className = 'map-cap-line';
+          const sub = btn.querySelector('.sub');
+          if (sub) sub.insertAdjacentElement('afterend', line);
+          else btn.appendChild(line);
+        }
+        line.setAttribute('data-cap-lv', String(lv));
+        line.textContent = `Beat ${name} to unlock level ${lv}`;
+        // Hide once this map has a clear on Easy, Medium, or Hard. Unbeaten maps keep the note.
+        const beaten = mapBeatenOnAnyDifficulty(id);
+        line.hidden = beaten;
+        line.classList.toggle('done', !beaten && cap >= lv);
+        line.classList.toggle('next', !beaten && cap + 1 === lv);
+      }
+    }
+    refreshFaqCareerCap();
   }
 
   function towerShopRow(type) {
@@ -11649,6 +11720,7 @@
   // TARGET_MODES is declared later in file order — load prefs after constants exist
   loadPersistedPrefs();
   loadProfile();
+  refreshMapCapNote();
   async function sharePathGuardLink() {
     const url = 'https://dutchman175.github.io/path-guard/';
     const title = 'Path Guard';
