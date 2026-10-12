@@ -637,6 +637,14 @@
     box-shadow: 0 12px 40px rgba(0,0,0,0.55);
     text-align: left;
   }
+  #tower-detail #tower-detail-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin-top: 2px;
+  }
   #tower-detail .card-head, #enemy-intro .card-head {
     display: flex;
     align-items: flex-start;
@@ -2373,6 +2381,13 @@
     line-height: 1.35;
   }
   #prog-panel .shop-row:last-child { border-bottom: none; }
+  #prog-panel .shop-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
   #prog-panel .shop-info { flex: 1; min-width: 0; color: #cbd5e1; }
   #prog-panel .shop-info strong { font-size: 0.84rem; }
   #prog-panel .shop-info .muted { color: #64748b; font-weight: 600; }
@@ -2855,6 +2870,7 @@
     <div id="tower-detail" aria-hidden="true">
       <div class="card" id="tower-detail-card" role="dialog" aria-labelledby="tower-detail-title">
         <div class="card-head">
+          <img id="tower-detail-icon" alt="" width="52" height="52">
           <div>
             <h2 id="tower-detail-title">Tower</h2>
             <div class="meta" id="tower-detail-meta"></div>
@@ -4288,7 +4304,7 @@
         } else {
           statsHtml = `<span class="shop-stats">${progStatsLine(type, 1, null)}</span>`;
         }
-        rows.push(`<div class="shop-row"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${meta}</span>${statsHtml}${why}</div>${btn}</div>`);
+        rows.push(`<div class="shop-row"><img class="shop-icon" src="./sprites/${type}.png?v=229" alt="" width="40" height="40"><div class="shop-info"><strong>${def.name}</strong> <span class="muted">${meta}</span>${statsHtml}${why}</div>${btn}</div>`);
       }
     }
 
@@ -5076,6 +5092,7 @@
     hint: document.getElementById('hint'),
     counterToast: document.getElementById('counter-toast'),
     towerDetail: document.getElementById('tower-detail'),
+    towerDetailIcon: document.getElementById('tower-detail-icon'),
     towerDetailTitle: document.getElementById('tower-detail-title'),
     towerDetailMeta: document.getElementById('tower-detail-meta'),
     towerDetailRole: document.getElementById('tower-detail-role'),
@@ -8490,6 +8507,7 @@
     state.towerDetailType = towerType;
     const catWord = CAT_LABEL[def.category] || '';
     const vs = enemyKindsVsTower(towerType);
+    if (el.towerDetailIcon) el.towerDetailIcon.src = `./sprites/${towerType}.png?v=229`;
     if (el.towerDetailTitle) {
       el.towerDetailTitle.textContent = placedTw
         ? `${def.name} Level ${placedTw.level || 1}`
